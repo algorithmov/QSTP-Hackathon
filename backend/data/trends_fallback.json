@@ -164,28 +164,28 @@
         "change_pct": 5
       },
       "DZ": {
-        "direction": "rising",
-        "change_pct": 31
+        "direction": "flat",
+        "change_pct": 0
       },
       "MA": {
         "direction": "rising",
         "change_pct": 18
       },
       "JO": {
-        "direction": "rising",
-        "change_pct": 15
+        "direction": "flat",
+        "change_pct": 0
       },
       "SD": {
         "direction": "flat",
         "change_pct": 1
       },
       "IQ": {
-        "direction": "falling",
-        "change_pct": -8
+        "direction": "rising",
+        "change_pct": 125
       },
       "KW": {
         "direction": "flat",
-        "change_pct": 2
+        "change_pct": 0
       }
     },
     "arabic education": {
