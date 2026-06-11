@@ -1,0 +1,82 @@
+{
+  "_note": "Captured snapshot for demo topics. Served when pytrends is unavailable. Re-capture with: python -c 'from live_signals import capture_fallback; import asyncio; asyncio.run(capture_fallback())'",
+  "interest_by_country": {
+    "young inventors water tech": {
+      "EG": 95, "SA": 88, "AE": 72, "JO": 68, "MA": 60, "DZ": 55, "QA": 50, "KW": 46, "IQ": 40, "SD": 32
+    },
+    "student innovation": {
+      "EG": 90, "SA": 85, "AE": 75, "JO": 70, "MA": 62, "DZ": 58, "QA": 52, "KW": 48, "IQ": 42, "SD": 30
+    },
+    "water technology": {
+      "EG": 92, "SA": 80, "AE": 68, "JO": 65, "MA": 55, "DZ": 50, "QA": 48, "KW": 44, "IQ": 38, "SD": 28
+    },
+    "arabic education": {
+      "EG": 88, "SA": 82, "AE": 70, "JO": 72, "MA": 65, "DZ": 60, "QA": 55, "KW": 50, "IQ": 45, "SD": 35
+    },
+    "entrepreneurship": {
+      "EG": 78, "SA": 85, "AE": 88, "JO": 60, "MA": 55, "DZ": 48, "QA": 65, "KW": 62, "IQ": 35, "SD": 25
+    }
+  },
+  "trend_direction": {
+    "young inventors water tech": {
+      "EG": {"direction": "rising",  "change_pct": 40},
+      "SA": {"direction": "rising",  "change_pct": 22},
+      "AE": {"direction": "flat",    "change_pct": 3},
+      "JO": {"direction": "rising",  "change_pct": 15},
+      "MA": {"direction": "rising",  "change_pct": 18},
+      "DZ": {"direction": "rising",  "change_pct": 31},
+      "QA": {"direction": "flat",    "change_pct": 5},
+      "KW": {"direction": "flat",    "change_pct": 2},
+      "IQ": {"direction": "falling", "change_pct": -8},
+      "SD": {"direction": "flat",    "change_pct": 1}
+    },
+    "student innovation": {
+      "EG": {"direction": "rising",  "change_pct": 28},
+      "SA": {"direction": "rising",  "change_pct": 19},
+      "AE": {"direction": "rising",  "change_pct": 12},
+      "JO": {"direction": "rising",  "change_pct": 22},
+      "MA": {"direction": "flat",    "change_pct": 4},
+      "DZ": {"direction": "rising",  "change_pct": 16},
+      "QA": {"direction": "flat",    "change_pct": 6},
+      "KW": {"direction": "rising",  "change_pct": 10},
+      "IQ": {"direction": "flat",    "change_pct": 2},
+      "SD": {"direction": "flat",    "change_pct": 0}
+    },
+    "water technology": {
+      "EG": {"direction": "rising",  "change_pct": 35},
+      "SA": {"direction": "rising",  "change_pct": 20},
+      "AE": {"direction": "flat",    "change_pct": 5},
+      "JO": {"direction": "rising",  "change_pct": 25},
+      "MA": {"direction": "rising",  "change_pct": 14},
+      "DZ": {"direction": "rising",  "change_pct": 20},
+      "QA": {"direction": "flat",    "change_pct": 3},
+      "KW": {"direction": "flat",    "change_pct": 4},
+      "IQ": {"direction": "falling", "change_pct": -5},
+      "SD": {"direction": "flat",    "change_pct": 2}
+    },
+    "arabic education": {
+      "EG": {"direction": "rising",  "change_pct": 18},
+      "SA": {"direction": "flat",    "change_pct": 4},
+      "AE": {"direction": "flat",    "change_pct": 3},
+      "JO": {"direction": "rising",  "change_pct": 14},
+      "MA": {"direction": "rising",  "change_pct": 20},
+      "DZ": {"direction": "rising",  "change_pct": 25},
+      "QA": {"direction": "flat",    "change_pct": 5},
+      "KW": {"direction": "flat",    "change_pct": 3},
+      "IQ": {"direction": "flat",    "change_pct": 6},
+      "SD": {"direction": "flat",    "change_pct": 2}
+    },
+    "entrepreneurship": {
+      "EG": {"direction": "rising",  "change_pct": 15},
+      "SA": {"direction": "rising",  "change_pct": 22},
+      "AE": {"direction": "rising",  "change_pct": 18},
+      "JO": {"direction": "flat",    "change_pct": 5},
+      "MA": {"direction": "flat",    "change_pct": 3},
+      "DZ": {"direction": "flat",    "change_pct": 4},
+      "QA": {"direction": "rising",  "change_pct": 12},
+      "KW": {"direction": "rising",  "change_pct": 10},
+      "IQ": {"direction": "flat",    "change_pct": 2},
+      "SD": {"direction": "flat",    "change_pct": 1}
+    }
+  }
+}

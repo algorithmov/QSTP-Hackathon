@@ -1,0 +1,193 @@
+{
+  "platforms": [
+    {
+      "platform": "TikTok",
+      "primary_age_band": "16-24",
+      "rewarded_formats": ["vertical_short"],
+      "timing_reliability": 0.90,
+      "notes": "Short-form video dominates MENA Gen-Z; algorithm rewards watch completion and shares over follower count.",
+      "source": "DataReportal Digital 2024 MENA; TikTok Creator Center 2024"
+    },
+    {
+      "platform": "Instagram",
+      "primary_age_band": "18-34",
+      "rewarded_formats": ["vertical_short", "square_image", "portrait_image"],
+      "timing_reliability": 0.88,
+      "notes": "Reels reach 3x higher than feed posts in MENA. Strong visual brand presence for 25-34 segment.",
+      "source": "Meta Creator Center 2024; Hootsuite Global State of Social 2024"
+    },
+    {
+      "platform": "YouTube",
+      "primary_age_band": "18-35",
+      "rewarded_formats": ["horizontal_long"],
+      "timing_reliability": 0.85,
+      "notes": "Highest average watch-time per session in MENA. Shorts cross-promotes long-form. Tutorial and educational content over-indexes.",
+      "source": "Google MENA Insights 2024; DataReportal Digital 2024"
+    },
+    {
+      "platform": "LinkedIn",
+      "primary_age_band": "25-45",
+      "rewarded_formats": ["horizontal_long", "portrait_image"],
+      "timing_reliability": 0.80,
+      "notes": "Primary B2B and professional channel. Strongest for sponsor, investor, and applications from employers.",
+      "source": "LinkedIn Marketing Solutions Blog 2024; DataReportal Digital 2024"
+    },
+    {
+      "platform": "X",
+      "primary_age_band": "25-49",
+      "rewarded_formats": ["square_image", "horizontal_long"],
+      "timing_reliability": 0.75,
+      "notes": "Real-time and trending topics. High amplification for buzz campaigns and breaking news.",
+      "source": "X Business 2024; Sprout Social Index 2024"
+    }
+  ],
+
+  "platform_country_usage": [
+    {"platform": "TikTok",     "country": "EG", "usage_score": 0.88, "peak_hours": [21, 20, 22, 19], "source": "DataReportal Egypt Digital 2024"},
+    {"platform": "TikTok",     "country": "SA", "usage_score": 0.82, "peak_hours": [21, 20, 22, 19], "source": "DataReportal Saudi Arabia Digital 2024"},
+    {"platform": "TikTok",     "country": "AE", "usage_score": 0.75, "peak_hours": [20, 21, 19, 22], "source": "DataReportal UAE Digital 2024"},
+    {"platform": "TikTok",     "country": "QA", "usage_score": 0.70, "peak_hours": [21, 20, 22, 19], "source": "DataReportal Qatar Digital 2024"},
+    {"platform": "TikTok",     "country": "DZ", "usage_score": 0.85, "peak_hours": [22, 21, 20, 23], "source": "DataReportal Algeria Digital 2024"},
+    {"platform": "TikTok",     "country": "MA", "usage_score": 0.80, "peak_hours": [21, 22, 20, 23], "source": "DataReportal Morocco Digital 2024"},
+    {"platform": "TikTok",     "country": "JO", "usage_score": 0.78, "peak_hours": [21, 20, 22, 19], "source": "DataReportal Jordan Digital 2024"},
+    {"platform": "TikTok",     "country": "SD", "usage_score": 0.60, "peak_hours": [20, 21, 19, 22], "source": "DataReportal Sudan Digital 2024"},
+    {"platform": "TikTok",     "country": "IQ", "usage_score": 0.70, "peak_hours": [21, 20, 22, 20], "source": "DataReportal Iraq Digital 2024"},
+    {"platform": "TikTok",     "country": "KW", "usage_score": 0.72, "peak_hours": [21, 20, 22, 19], "source": "DataReportal Kuwait Digital 2024"},
+
+    {"platform": "Instagram",  "country": "EG", "usage_score": 0.85, "peak_hours": [20, 19, 21, 18], "source": "DataReportal Egypt Digital 2024"},
+    {"platform": "Instagram",  "country": "SA", "usage_score": 0.90, "peak_hours": [20, 19, 21, 22], "source": "DataReportal Saudi Arabia Digital 2024"},
+    {"platform": "Instagram",  "country": "AE", "usage_score": 0.88, "peak_hours": [20, 19, 21, 18], "source": "DataReportal UAE Digital 2024"},
+    {"platform": "Instagram",  "country": "QA", "usage_score": 0.85, "peak_hours": [20, 19, 21, 18], "source": "DataReportal Qatar Digital 2024"},
+    {"platform": "Instagram",  "country": "DZ", "usage_score": 0.75, "peak_hours": [21, 20, 22, 19], "source": "DataReportal Algeria Digital 2024"},
+    {"platform": "Instagram",  "country": "MA", "usage_score": 0.78, "peak_hours": [21, 20, 22, 19], "source": "DataReportal Morocco Digital 2024"},
+    {"platform": "Instagram",  "country": "JO", "usage_score": 0.80, "peak_hours": [20, 19, 21, 18], "source": "DataReportal Jordan Digital 2024"},
+    {"platform": "Instagram",  "country": "SD", "usage_score": 0.55, "peak_hours": [20, 19, 21, 18], "source": "DataReportal Sudan Digital 2024"},
+    {"platform": "Instagram",  "country": "IQ", "usage_score": 0.65, "peak_hours": [20, 21, 19, 22], "source": "DataReportal Iraq Digital 2024"},
+    {"platform": "Instagram",  "country": "KW", "usage_score": 0.82, "peak_hours": [20, 19, 21, 18], "source": "DataReportal Kuwait Digital 2024"},
+
+    {"platform": "YouTube",    "country": "EG", "usage_score": 0.92, "peak_hours": [20, 19, 21, 17], "source": "DataReportal Egypt Digital 2024; Google MENA"},
+    {"platform": "YouTube",    "country": "SA", "usage_score": 0.88, "peak_hours": [20, 19, 21, 17], "source": "DataReportal Saudi Arabia Digital 2024"},
+    {"platform": "YouTube",    "country": "AE", "usage_score": 0.80, "peak_hours": [19, 20, 18, 21], "source": "DataReportal UAE Digital 2024"},
+    {"platform": "YouTube",    "country": "QA", "usage_score": 0.82, "peak_hours": [20, 19, 21, 18], "source": "DataReportal Qatar Digital 2024"},
+    {"platform": "YouTube",    "country": "DZ", "usage_score": 0.80, "peak_hours": [20, 21, 19, 22], "source": "DataReportal Algeria Digital 2024"},
+    {"platform": "YouTube",    "country": "MA", "usage_score": 0.82, "peak_hours": [21, 20, 22, 19], "source": "DataReportal Morocco Digital 2024"},
+    {"platform": "YouTube",    "country": "JO", "usage_score": 0.85, "peak_hours": [20, 19, 21, 18], "source": "DataReportal Jordan Digital 2024"},
+    {"platform": "YouTube",    "country": "SD", "usage_score": 0.65, "peak_hours": [20, 19, 21, 18], "source": "DataReportal Sudan Digital 2024"},
+    {"platform": "YouTube",    "country": "IQ", "usage_score": 0.78, "peak_hours": [20, 21, 19, 22], "source": "DataReportal Iraq Digital 2024"},
+    {"platform": "YouTube",    "country": "KW", "usage_score": 0.80, "peak_hours": [20, 19, 21, 18], "source": "DataReportal Kuwait Digital 2024"},
+
+    {"platform": "LinkedIn",   "country": "EG", "usage_score": 0.55, "peak_hours": [9, 8, 18, 17],  "source": "LinkedIn Marketing 2024; DataReportal Egypt"},
+    {"platform": "LinkedIn",   "country": "SA", "usage_score": 0.65, "peak_hours": [9, 8, 18, 17],  "source": "LinkedIn Marketing 2024; DataReportal Saudi Arabia"},
+    {"platform": "LinkedIn",   "country": "AE", "usage_score": 0.80, "peak_hours": [9, 8, 18, 17],  "source": "LinkedIn Marketing 2024; DataReportal UAE"},
+    {"platform": "LinkedIn",   "country": "QA", "usage_score": 0.72, "peak_hours": [9, 8, 18, 17],  "source": "LinkedIn Marketing 2024; DataReportal Qatar"},
+    {"platform": "LinkedIn",   "country": "DZ", "usage_score": 0.40, "peak_hours": [9, 8, 18, 17],  "source": "LinkedIn Marketing 2024; DataReportal Algeria"},
+    {"platform": "LinkedIn",   "country": "MA", "usage_score": 0.45, "peak_hours": [9, 8, 18, 17],  "source": "LinkedIn Marketing 2024; DataReportal Morocco"},
+    {"platform": "LinkedIn",   "country": "JO", "usage_score": 0.60, "peak_hours": [9, 8, 18, 17],  "source": "LinkedIn Marketing 2024; DataReportal Jordan"},
+    {"platform": "LinkedIn",   "country": "SD", "usage_score": 0.25, "peak_hours": [9, 8, 18, 17],  "source": "LinkedIn Marketing 2024; DataReportal Sudan"},
+    {"platform": "LinkedIn",   "country": "IQ", "usage_score": 0.35, "peak_hours": [9, 8, 18, 17],  "source": "LinkedIn Marketing 2024; DataReportal Iraq"},
+    {"platform": "LinkedIn",   "country": "KW", "usage_score": 0.60, "peak_hours": [9, 8, 18, 17],  "source": "LinkedIn Marketing 2024; DataReportal Kuwait"},
+
+    {"platform": "X",          "country": "EG", "usage_score": 0.70, "peak_hours": [13, 20, 21, 14], "source": "DataReportal Egypt Digital 2024; Sprout Social 2024"},
+    {"platform": "X",          "country": "SA", "usage_score": 0.78, "peak_hours": [13, 20, 21, 14], "source": "DataReportal Saudi Arabia Digital 2024"},
+    {"platform": "X",          "country": "AE", "usage_score": 0.72, "peak_hours": [12, 13, 20, 19], "source": "DataReportal UAE Digital 2024"},
+    {"platform": "X",          "country": "QA", "usage_score": 0.68, "peak_hours": [13, 20, 21, 14], "source": "DataReportal Qatar Digital 2024"},
+    {"platform": "X",          "country": "DZ", "usage_score": 0.55, "peak_hours": [14, 20, 21, 13], "source": "DataReportal Algeria Digital 2024"},
+    {"platform": "X",          "country": "MA", "usage_score": 0.58, "peak_hours": [14, 20, 21, 13], "source": "DataReportal Morocco Digital 2024"},
+    {"platform": "X",          "country": "JO", "usage_score": 0.62, "peak_hours": [13, 20, 21, 14], "source": "DataReportal Jordan Digital 2024"},
+    {"platform": "X",          "country": "SD", "usage_score": 0.45, "peak_hours": [13, 20, 21, 14], "source": "DataReportal Sudan Digital 2024"},
+    {"platform": "X",          "country": "IQ", "usage_score": 0.52, "peak_hours": [13, 20, 21, 14], "source": "DataReportal Iraq Digital 2024"},
+    {"platform": "X",          "country": "KW", "usage_score": 0.65, "peak_hours": [13, 20, 21, 14], "source": "DataReportal Kuwait Digital 2024"}
+  ],
+
+  "countries": [
+    {"code": "EG", "name": "Egypt",                "timezone": "Africa/Cairo",       "dominant_dialect": "Egyptian Arabic",   "secondary_dialect": "Modern Standard Arabic"},
+    {"code": "SA", "name": "Saudi Arabia",          "timezone": "Asia/Riyadh",        "dominant_dialect": "Gulf Arabic",       "secondary_dialect": "Modern Standard Arabic"},
+    {"code": "AE", "name": "United Arab Emirates",  "timezone": "Asia/Dubai",         "dominant_dialect": "Gulf Arabic",       "secondary_dialect": "Modern Standard Arabic"},
+    {"code": "QA", "name": "Qatar",                 "timezone": "Asia/Qatar",         "dominant_dialect": "Gulf Arabic",       "secondary_dialect": "Modern Standard Arabic"},
+    {"code": "DZ", "name": "Algeria",               "timezone": "Africa/Algiers",     "dominant_dialect": "Algerian Darija",   "secondary_dialect": "French"},
+    {"code": "MA", "name": "Morocco",               "timezone": "Africa/Casablanca",  "dominant_dialect": "Moroccan Darija",   "secondary_dialect": "French"},
+    {"code": "JO", "name": "Jordan",                "timezone": "Asia/Amman",         "dominant_dialect": "Levantine Arabic",  "secondary_dialect": "Modern Standard Arabic"},
+    {"code": "SD", "name": "Sudan",                 "timezone": "Africa/Khartoum",    "dominant_dialect": "Sudanese Arabic",   "secondary_dialect": "Modern Standard Arabic"},
+    {"code": "IQ", "name": "Iraq",                  "timezone": "Asia/Baghdad",       "dominant_dialect": "Iraqi Arabic",      "secondary_dialect": "Modern Standard Arabic"},
+    {"code": "KW", "name": "Kuwait",                "timezone": "Asia/Kuwait",        "dominant_dialect": "Gulf Arabic",       "secondary_dialect": "Modern Standard Arabic"}
+  ],
+
+  "content_type_platform_fit": [
+    {"content_type": "talking_head",  "platform": "TikTok",    "fit_score": 0.85, "source": "TikTok Creator Center format guidance 2024"},
+    {"content_type": "talking_head",  "platform": "Instagram", "fit_score": 0.80, "source": "Meta Reels format guidance 2024"},
+    {"content_type": "talking_head",  "platform": "YouTube",   "fit_score": 0.75, "source": "YouTube Shorts best practices 2024"},
+    {"content_type": "talking_head",  "platform": "LinkedIn",  "fit_score": 0.70, "source": "LinkedIn video content guide 2024"},
+    {"content_type": "talking_head",  "platform": "X",         "fit_score": 0.62, "source": "X media format research 2024"},
+
+    {"content_type": "product_demo",  "platform": "TikTok",    "fit_score": 0.90, "source": "TikTok for Business showcase data 2024"},
+    {"content_type": "product_demo",  "platform": "Instagram", "fit_score": 0.88, "source": "Meta Commerce insights 2024"},
+    {"content_type": "product_demo",  "platform": "YouTube",   "fit_score": 0.82, "source": "YouTube product review research 2024"},
+    {"content_type": "product_demo",  "platform": "LinkedIn",  "fit_score": 0.65, "source": "LinkedIn B2B product content 2024"},
+    {"content_type": "product_demo",  "platform": "X",         "fit_score": 0.58, "source": "X content performance study 2024"},
+
+    {"content_type": "text_overlay",  "platform": "TikTok",    "fit_score": 0.80, "source": "TikTok Creator Center 2024"},
+    {"content_type": "text_overlay",  "platform": "Instagram", "fit_score": 0.75, "source": "Meta format research 2024"},
+    {"content_type": "text_overlay",  "platform": "YouTube",   "fit_score": 0.65, "source": "YouTube Shorts study 2024"},
+    {"content_type": "text_overlay",  "platform": "LinkedIn",  "fit_score": 0.60, "source": "LinkedIn content guide 2024"},
+    {"content_type": "text_overlay",  "platform": "X",         "fit_score": 0.72, "source": "X text-card engagement study 2024"},
+
+    {"content_type": "scenery",       "platform": "TikTok",    "fit_score": 0.68, "source": "TikTok travel content analysis 2024"},
+    {"content_type": "scenery",       "platform": "Instagram", "fit_score": 0.88, "source": "Instagram travel format study 2024"},
+    {"content_type": "scenery",       "platform": "YouTube",   "fit_score": 0.80, "source": "YouTube travel category data 2024"},
+    {"content_type": "scenery",       "platform": "LinkedIn",  "fit_score": 0.50, "source": "LinkedIn engagement benchmarks 2024"},
+    {"content_type": "scenery",       "platform": "X",         "fit_score": 0.55, "source": "X visual content study 2024"},
+
+    {"content_type": "group_action",  "platform": "TikTok",    "fit_score": 0.88, "source": "TikTok duet and challenge data 2024"},
+    {"content_type": "group_action",  "platform": "Instagram", "fit_score": 0.82, "source": "Meta group content guide 2024"},
+    {"content_type": "group_action",  "platform": "YouTube",   "fit_score": 0.75, "source": "YouTube community content 2024"},
+    {"content_type": "group_action",  "platform": "LinkedIn",  "fit_score": 0.50, "source": "LinkedIn event content 2024"},
+    {"content_type": "group_action",  "platform": "X",         "fit_score": 0.62, "source": "X event engagement 2024"},
+
+    {"content_type": "interview",     "platform": "TikTok",    "fit_score": 0.70, "source": "TikTok long-form pilot data 2024"},
+    {"content_type": "interview",     "platform": "Instagram", "fit_score": 0.68, "source": "Meta Live and Reels format 2024"},
+    {"content_type": "interview",     "platform": "YouTube",   "fit_score": 0.85, "source": "YouTube interview format study 2024"},
+    {"content_type": "interview",     "platform": "LinkedIn",  "fit_score": 0.88, "source": "LinkedIn thought-leadership guide 2024"},
+    {"content_type": "interview",     "platform": "X",         "fit_score": 0.65, "source": "X Spaces and video 2024"},
+
+    {"content_type": "unknown",       "platform": "TikTok",    "fit_score": 0.60, "source": "baseline"},
+    {"content_type": "unknown",       "platform": "Instagram", "fit_score": 0.60, "source": "baseline"},
+    {"content_type": "unknown",       "platform": "YouTube",   "fit_score": 0.60, "source": "baseline"},
+    {"content_type": "unknown",       "platform": "LinkedIn",  "fit_score": 0.55, "source": "baseline"},
+    {"content_type": "unknown",       "platform": "X",         "fit_score": 0.55, "source": "baseline"}
+  ],
+
+  "audience_goal_map": [
+    {
+      "goal": "applications",
+      "audience": "applicants",
+      "preferred_platforms": ["TikTok", "Instagram", "YouTube"],
+      "preferred_languages": ["Egyptian Arabic", "Gulf Arabic", "Levantine Arabic", "Modern Standard Arabic"],
+      "audience_fit_score": 0.88,
+      "notes": "Young adults 18-28 seeking opportunities; short authentic demos drive click-through to application forms."
+    },
+    {
+      "goal": "viewers",
+      "audience": "general_public",
+      "preferred_platforms": ["TikTok", "YouTube", "Instagram"],
+      "preferred_languages": ["Egyptian Arabic", "Gulf Arabic", "Algerian Darija", "Moroccan Darija", "Modern Standard Arabic"],
+      "audience_fit_score": 0.82,
+      "notes": "Broadest reach; virality potential highest on TikTok and YouTube Shorts in MENA."
+    },
+    {
+      "goal": "sponsors",
+      "audience": "sponsors",
+      "preferred_platforms": ["LinkedIn", "Instagram", "YouTube", "X"],
+      "preferred_languages": ["Modern Standard Arabic", "Gulf Arabic", "Egyptian Arabic"],
+      "audience_fit_score": 0.80,
+      "notes": "Decision-makers and CSR leads; professional credibility required. LinkedIn dominant for B2B; Instagram for brand storytelling."
+    },
+    {
+      "goal": "buzz",
+      "audience": "influencers",
+      "preferred_platforms": ["TikTok", "X", "Instagram"],
+      "preferred_languages": ["Egyptian Arabic", "Gulf Arabic", "Modern Standard Arabic"],
+      "audience_fit_score": 0.85,
+      "notes": "Media amplification and influencer pickup. TikTok virality + X real-time conversation loop."
+    }
+  ]
+}

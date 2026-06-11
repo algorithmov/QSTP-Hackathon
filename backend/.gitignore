@@ -1,0 +1,9 @@
+.env
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+data/masar.db
+data/trends_cache.db
+*.db
+.DS_Store
