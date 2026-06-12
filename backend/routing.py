@@ -1,17 +1,16 @@
-"""Routing engine: weighted scoring + Claude orchestration."""
-import json
+"""Routing engine: weighted scoring + LLM orchestration."""
 import logging
 import os
 import uuid
 from datetime import datetime
 from typing import Optional
 
-import anthropic
 import pytz
 
 import knowledge_base as kb
 import live_signals
 import model_client
+from llm_client import get_llm_output
 from app.schemas import (
     MapEntry, Route, RouteRequest, RouteResponse, ScoreComponents,
     TrendTicker, VisualProfile,
@@ -28,69 +27,6 @@ W_LANGUAGE = 0.10
 W_PREDICT  = 0.20
 
 ENABLE_DIALECT_REWRITE = os.getenv("ENABLE_DIALECT_REWRITE", "false").lower() == "true"
-
-_anthropic_client = anthropic.Anthropic(api_key=os.environ["ANTHROPIC_API_KEY"])
-
-
-# ── Claude structured output ─────────────────────────────────────────────────
-
-_ANALYSIS_TOOL = {
-    "name": "content_analysis",
-    "description": "Structured analysis of the content post",
-    "input_schema": {
-        "type": "object",
-        "properties": {
-            "content_summary": {
-                "type": "string",
-                "description": "One-sentence summary of the content, max 20 words"
-            },
-            "topic": {
-                "type": "string",
-                "description": "Short topic phrase (3-5 words) best for trend lookup"
-            },
-            "content_type": {
-                "type": "string",
-                "enum": ["talking_head", "product_demo", "text_overlay",
-                         "scenery", "group_action", "interview", "unknown"]
-            },
-            "caption_length": {
-                "type": "integer",
-                "description": "Estimated caption character count"
-            },
-            "hashtag_count": {
-                "type": "integer",
-                "description": "Recommended number of hashtags for this content"
-            },
-            "language": {
-                "type": "string",
-                "description": "Primary language of the content (e.g. ar, en, mixed)"
-            }
-        },
-        "required": ["content_summary", "topic", "content_type",
-                     "caption_length", "hashtag_count", "language"]
-    }
-}
-
-_WHY_TOOL = {
-    "name": "route_rationale",
-    "description": "One-line why for each route",
-    "input_schema": {
-        "type": "object",
-        "properties": {
-            "why_lines": {
-                "type": "array",
-                "items": {"type": "string"},
-                "description": "One sentence per route, same order, max 20 words each"
-            },
-            "dialect_rewrites": {
-                "type": "array",
-                "items": {"type": ["string", "null"]},
-                "description": "Dialect rewrite per route or null if not requested"
-            }
-        },
-        "required": ["why_lines", "dialect_rewrites"]
-    }
-}
 
 
 def _fallback_analyze(content_text: str, topic_hint: Optional[str]) -> dict:
@@ -122,67 +58,6 @@ def _fallback_analyze(content_text: str, topic_hint: Optional[str]) -> dict:
         "hashtag_count": 5,
         "language": language,
     }
-
-
-def _claude_analyze(content_text: str, topic_hint: Optional[str]) -> dict:
-    hint = f" Topic hint: {topic_hint}." if topic_hint else ""
-    try:
-        msg = _anthropic_client.messages.create(
-            model="claude-sonnet-4-6",
-            max_tokens=512,
-            tools=[_ANALYSIS_TOOL],
-            tool_choice={"type": "tool", "name": "content_analysis"},
-            messages=[{
-                "role": "user",
-                "content": (
-                    f"Analyze this social media post for an Arab-market routing engine.{hint}\n\n"
-                    f"Content: {content_text}"
-                )
-            }]
-        )
-        for block in msg.content:
-            if block.type == "tool_use" and block.name == "content_analysis":
-                return block.input
-        raise ValueError("Claude did not return content_analysis tool call")
-    except Exception as exc:
-        logger.warning("Claude analyze failed (%s), using rule-based fallback", exc)
-        return _fallback_analyze(content_text, topic_hint)
-
-
-def _claude_why(routes_context: list[dict], topic: str,
-                dialect_rewrites: bool) -> tuple[list[str], list[Optional[str]]]:
-    route_lines = "\n".join(
-        f"Rank {i+1}: {r['platform']} / {r['country_name']} / {r['audience']} — "
-        f"platform_fit={r['components']['platform_fit']:.2f} "
-        f"geo_fit={r['components']['geo_fit']:.2f} "
-        f"trend={r['trend_direction']} ({(r['trend_change_pct'] or 0):+d}%)"
-        for i, r in enumerate(routes_context)
-    )
-    rewrite_instruction = (
-        " Also provide a dialect_rewrite for each route in the dominant dialect of the target country."
-        if dialect_rewrites else
-        " Set dialect_rewrites to null for every entry."
-    )
-    msg = _anthropic_client.messages.create(
-        model="claude-sonnet-4-6",
-        max_tokens=1024,
-        tools=[_WHY_TOOL],
-        tool_choice={"type": "tool", "name": "route_rationale"},
-        messages=[{
-            "role": "user",
-            "content": (
-                f"Write one-line rationale for each of these content routes. Topic: {topic}.\n"
-                f"Be specific: mention the trend number if rising, the audience, why this platform fits.\n"
-                f"{rewrite_instruction}\n\n{route_lines}"
-            )
-        }]
-    )
-    for block in msg.content:
-        if block.type == "tool_use" and block.name == "route_rationale":
-            why = block.input.get("why_lines", [])
-            rewrites = block.input.get("dialect_rewrites", [])
-            return why, rewrites
-    raise ValueError("Claude did not return route_rationale tool call")
 
 
 # ── helpers ──────────────────────────────────────────────────────────────────
@@ -226,9 +101,8 @@ def _fallback_why(r: dict, topic: str) -> str:
 # ── main routing ─────────────────────────────────────────────────────────────
 
 async def route_content(request: RouteRequest) -> RouteResponse:
-    # 1. Claude: analyze content
-    analysis = _claude_analyze(request.content_text, request.topic_hint)
-    content_summary: str = analysis["content_summary"]
+    # 1. Analyze content for routing parameters (topic, content_type, etc.)
+    analysis = _fallback_analyze(request.content_text, request.topic_hint)
     topic: str = request.topic_hint or analysis["topic"]
     content_type: str = analysis["content_type"]
     caption_length: int = analysis["caption_length"]
@@ -377,25 +251,38 @@ async def route_content(request: RouteRequest) -> RouteResponse:
     scored.sort(key=lambda x: x["match_score"], reverse=True)
     top_6 = scored[:6]
 
-    # 8. Claude: why lines
-    try:
-        why_lines, dialect_rewrites = _claude_why(top_6, topic, ENABLE_DIALECT_REWRITE)
-    except Exception as exc:
-        logger.warning("Claude why failed (%s), using rule-based fallback", exc)
-        why_lines = [
-            _fallback_why(r, topic) for r in top_6
-        ]
-        dialect_rewrites = [None] * len(top_6)
-
-    # pad in case Claude returned fewer lines
-    while len(why_lines) < len(top_6):
-        why_lines.append(f"Strong match for {top_6[len(why_lines)]['country_name']}.")
-    while len(dialect_rewrites) < len(top_6):
-        dialect_rewrites.append(None)
+    # 8. LLM: content_summary + why lines (Fanar → Gemini → local → rule-based)
+    routes_for_llm = [
+        {
+            "rank":           i + 1,
+            "platform":       r["platform"],
+            "country_name":   r["country_name"],
+            "audience":       r["audience"],
+            "language":       r["language"],
+            "match_score":    r["match_score"],
+            "components":     r["components"],
+            "trend_direction": r["trend_direction"],
+            "trend_change_pct": r.get("trend_change_pct"),
+            "post_time_local": _local_time_str(r["best_hour"]),
+            "timezone":       r["timezone"],
+        }
+        for i, r in enumerate(top_6)
+    ]
+    llm_out = await get_llm_output(
+        content_text=request.content_text,
+        goal=request.goal,
+        routes=routes_for_llm,
+    )
+    content_summary: str    = llm_out["content_summary"]
+    why_by_rank:     dict   = llm_out["why"]
+    rewrites_by_rank: dict  = llm_out["dialect_rewrites"]
+    logger.info("LLM provider: %s", llm_out["provider_used"])
 
     # 9. Build routes
     routes = []
-    for rank, (r, why, rewrite) in enumerate(zip(top_6, why_lines, dialect_rewrites), 1):
+    for rank, r in enumerate(top_6, 1):
+        why     = why_by_rank.get(str(rank), _fallback_why(r, topic))
+        rewrite = rewrites_by_rank.get(str(rank)) if ENABLE_DIALECT_REWRITE else None
         routes.append(Route(
             rank=rank,
             platform=r["platform"],
