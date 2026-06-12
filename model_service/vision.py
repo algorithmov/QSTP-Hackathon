@@ -76,7 +76,13 @@ def extract_frames(source: str | Path | bytes) -> list[np.ndarray]:
     # Write bytes to a temp file so OpenCV can open it
     if isinstance(source, (bytes, bytearray)):
         import tempfile, os
-        suffix = ".mp4"
+        import imghdr
+        # Detect actual file type from bytes
+        img_type = imghdr.what(None, h=source[:32])
+        if img_type in ("jpeg", "png", "gif", "webp", "bmp"):
+            suffix = f".{img_type}" if img_type != "jpeg" else ".jpg"
+        else:
+            suffix = ".mp4"
         with tempfile.NamedTemporaryFile(delete=False, suffix=suffix) as f:
             f.write(source)
             tmp_path = f.name
