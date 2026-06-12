@@ -1,0 +1,122 @@
+[
+  {
+    "topic": "water purification invention",
+    "country_name": "Egypt",
+    "evidence": [
+      {
+        "claim": "Short-form video is the dominant format for the 18 to 24 age group in Egypt",
+        "source": "DataReportal Egypt 2025",
+        "url": null,
+        "snippet": "DataReportal Egypt 2025 digital report: 18-24 cohort spends the most time on short-form video platforms, led by TikTok and Instagram Reels."
+      },
+      {
+        "claim": "Egypt has over 45 million social media users, with the youth segment the most active",
+        "source": "DataReportal Egypt 2025",
+        "url": null,
+        "snippet": "Total social media users in Egypt reached 45.6 million in early 2025, with 18-34 year olds representing the majority of active users."
+      },
+      {
+        "claim": "Science and innovation content receives strong engagement from Egyptian university students on TikTok",
+        "source": "TikTok Creator Center MENA 2024",
+        "url": null,
+        "snippet": "TikTok MENA creator center reports that STEM-adjacent content earns above-average completion rates in Egypt among the 18-25 segment."
+      }
+    ]
+  },
+  {
+    "topic": "water purification invention",
+    "country_name": "Saudi Arabia",
+    "evidence": [
+      {
+        "claim": "Saudi Arabia has one of the highest social media penetration rates in the Arab world at over 79 percent",
+        "source": "DataReportal Saudi Arabia 2025",
+        "url": null,
+        "snippet": "Saudi Arabia digital 2025: social media penetration reached 79.3% of the total population, one of the highest rates globally."
+      },
+      {
+        "claim": "Innovation and sustainability topics align with Saudi Vision 2030 priorities, increasing their resonance with young Saudi audiences",
+        "source": "Saudi Vision 2030 communications 2024",
+        "url": null,
+        "snippet": "Vision 2030 communication campaigns have made sustainability and innovation key aspirational themes for Saudi youth aged 18-30."
+      }
+    ]
+  },
+  {
+    "topic": "water purification invention",
+    "country_name": "Jordan",
+    "evidence": [
+      {
+        "claim": "Jordan has a high proportion of university-educated youth with strong interest in science and technology content",
+        "source": "DataReportal Jordan 2025",
+        "url": null,
+        "snippet": "Jordan digital report 2025: among the 18-29 age group, science and educational content is among the top categories followed on social media."
+      }
+    ]
+  },
+  {
+    "topic": "solar energy innovation",
+    "country_name": "Egypt",
+    "evidence": [
+      {
+        "claim": "Egypt is investing heavily in renewable energy, making solar innovation content relevant to both youth and policy audiences",
+        "source": "Reuters Energy Transition Egypt 2024",
+        "url": null,
+        "snippet": "Egypt aims to generate 42% of its electricity from renewables by 2035, creating strong public interest in solar and clean energy innovations."
+      },
+      {
+        "claim": "Science and innovation content receives strong engagement from Egyptian university students on TikTok",
+        "source": "TikTok Creator Center MENA 2024",
+        "url": null,
+        "snippet": "TikTok MENA creator center reports that STEM-adjacent content earns above-average completion rates in Egypt among the 18-25 segment."
+      }
+    ]
+  },
+  {
+    "topic": "solar energy innovation",
+    "country_name": "Saudi Arabia",
+    "evidence": [
+      {
+        "claim": "Saudi Arabia is building one of the world's largest solar farms as part of Vision 2030, creating high public awareness of solar topics",
+        "source": "Arab News Energy 2024",
+        "url": null,
+        "snippet": "The NEOM and Al-Shuqaiq solar projects are among the most discussed infrastructure developments in Saudi social media, especially among youth."
+      }
+    ]
+  },
+  {
+    "topic": "AI education tool",
+    "country_name": "Egypt",
+    "evidence": [
+      {
+        "claim": "Egyptian students are among the fastest adopters of AI tools in the Arab world, driven by a large university population",
+        "source": "DataReportal Egypt 2025",
+        "url": null,
+        "snippet": "Egypt has one of the largest university student populations in the Arab world, with rapidly growing adoption of AI-assisted learning platforms."
+      }
+    ]
+  },
+  {
+    "topic": "AI education tool",
+    "country_name": "UAE",
+    "evidence": [
+      {
+        "claim": "The UAE launched a national AI strategy in 2017 and has embedded AI education across its school curriculum",
+        "source": "UAE Ministry of AI 2024",
+        "url": null,
+        "snippet": "The UAE National AI Strategy has placed AI literacy at the center of K-12 and higher education, making AI-related content highly relevant to young UAE audiences."
+      }
+    ]
+  },
+  {
+    "topic": "AI education tool",
+    "country_name": "Saudi Arabia",
+    "evidence": [
+      {
+        "claim": "Saudi Arabia invested over 1 billion USD in AI and tech education initiatives under Vision 2030",
+        "source": "Saudi Vision 2030 Annual Report 2024",
+        "url": null,
+        "snippet": "The Kingdom's National AI Strategy and SDAIA initiatives have significantly raised public awareness and enthusiasm for AI among Saudi youth."
+      }
+    ]
+  }
+]

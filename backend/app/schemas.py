@@ -1,74 +1,109 @@
 from __future__ import annotations
-from typing import Optional
+
+from typing import Literal, Optional
+
 from pydantic import BaseModel
 
+VALID_GOALS = frozenset({"applications", "viewers", "sponsors", "buzz"})
+VALID_COUNTRIES = frozenset({"EG", "SA", "AE", "QA", "DZ", "MA", "JO", "SD", "IQ", "KW"})
+VALID_PLATFORMS = frozenset({"Instagram", "LinkedIn", "X", "YouTube", "TikTok"})
+VALID_CONTENT_TYPES = frozenset({
+    "product_demo", "talking_head", "educational",
+    "announcement", "behind_the_scenes", "achievement_story",
+})
 
-class RouteRequest(BaseModel):
-    content_text: str
-    media_url: Optional[str] = None
+ContentType = Literal[
+    "product_demo", "talking_head", "educational",
+    "announcement", "behind_the_scenes", "achievement_story",
+]
+SuggestedLanguage = Literal["ar", "en", "mixed"]
+Confidence = Literal["high", "medium", "low"]
+LanguageDirection = Literal["rtl", "ltr"]
+
+
+class ReviewRequest(BaseModel):
+    idea_text: str
     goal: str
-    topic_hint: Optional[str] = None
 
 
-class VisualProfile(BaseModel):
+class PersonalizeRequest(BaseModel):
+    idea_text: str
+    goal: str
+    countries: list[str]
+    platforms: list[str]
+
+
+class IdeaSummary(BaseModel):
+    topic: str
     content_type: str
-    format: str
-    has_text_overlay: bool
-    detected_text_language: str
-    face_count: int
-    motion_level: float
-    energy_score: float
-    aspect_ratio: str
-    confidence: float
+    primary_audience: str
+    suggested_language: str
+    key_themes: list[str]
 
 
 class ScoreComponents(BaseModel):
-    platform_fit: float
+    topic_relevance: float
     audience_fit: float
-    geo_fit: float
-    timing_fit: float
+    platform_fit: float
     language_fit: float
-    predicted_engagement: float
+    timing_fit: float
 
 
-class Route(BaseModel):
+class EvidenceItem(BaseModel):
+    claim: str
+    source: str
+    url: Optional[str] = None
+
+
+class Ranking(BaseModel):
     rank: int
-    platform: str
-    audience: str
     country: str
     country_name: str
-    language: str
-    post_time_local: str
-    timezone: str
-    match_score: int
+    platform: str
+    fit_score: int
+    confidence: str
     components: ScoreComponents
     why: str
-    tips: list[str] = []
-    trend_direction: str
-    trend_change_pct: Optional[int] = None
-    dialect_rewrite: Optional[str] = None
+    evidence: list[EvidenceItem]
+    recommended_time_local: str
+    timezone: str
 
 
-class MapEntry(BaseModel):
+class MapDatum(BaseModel):
     country: str
     country_name: str
-    interest: int
-    trend_direction: str
+    best_fit_score: int
     best_platform: str
 
 
-class TrendTicker(BaseModel):
-    topic: str
-    country: str
-    change_pct: int
-    direction: str
-
-
-class RouteResponse(BaseModel):
+class ReviewResponse(BaseModel):
     request_id: str
-    content_summary: str
-    visual_profile: Optional[VisualProfile] = None
-    routes: list[Route]
-    map_data: list[MapEntry]
-    trend_ticker: list[TrendTicker]
-    data_mode: str = "fallback"
+    idea_summary: IdeaSummary
+    rankings: list[Ranking]
+    map_data: list[MapDatum]
+    methodology_note: str
+
+
+class PersonalizedReport(BaseModel):
+    country: str
+    country_name: str
+    platform: str
+    language: str
+    language_direction: str
+    recommended_format: str
+    hook: str
+    caption: str
+    hashtags: list[str]
+    post_time_local: str
+    timezone: str
+    dos: list[str]
+    donts: list[str]
+    why: str
+    evidence: list[EvidenceItem]
+    confidence: str
+
+
+class PersonalizeResponse(BaseModel):
+    request_id: str
+    idea_summary: IdeaSummary
+    reports: list[PersonalizedReport]

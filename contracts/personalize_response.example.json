@@ -1,0 +1,132 @@
+{
+  "request_id": "uuid-string",
+  "idea_summary": {
+    "topic": "low-cost water purification invention by a student",
+    "content_type": "product_demo",
+    "primary_audience": "young innovators and students",
+    "suggested_language": "mixed",
+    "key_themes": ["sustainability", "student innovation", "water access"]
+  },
+  "reports": [
+    {
+      "country": "EG",
+      "country_name": "Egypt",
+      "platform": "TikTok",
+      "language": "Egyptian Arabic",
+      "language_direction": "rtl",
+      "recommended_format": "Vertical short, 30 to 45 seconds, subtitle overlay in Arabic and English",
+      "hook": "Open on the filter actually working on dirty water in the first 2 seconds, no intro.",
+      "caption": "مهندسة شابة صنعت فلتر مياه من مواد محلية بسيطة... شاهدوا كيف بيشتغل",
+      "hashtags": ["#ابتكار", "#StarsOfScience", "#مياه_نظيفة", "#نجوم_العلوم"],
+      "post_time_local": "21:00",
+      "timezone": "Africa/Cairo",
+      "dos": [
+        "Lead with the working demo, not narration",
+        "Use Egyptian Arabic colloquial captions"
+      ],
+      "donts": [
+        "Do not bury the demo after 5 seconds of setup",
+        "Avoid formal MSA-only captions for this platform"
+      ],
+      "why": "TikTok in Egypt over-indexes on quick visual proof and colloquial Arabic for this age group.",
+      "evidence": [
+        {
+          "claim": "Short-form video remains the dominant format for the 18 to 24 age group in Egypt",
+          "source": "DataReportal Egypt 2025",
+          "url": null
+        }
+      ],
+      "confidence": "high"
+    },
+    {
+      "country": "EG",
+      "country_name": "Egypt",
+      "platform": "Instagram",
+      "language": "Egyptian Arabic",
+      "language_direction": "rtl",
+      "recommended_format": "Reels 9:16 under 60 seconds with Arabic caption overlay",
+      "hook": "Start mid-action: the filter producing clean water with a surprised reaction.",
+      "caption": "ابتكار مصري يحول المياه القذرة لمياه نقية بأدوات بسيطة #نجوم_العلوم",
+      "hashtags": ["#ابتكار_مصري", "#StarsOfScience", "#نجوم_العلوم", "#بيئة"],
+      "post_time_local": "21:00",
+      "timezone": "Africa/Cairo",
+      "dos": [
+        "Use Reels for maximum non-follower reach",
+        "Add a poll or question sticker to the linked Story"
+      ],
+      "donts": [
+        "Do not post a static image for a physical demo",
+        "Avoid captions longer than 125 characters on Reels"
+      ],
+      "why": "Instagram Reels reach extends well beyond followers in Egypt and suits bilingual young audiences.",
+      "evidence": [
+        {
+          "claim": "Short-form video remains the dominant format for the 18 to 24 age group in Egypt",
+          "source": "DataReportal Egypt 2025",
+          "url": null
+        }
+      ],
+      "confidence": "high"
+    },
+    {
+      "country": "SA",
+      "country_name": "Saudi Arabia",
+      "platform": "TikTok",
+      "language": "Gulf Arabic",
+      "language_direction": "rtl",
+      "recommended_format": "Vertical short, 30 to 60 seconds, bilingual subtitles",
+      "hook": "Show the before and after water comparison in the first 3 seconds.",
+      "caption": "طالبة خليجية طورت فلتر مياه منزلي بأدوات بسيطة... هل تصدق هذا؟",
+      "hashtags": ["#ابتكار", "#نجوم_العلوم", "#StarsOfScience", "#السعودية"],
+      "post_time_local": "21:00",
+      "timezone": "Asia/Riyadh",
+      "dos": [
+        "Use trending Gulf Arabic audio clips to boost discoverability",
+        "Tag the Stars of Science official account"
+      ],
+      "donts": [
+        "Avoid Egyptian dialect — Gulf Arabic resonates more with the Saudi audience",
+        "Do not use voiceover without subtitles"
+      ],
+      "why": "TikTok Saudi Arabia has a large youth population actively engaging with science and innovation content.",
+      "evidence": [
+        {
+          "claim": "Saudi Arabia has among the highest TikTok usage rates in the MENA region for the 16-24 demographic",
+          "source": "DataReportal Saudi Arabia 2025",
+          "url": null
+        }
+      ],
+      "confidence": "high"
+    },
+    {
+      "country": "SA",
+      "country_name": "Saudi Arabia",
+      "platform": "Instagram",
+      "language": "Gulf Arabic",
+      "language_direction": "rtl",
+      "recommended_format": "Reels 9:16, 45 to 90 seconds, Arabic and English subtitles",
+      "hook": "Open with a wide shot of local materials, then cut immediately to the working filter.",
+      "caption": "ابتكار بسيط يحل مشكلة كبيرة. طالبة عربية تصنع فلتر مياه من الصفر #نجوم_العلوم",
+      "hashtags": ["#ابتكار", "#نجوم_العلوم", "#StarsOfScience", "#مياه_نظيفة", "#السعودية"],
+      "post_time_local": "21:00",
+      "timezone": "Asia/Riyadh",
+      "dos": [
+        "Post a carousel with step-by-step stills to complement the Reel",
+        "Engage comments within the first 30 minutes"
+      ],
+      "donts": [
+        "Do not use formal MSA captions — Gulf colloquial performs better",
+        "Avoid posting during prayer times"
+      ],
+      "why": "Instagram in Saudi Arabia has one of the highest penetration rates in the Arab world, especially for the 18-34 segment.",
+      "evidence": [
+        {
+          "claim": "Saudi Arabia has one of the highest Instagram penetration rates in the Arab world among 18-34 year olds",
+          "source": "DataReportal Saudi Arabia 2025",
+          "url": null
+        }
+      ],
+      "confidence": "high"
+    }
+  ]
+}

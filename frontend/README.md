@@ -1,6 +1,11 @@
 # Masar Frontend
 
-Standalone frontend for Masar, the AI content router. It is built to be pasted into the repository's `frontend/` directory and run independently while the backend and model service are integrated later.
+Next.js frontend for the Masar v2 rebuild. The app has two text-only pages:
+
+- `/review` - AI Reviewer ranks country/platform combinations with fit scores, confidence, component bars, and evidence.
+- `/personalize` - Personalized Targeter generates delivery reports for selected countries and platforms.
+
+Image and video inputs were intentionally removed from this version so the product can focus on grounded text analysis and cited recommendations.
 
 ## Stack
 
@@ -8,7 +13,8 @@ Standalone frontend for Masar, the AI content router. It is built to be pasted i
 - React 18
 - TypeScript
 - Tailwind CSS 3.4
-- Axios for the backend call
+- Axios
+- Recharts 2.x
 
 ## Run Locally
 
@@ -17,34 +23,27 @@ npm install
 npm run dev
 ```
 
-Open `http://localhost:3000`.
+Open `http://localhost:3000`. The root path redirects to `/review`.
 
 ## Environment
-
-The checked-in local defaults keep the app fully usable without a backend:
 
 ```bash
 NEXT_PUBLIC_BACKEND_URL=http://localhost:8000
 NEXT_PUBLIC_USE_MOCKS=true
 ```
 
-When `NEXT_PUBLIC_USE_MOCKS=true`, the app loads `public/mocks/route_response.json` with a short artificial delay. When it is `false`, the app sends the frozen request contract to:
+When `NEXT_PUBLIC_USE_MOCKS=true`, the app loads:
 
 ```text
-POST ${NEXT_PUBLIC_BACKEND_URL}/api/route
+public/mocks/review_response.json
+public/mocks/personalize_response.json
 ```
 
-## Contract
+When mocks are disabled, the app calls:
 
-The frontend sends:
-
-```json
-{
-  "content_text": "A 30-second clip of a Jordanian student showing her water-purification prototype.",
-  "media_url": "uploads/clip123.mp4",
-  "goal": "applications",
-  "topic_hint": "young inventors water tech"
-}
+```text
+POST ${NEXT_PUBLIC_BACKEND_URL}/api/review
+POST ${NEXT_PUBLIC_BACKEND_URL}/api/personalize
 ```
 
-The frontend renders the frozen response fields from `routes`, `map_data`, `trend_ticker`, `content_summary`, and optional `visual_profile`. Low match routes under 50 are de-emphasized and labeled `wrong room`. `dialect_rewrite` renders right-to-left when present.
+No UI code changes should be needed when switching from mocks to the backend if the frozen contracts are honored.
