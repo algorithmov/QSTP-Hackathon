@@ -2,6 +2,7 @@
 import json
 import logging
 import os
+import re
 import uuid
 from typing import Any
 
@@ -16,6 +17,7 @@ from app.schemas import (
     Ranking,
     ReviewRequest,
     ReviewResponse,
+    ReviewScope,
     ScoreComponents,
     VALID_CONTENT_TYPES,
 )
@@ -76,6 +78,31 @@ _GOAL_DEFAULT_LANGUAGE = {
     "sponsors": "mixed",
     "buzz": "mixed",
 }
+
+_COUNTRY_ALIASES: dict[str, list[str]] = {
+    "EG": ["egypt", "egyptian", "cairo"],
+    "SA": ["saudi", "saudi arabia", "riyadh", "jeddah"],
+    "AE": ["uae", "u.a.e", "emirati", "emirates", "united arab emirates", "dubai", "abu dhabi"],
+    "QA": ["qatar", "qatari", "doha"],
+    "DZ": ["algeria", "algerian", "algiers"],
+    "MA": ["morocco", "moroccan", "casablanca", "rabat"],
+    "JO": ["jordan", "jordanian", "amman"],
+    "SD": ["sudan", "sudanese", "khartoum"],
+    "IQ": ["iraq", "iraqi", "baghdad"],
+    "KW": ["kuwait", "kuwaiti"],
+}
+
+
+def _detect_country_scope(idea_text: str, countries: list[dict]) -> list[dict]:
+    text = idea_text.lower()
+    by_iso = {c["iso_code"]: c for c in countries}
+    detected: list[dict] = []
+    for iso, aliases in _COUNTRY_ALIASES.items():
+        if any(re.search(rf"\b{re.escape(alias.lower())}\b", text) for alias in aliases):
+            country = by_iso.get(iso)
+            if country:
+                detected.append(country)
+    return detected
 
 
 def _extract_idea_summary(idea_text: str, goal: str) -> IdeaSummary:
@@ -211,6 +238,8 @@ async def handle_review(request: ReviewRequest) -> ReviewResponse:
     idea_summary = _extract_idea_summary(request.idea_text, request.goal)
 
     countries = kb.list_countries()
+    detected_countries = _detect_country_scope(request.idea_text, countries)
+    scoring_countries = detected_countries or countries
     platforms = kb.list_platforms()
     goal_map = kb.get_audience_goal_map(request.goal)
     preferred_platforms = goal_map.get("preferred_platforms", [p["name"] for p in platforms])
@@ -219,7 +248,7 @@ async def handle_review(request: ReviewRequest) -> ReviewResponse:
     timing_fit = 0.8
 
     all_candidates: list[dict] = []
-    for country in countries:
+    for country in scoring_countries:
         iso = country["iso_code"]
         for plat in platforms:
             pname = plat["name"]
@@ -250,12 +279,13 @@ async def handle_review(request: ReviewRequest) -> ReviewResponse:
 
     all_candidates.sort(key=lambda x: x["baseline_score"], reverse=True)
 
-    top3_countries: list[str] = []
-    for c in all_candidates:
-        if c["country"] not in top3_countries:
-            top3_countries.append(c["country"])
-        if len(top3_countries) == 3:
-            break
+    top3_countries: list[str] = [c["iso_code"] for c in detected_countries]
+    if not top3_countries:
+        for c in all_candidates:
+            if c["country"] not in top3_countries:
+                top3_countries.append(c["country"])
+            if len(top3_countries) == 3:
+                break
 
     evidence_map: dict[str, list[dict]] = {}
     for iso in top3_countries:
@@ -274,7 +304,7 @@ async def handle_review(request: ReviewRequest) -> ReviewResponse:
         why_data = why_lines.get(key, {})
         adj = float(why_data.get("relevance_adjustment", 0.0))
         adj = max(-0.15, min(0.15, adj))
-        evidence_used = bool(ev_list) and abs(adj) > 0.001
+        evidence_used = bool(ev_list)
         if evidence_used:
             topic_relevance = max(0.0, min(1.0, c["usage_score"] + adj))
         else:
@@ -294,6 +324,8 @@ async def handle_review(request: ReviewRequest) -> ReviewResponse:
                     used_evidence.append(ev_pool[ev_idx])
             except Exception:
                 pass
+        if not used_evidence and ev_list:
+            used_evidence = ev_list[:2]
         final_candidates.append({
             **c,
             "topic_relevance": topic_relevance,
@@ -346,6 +378,21 @@ async def handle_review(request: ReviewRequest) -> ReviewResponse:
     return ReviewResponse(
         request_id=str(uuid.uuid4()),
         idea_summary=idea_summary,
+        review_scope=(
+            ReviewScope(
+                mode="country_focus",
+                country=detected_countries[0]["iso_code"],
+                country_name=detected_countries[0]["name"],
+                reason=f"Country focus detected from the idea text: {detected_countries[0]['name']}.",
+            )
+            if len(detected_countries) == 1 else
+            ReviewScope(
+                mode="regional",
+                country=None,
+                country_name=None,
+                reason="No single supported country was detected, so Masar compared all supported markets.",
+            )
+        ),
         rankings=rankings,
         map_data=map_data,
         methodology_note=METHODOLOGY_NOTE,

@@ -76,9 +76,17 @@ class MapDatum(BaseModel):
     best_platform: str
 
 
+class ReviewScope(BaseModel):
+    mode: str
+    country: Optional[str] = None
+    country_name: Optional[str] = None
+    reason: str
+
+
 class ReviewResponse(BaseModel):
     request_id: str
     idea_summary: IdeaSummary
+    review_scope: Optional[ReviewScope] = None
     rankings: list[Ranking]
     map_data: list[MapDatum]
     methodology_note: str

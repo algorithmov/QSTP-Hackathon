@@ -52,9 +52,17 @@ export type MapDatum = {
   best_platform: Platform;
 };
 
+export type ReviewScope = {
+  mode: "country_focus" | "regional";
+  country: CountryCode | null;
+  country_name: string | null;
+  reason: string;
+};
+
 export type ReviewResponse = {
   request_id: string;
   idea_summary: IdeaSummary;
+  review_scope?: ReviewScope | null;
   rankings: Ranking[];
   map_data: MapDatum[];
   methodology_note: string;

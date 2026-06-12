@@ -17,10 +17,19 @@ const starterText =
 
 type Status = "idle" | "loading" | "success" | "error";
 
+const loadingSteps = [
+  "Understanding idea...",
+  "Detecting market scope...",
+  "Searching live evidence...",
+  "Scoring platforms...",
+  "Writing recommendations..."
+];
+
 export default function ReviewPage() {
   const [ideaText, setIdeaText] = useState(starterText);
   const [goal, setGoal] = useState<Goal>("applications");
   const [status, setStatus] = useState<Status>("idle");
+  const [loadingStep, setLoadingStep] = useState(0);
   const [error, setError] = useState<string | null>(null);
   const [result, setResult] = useState<ReviewResponse | null>(null);
 
@@ -29,7 +38,11 @@ export default function ReviewPage() {
   async function handleSubmit() {
     if (!canSubmit) return;
     setStatus("loading");
+    setLoadingStep(0);
     setError(null);
+    const timer = window.setInterval(() => {
+      setLoadingStep((step) => Math.min(step + 1, loadingSteps.length - 1));
+    }, 2200);
     try {
       const response = await reviewIdea({ idea_text: ideaText.trim(), goal });
       setResult(response);
@@ -37,6 +50,8 @@ export default function ReviewPage() {
     } catch {
       setError("Review failed. Check the backend connection or mock file and try again.");
       setStatus("error");
+    } finally {
+      window.clearInterval(timer);
     }
   }
 
@@ -76,12 +91,13 @@ export default function ReviewPage() {
         </div>
       </section>
 
-      {status === "loading" ? <LoadingBlock label="Reviewing idea fit..." /> : null}
+      {status === "loading" ? <LoadingBlock label={loadingSteps[loadingStep]} /> : null}
       {status === "error" && error ? <ErrorBlock message={error} /> : null}
 
       {result ? (
         <>
           <IdeaSummaryCard summary={result.idea_summary} />
+          {result.review_scope ? <ReviewScopeNotice scope={result.review_scope} /> : null}
           <MethodologyNote note={result.methodology_note} />
           <div className="grid gap-5 xl:grid-cols-[1fr_360px]">
             <RankingBoard rankings={result.rankings} />
@@ -94,6 +110,22 @@ export default function ReviewPage() {
         </section>
       )}
     </AppShell>
+  );
+}
+
+function ReviewScopeNotice({ scope }: { scope: NonNullable<ReviewResponse["review_scope"]> }) {
+  return (
+    <section className="rounded-md border border-accent/25 bg-accent/5 p-4 shadow-board">
+      <div className="text-xs font-bold uppercase tracking-wide text-accent">
+        {scope.mode === "country_focus" ? "Country focus" : "Regional comparison"}
+      </div>
+      <p className="mt-1 text-sm font-semibold leading-6 text-ink">{scope.reason}</p>
+      {scope.mode === "country_focus" && scope.country_name ? (
+        <p className="mt-1 text-sm text-muted">
+          Rankings compare platforms for {scope.country_name} instead of forcing a regional country race.
+        </p>
+      ) : null}
+    </section>
   );
 }
 

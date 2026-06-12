@@ -1,4 +1,4 @@
-"""Evidence search with SQLite cache and fallback JSON."""
+"""Evidence search with SQLite cache and live-search providers."""
 import json
 import os
 import sqlite3
@@ -16,6 +16,7 @@ _FALLBACK = _DATA / "fallback_evidence.json"
 
 MOCK_MODE = os.getenv("MOCK_MODE", "true").lower() == "true"
 TAVILY_API_KEY = os.getenv("TAVILY_API_KEY", "")
+SERPER_API_KEY = os.getenv("SERPER_API_KEY", "")
 TTL_HOURS = float(os.getenv("EVIDENCE_CACHE_TTL_HOURS", "24"))
 
 
@@ -77,43 +78,111 @@ def _parse_domain(url: str) -> str:
         return url[:40]
 
 
+def _clean_claim(title: str, snippet: str) -> str:
+    source_text = (title or snippet).strip()
+    source_text = " ".join(source_text.split())
+    if not source_text:
+        return "Search result returned relevant context."
+    claim = source_text[:150].rstrip(".,:;")
+    return f"{claim}."
+
+
+def _search_queries(topic: str, country_name: str) -> list[str]:
+    return [
+        f"{topic} {country_name} education technology social media audience 2026",
+        f"{topic} {country_name} youth students digital learning Arabic 2026",
+    ]
+
+
 def _tavily_search(topic: str, country_name: str, max_results: int) -> list[dict]:
     from tavily import TavilyClient
+
     client = TavilyClient(api_key=TAVILY_API_KEY)
-    query = f"{topic} {country_name} social media audience trend 2025"
-    response = client.search(query=query, max_results=max_results, include_answer=False)
     results = []
-    for item in response.get("results", []):
-        url = item.get("url", "")
-        snippet = (item.get("content") or item.get("snippet") or "")[:300]
-        claim = (item.get("title") or snippet)[:120].rstrip(".,:;") + "."
-        results.append({
-            "claim": claim,
-            "source": _parse_domain(url) if url else item.get("source", "unknown"),
-            "url": url or None,
-            "snippet": snippet,
-        })
-    return results
+    seen: set[str] = set()
+    for query in _search_queries(topic, country_name):
+        response = client.search(query=query, max_results=max_results, include_answer=False)
+        for item in response.get("results", []):
+            url = item.get("url", "")
+            if url and url in seen:
+                continue
+            seen.add(url)
+            snippet = (item.get("content") or item.get("snippet") or "")[:500]
+            title = item.get("title") or ""
+            results.append({
+                "claim": _clean_claim(title, snippet),
+                "source": _parse_domain(url) if url else item.get("source", "unknown"),
+                "url": url or None,
+                "snippet": snippet,
+            })
+            if len(results) >= max_results:
+                return results
+    return results[:max_results]
+
+
+def _serper_search(topic: str, country_name: str, max_results: int) -> list[dict]:
+    import httpx
+
+    results = []
+    seen: set[str] = set()
+    with httpx.Client(timeout=12) as client:
+        for query in _search_queries(topic, country_name):
+            response = client.post(
+                "https://google.serper.dev/search",
+                headers={
+                    "X-API-KEY": SERPER_API_KEY,
+                    "Content-Type": "application/json",
+                },
+                json={"q": query, "num": max_results, "gl": "qa", "hl": "en"},
+            )
+            response.raise_for_status()
+            body = response.json()
+            for item in body.get("organic", []):
+                url = item.get("link", "")
+                if url and url in seen:
+                    continue
+                seen.add(url)
+                snippet = (item.get("snippet") or "")[:500]
+                title = item.get("title") or ""
+                results.append({
+                    "claim": _clean_claim(title, snippet),
+                    "source": _parse_domain(url) if url else item.get("source", "unknown"),
+                    "url": url or None,
+                    "snippet": snippet,
+                })
+                if len(results) >= max_results:
+                    return results
+    return results[:max_results]
 
 
 def search_topic_evidence(topic: str, country_name: str, max_results: int = 3) -> list[dict]:
     topic_norm = topic.strip().lower()
     cached = _cache_get(topic_norm, country_name)
     if cached is not None:
-        return cached[:max_results]
+        if MOCK_MODE or (not TAVILY_API_KEY and not SERPER_API_KEY) or any(item.get("url") for item in cached):
+            return cached[:max_results]
 
-    if MOCK_MODE or not TAVILY_API_KEY:
+    if TAVILY_API_KEY:
+        try:
+            results = _tavily_search(topic, country_name, max_results)
+            if results:
+                _cache_set(topic_norm, country_name, results)
+                return results[:max_results]
+        except Exception:
+            pass
+
+    if SERPER_API_KEY:
+        try:
+            results = _serper_search(topic, country_name, max_results)
+            if results:
+                _cache_set(topic_norm, country_name, results)
+                return results[:max_results]
+        except Exception:
+            pass
+
+    # Fallback evidence is only for offline/demo safety. In live mode with search
+    # keys configured, returning [] is more honest than showing stale curated claims.
+    if MOCK_MODE or (not TAVILY_API_KEY and not SERPER_API_KEY):
         return _load_fallback(topic, country_name)[:max_results]
 
-    try:
-        results = _tavily_search(topic, country_name, max_results)
-        if results:
-            _cache_set(topic_norm, country_name, results)
-            return results[:max_results]
-    except Exception:
-        pass
-
-    fallback = _load_fallback(topic, country_name)
-    if fallback:
-        _cache_set(topic_norm, country_name, fallback)
-    return fallback[:max_results]
+    return []

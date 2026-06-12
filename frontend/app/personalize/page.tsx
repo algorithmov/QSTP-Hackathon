@@ -24,12 +24,21 @@ const starterText =
 
 type Status = "idle" | "loading" | "success" | "error";
 
+const loadingSteps = [
+  "Understanding idea...",
+  "Searching live evidence...",
+  "Localizing formats...",
+  "Writing captions...",
+  "Finalizing delivery plan..."
+];
+
 export default function PersonalizePage() {
   const [ideaText, setIdeaText] = useState(starterText);
   const [goal, setGoal] = useState<Goal>("applications");
   const [countries, setCountries] = useState<CountryCode[]>(["EG", "SA"]);
   const [platforms, setPlatforms] = useState<Platform[]>(["TikTok", "Instagram"]);
   const [status, setStatus] = useState<Status>("idle");
+  const [loadingStep, setLoadingStep] = useState(0);
   const [error, setError] = useState<string | null>(null);
   const [result, setResult] = useState<PersonalizeResponse | null>(null);
 
@@ -42,7 +51,11 @@ export default function PersonalizePage() {
   async function handleSubmit() {
     if (!canSubmit) return;
     setStatus("loading");
+    setLoadingStep(0);
     setError(null);
+    const timer = window.setInterval(() => {
+      setLoadingStep((step) => Math.min(step + 1, loadingSteps.length - 1));
+    }, 2200);
     try {
       const response = await personalizeIdea({
         idea_text: ideaText.trim(),
@@ -55,6 +68,8 @@ export default function PersonalizePage() {
     } catch {
       setError("Delivery plan generation failed. Check the backend connection or mock file and try again.");
       setStatus("error");
+    } finally {
+      window.clearInterval(timer);
     }
   }
 
@@ -115,7 +130,7 @@ export default function PersonalizePage() {
         </div>
       </section>
 
-      {status === "loading" ? <LoadingBlock label="Generating localized delivery plan..." /> : null}
+      {status === "loading" ? <LoadingBlock label={loadingSteps[loadingStep]} /> : null}
       {status === "error" && error ? <ErrorBlock message={error} /> : null}
 
       {result ? (

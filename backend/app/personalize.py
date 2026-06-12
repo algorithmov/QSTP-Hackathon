@@ -193,6 +193,8 @@ async def handle_personalize(
             lr = llm_reports[i]
             ev_indices = lr.get("evidence_indices", [])
             used_ev = [ev_list[j] for j in ev_indices if isinstance(j, int) and 0 <= j < len(ev_list)]
+            if not used_ev and ev_list:
+                used_ev = ev_list[:2]
             evidence_used = bool(used_ev)
             conf = lr.get("confidence_override") or confidence(evidence_used, usage["usage_score"])
             reports.append(PersonalizedReport(
