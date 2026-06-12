@@ -1,9 +1,14 @@
 from __future__ import annotations
 
 import re
+import ssl
 from pathlib import Path
 
+import certifi
 import cv2
+
+# macOS Python 3.11 ships without system CA certs; point urllib at certifi's bundle
+ssl._create_default_https_context = lambda: ssl.create_default_context(cafile=certifi.where())
 import easyocr
 import numpy as np
 import torch
