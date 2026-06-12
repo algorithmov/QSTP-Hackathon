@@ -14,12 +14,12 @@ type InputPanelProps = {
   contentText: string;
   goal: Goal | null;
   topicHint: string;
-  mediaFileName: string | null;
+  mediaFile: File | null;
   isLoading: boolean;
   onContentTextChange: (value: string) => void;
   onGoalChange: (value: Goal) => void;
   onTopicHintChange: (value: string) => void;
-  onMediaChange: (fileName: string | null) => void;
+  onMediaChange: (file: File | null) => void;
   onSubmit: (payload: RouteRequest) => void;
 };
 
@@ -27,7 +27,7 @@ export function InputPanel({
   contentText,
   goal,
   topicHint,
-  mediaFileName,
+  mediaFile,
   isLoading,
   onContentTextChange,
   onGoalChange,
@@ -45,7 +45,7 @@ export function InputPanel({
         if (!canSubmit || goal === null) return;
         onSubmit({
           content_text: contentText.trim(),
-          media_url: mediaFileName ? `uploads/${mediaFileName}` : null,
+          media_url: null,
           goal,
           topic_hint: topicHint.trim() || null
         });
@@ -80,13 +80,13 @@ export function InputPanel({
               <Upload size={17} aria-hidden="true" />
               Optional image or video
             </span>
-            <span className="mt-1 truncate">{mediaFileName ?? "No file selected"}</span>
+            <span className="mt-1 truncate">{mediaFile ? mediaFile.name : "No file selected"}</span>
             <input
               className="sr-only"
               type="file"
               accept="image/*,video/*"
               disabled={isLoading}
-              onChange={(event) => onMediaChange(event.target.files?.[0]?.name ?? null)}
+              onChange={(event) => onMediaChange(event.target.files?.[0] ?? null)}
             />
           </label>
         </div>
