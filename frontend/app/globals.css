@@ -23,14 +23,142 @@ body {
   font-family: Inter, ui-sans-serif, system-ui, sans-serif;
 }
 
+::selection {
+  background: #cfe7e1;
+  color: #17202a;
+}
+
 button,
 textarea,
 input {
   font: inherit;
 }
 
+.live-grid,
+.live-line,
+.live-square {
+  position: absolute;
+  display: block;
+  opacity: 0.42;
+}
+
+.live-grid {
+  width: 360px;
+  height: 220px;
+  border: 1px solid #d9e0e7;
+}
+
+.live-grid::before,
+.live-grid::after {
+  content: "";
+  position: absolute;
+  inset: 24px;
+  border: 1px solid #d9e0e7;
+}
+
+.live-grid::after {
+  inset: 64px;
+  border-color: #b8d6ce;
+}
+
+.live-grid-a {
+  right: -110px;
+  top: 130px;
+  animation: drift-slow 18s ease-in-out infinite;
+}
+
+.live-grid-b {
+  bottom: 90px;
+  left: -140px;
+  transform: rotate(6deg);
+  animation: drift-slow 22s ease-in-out infinite reverse;
+}
+
+.live-line {
+  height: 1px;
+  background: #b8d6ce;
+  transform-origin: left center;
+}
+
+.live-line-a {
+  left: 8%;
+  top: 28%;
+  width: 280px;
+  transform: rotate(-8deg);
+  animation: line-sweep 15s ease-in-out infinite;
+}
+
+.live-line-b {
+  bottom: 22%;
+  right: 4%;
+  width: 340px;
+  transform: rotate(10deg);
+  animation: line-sweep 20s ease-in-out infinite reverse;
+}
+
+.live-square {
+  border: 1px solid #b8d6ce;
+  background: #ffffff;
+}
+
+.live-square-a {
+  right: 18%;
+  top: 45%;
+  width: 16px;
+  height: 16px;
+  animation: pulse-square 6s ease-in-out infinite;
+}
+
+.live-square-b {
+  bottom: 16%;
+  left: 22%;
+  width: 11px;
+  height: 11px;
+  animation: pulse-square 7.5s ease-in-out infinite reverse;
+}
+
+@keyframes drift-slow {
+  0%,
+  100% {
+    translate: 0 0;
+  }
+  50% {
+    translate: 18px -14px;
+  }
+}
+
+@keyframes line-sweep {
+  0%,
+  100% {
+    opacity: 0.2;
+    scale: 0.86 1;
+  }
+  50% {
+    opacity: 0.55;
+    scale: 1 1;
+  }
+}
+
+@keyframes pulse-square {
+  0%,
+  100% {
+    opacity: 0.28;
+    transform: translateY(0);
+  }
+  50% {
+    opacity: 0.65;
+    transform: translateY(-10px);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
+  }
+
+  .live-grid,
+  .live-line,
+  .live-square {
+    animation: none;
   }
 }

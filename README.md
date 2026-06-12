@@ -17,14 +17,14 @@ Masar is an AI content co-pilot for Stars of Science marketing. It takes a text 
 
 This installs all dependencies, starts the backend (`:8000`) and frontend (`:3000`), and opens the app. Press `Ctrl+C` to stop.
 
-By default `MOCK_MODE=true` in `backend/.env` — both pages work instantly with no API keys. To enable live LLM calls, set `GROQ_API_KEY` and `GROQ_MODEL=llama-3.3-70b-versatile` in `backend/.env` and set `MOCK_MODE=false`.
+By default `MOCK_MODE=true` in `backend/.env` — both pages work instantly with no API keys. To enable live LLM calls, set `MOCK_MODE=false`, add one or more comma-separated `GEMINI_API_KEYS`, and keep `LLM_PROVIDER_ORDER=gemini,groq`. `GROQ_API_KEY` can stay configured as the fallback provider.
 
 ## Architecture
 
 ```
 frontend/       Next.js 14 App Router — two pages, mock-ready
 backend/
-  app/          FastAPI, two endpoints, Groq LLM, scoring formula
+  app/          FastAPI, two endpoints, Gemini-first/Groq-fallback LLM, scoring formula
   kb/           Knowledge base package (SQLite + Tavily evidence)
   data/         kb_seed.json (50 usage rows, 30 fit rows), fallback evidence
 contracts/      Frozen example responses for both endpoints
@@ -49,9 +49,9 @@ Every number is traceable: `platform_fit` comes from the KB's content-type/platf
 
 ## Stack
 
-- **Backend**: Python 3.11, FastAPI, Pydantic v2, Groq SDK (Llama 3.3 70B), Tavily search, SQLite KB
-- **Frontend**: Next.js 14 App Router, TypeScript, Tailwind CSS, Recharts, Axios
-- **LLM**: Groq free tier — Llama 3.3 70B primary, Llama 3.1 8B fallback
+- **Backend**: Python 3.11, FastAPI, Pydantic v2, Gemini REST, Groq SDK fallback, Tavily/Serper search, SQLite KB
+- **Frontend**: Next.js 14 App Router, TypeScript, Tailwind CSS, Recharts, Axios, localStorage page persistence
+- **LLM**: Gemini primary with multi-key rotation, Groq fallback — provider order controlled by `LLM_PROVIDER_ORDER`
 - **Evidence**: Tavily free tier — 1000 credits/month, SQLite-cached with 24-hour TTL
 
 ## Submission requirements

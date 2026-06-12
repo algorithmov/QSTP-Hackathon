@@ -61,6 +61,9 @@ if [[ ! -f "$BACKEND_DIR/.env" ]]; then
   echo "WARNING: $BACKEND_DIR/.env not found. Creating minimal .env with MOCK_MODE=true."
   cat > "$BACKEND_DIR/.env" <<'ENVEOF'
 MOCK_MODE=true
+LLM_PROVIDER_ORDER=gemini,groq
+GEMINI_API_KEYS=
+GEMINI_MODEL=gemini-1.5-flash
 GROQ_API_KEY=
 GROQ_MODEL=llama-3.3-70b-versatile
 GROQ_FALLBACK_MODEL=llama-3.1-8b-instant
@@ -69,7 +72,7 @@ SERPER_API_KEY=
 EVIDENCE_CACHE_TTL_HOURS=24
 ALLOWED_ORIGINS=http://localhost:3000
 ENVEOF
-  echo "Created $BACKEND_DIR/.env — add GROQ_API_KEY, TAVILY_API_KEY, and SERPER_API_KEY to enable live calls."
+  echo "Created $BACKEND_DIR/.env — add GEMINI_API_KEYS or GROQ_API_KEY plus search keys to enable live calls."
 fi
 
 if [[ ! -f "$FRONTEND_DIR/.env.local" ]]; then

@@ -27,6 +27,7 @@ from app.review import _extract_idea_summary
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
+logging.getLogger("httpx").setLevel(logging.WARNING)
 
 app = FastAPI(title="Masar v2", version="2.0.0")
 

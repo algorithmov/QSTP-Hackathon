@@ -1,7 +1,7 @@
 # Stars of Science — Backend (v2)
 
 FastAPI service that powers the Fit Score ranking and personalized delivery reports.
-No model service, no GPU VM — just Groq LLM + SQLite knowledge base.
+No model service, no GPU VM — just Gemini/Groq LLM providers + SQLite knowledge base.
 
 ## Setup
 
@@ -17,7 +17,7 @@ Copy the env file and fill in your keys:
 
 ```bash
 cp .env.example .env
-# set GROQ_API_KEY (optional — MOCK_MODE=true works with no keys)
+# set GEMINI_API_KEYS and/or GROQ_API_KEY (optional — MOCK_MODE=true works with no keys)
 ```
 
 ## Run
@@ -73,7 +73,7 @@ app/schemas.py        Pydantic v2 models — frozen contracts A + B
 app/review.py         POST /api/review handler
 app/personalize.py    POST /api/personalize handler
 app/scoring.py        compute_fit_score(), confidence()
-app/llm_client.py     Groq wrapper (primary + fallback model)
+app/llm_client.py     Gemini-first/Groq-fallback wrapper with Gemini key rotation
 app/kb_client.py      Thin wrapper over kb/ package
 kb/knowledge_base.py  SQLite KB, rebuilt from kb_seed.json on first import
 kb/evidence.py        Tavily search + SQLite cache + fallback_evidence.json

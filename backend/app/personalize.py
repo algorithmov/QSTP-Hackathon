@@ -83,7 +83,9 @@ def _llm_generate_reports(
     pairs: list[dict],
     evidence_map: dict[str, list[dict]],
 ) -> list[dict] | None:
-    if MOCK_MODE or not os.getenv("GROQ_API_KEY"):
+    from app.llm_client import llm_available
+
+    if MOCK_MODE or not llm_available():
         return None
 
     from app.llm_client import call_llm_json

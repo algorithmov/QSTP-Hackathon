@@ -12,7 +12,7 @@ export function EvidenceDisclosure({ evidence }: { evidence: EvidenceItem[] }) {
     <div className="mt-4">
       <button
         type="button"
-        className="flex items-center gap-2 rounded-md border border-line px-3 py-2 text-sm font-semibold text-ink hover:border-accent/60"
+        className="flex items-center gap-2 rounded-md border border-line bg-white px-3 py-2 text-sm font-semibold text-ink transition hover:-translate-y-0.5 hover:border-accent/60"
         onClick={() => setOpen((value) => !value)}
         aria-expanded={open}
       >
@@ -25,7 +25,7 @@ export function EvidenceDisclosure({ evidence }: { evidence: EvidenceItem[] }) {
         />
       </button>
       {open ? (
-        <div className="mt-3 rounded-md border border-line bg-paper p-4">
+        <div className="mt-3 rounded-md border border-line bg-paper p-4 shadow-sm">
           {count > 0 ? (
             <ul className="space-y-3">
               {evidence.map((item, index) => (

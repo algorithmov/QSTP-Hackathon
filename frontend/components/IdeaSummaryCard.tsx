@@ -2,7 +2,7 @@ import type { IdeaSummary } from "@/types/route";
 
 export function IdeaSummaryCard({ summary }: { summary: IdeaSummary }) {
   return (
-    <section className="rounded-md border border-line bg-white p-5 shadow-board">
+    <section className="rounded-md border border-line bg-white/95 p-5 shadow-board">
       <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
         <div>
           <div className="text-xs font-bold uppercase tracking-wide text-muted">Idea summary</div>

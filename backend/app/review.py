@@ -106,7 +106,9 @@ def _detect_country_scope(idea_text: str, countries: list[dict]) -> list[dict]:
 
 
 def _extract_idea_summary(idea_text: str, goal: str) -> IdeaSummary:
-    if MOCK_MODE or not os.getenv("GROQ_API_KEY"):
+    from app.llm_client import llm_available
+
+    if MOCK_MODE or not llm_available():
         content_type = _infer_content_type(idea_text)
         detected = _infer_language(idea_text)
         language = detected if detected in ("ar",) else _GOAL_DEFAULT_LANGUAGE.get(goal, "mixed")
@@ -171,7 +173,9 @@ def _generate_why_lines(
     candidates: list[dict],
     evidence_map: dict[str, list[dict]],
 ) -> dict[str, Any]:
-    if MOCK_MODE or not os.getenv("GROQ_API_KEY"):
+    from app.llm_client import llm_available
+
+    if MOCK_MODE or not llm_available():
         result: dict[str, Any] = {}
         for c in candidates:
             key = f"{c['country']}__{c['platform']}"

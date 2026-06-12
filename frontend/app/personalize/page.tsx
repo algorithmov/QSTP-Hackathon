@@ -1,6 +1,6 @@
 "use client";
 
-import { Check, Clock, Copy, MapPin, X as XIcon } from "lucide-react";
+import { ArrowRight, Check, Clock, Copy, MapPin, Sparkles, X as XIcon } from "lucide-react";
 import { useMemo, useState } from "react";
 import { AppShell } from "@/components/AppShell";
 import { ConfidenceBadge } from "@/components/ConfidenceBadge";
@@ -9,6 +9,7 @@ import { GoalSelector } from "@/components/GoalSelector";
 import { IdeaSummaryCard } from "@/components/IdeaSummaryCard";
 import { ErrorBlock, LoadingBlock } from "@/components/StatusBlock";
 import { personalizeIdea } from "@/lib/api";
+import { usePersistentState } from "@/lib/usePersistentState";
 import {
   supportedCountries,
   supportedPlatforms,
@@ -33,14 +34,23 @@ const loadingSteps = [
 ];
 
 export default function PersonalizePage() {
-  const [ideaText, setIdeaText] = useState(starterText);
-  const [goal, setGoal] = useState<Goal>("applications");
-  const [countries, setCountries] = useState<CountryCode[]>(["EG", "SA"]);
-  const [platforms, setPlatforms] = useState<Platform[]>(["TikTok", "Instagram"]);
+  const [ideaText, setIdeaText] = usePersistentState("masar.personalize.ideaText", starterText);
+  const [goal, setGoal] = usePersistentState<Goal>("masar.personalize.goal", "applications");
+  const [countries, setCountries] = usePersistentState<CountryCode[]>(
+    "masar.personalize.countries",
+    ["EG", "SA"]
+  );
+  const [platforms, setPlatforms] = usePersistentState<Platform[]>(
+    "masar.personalize.platforms",
+    ["TikTok", "Instagram"]
+  );
   const [status, setStatus] = useState<Status>("idle");
   const [loadingStep, setLoadingStep] = useState(0);
   const [error, setError] = useState<string | null>(null);
-  const [result, setResult] = useState<PersonalizeResponse | null>(null);
+  const [result, setResult] = usePersistentState<PersonalizeResponse | null>(
+    "masar.personalize.result",
+    null
+  );
 
   const canSubmit =
     ideaText.trim().length > 0 &&
@@ -75,12 +85,12 @@ export default function PersonalizePage() {
 
   return (
     <AppShell>
-      <section className="rounded-md border border-line bg-white p-5 shadow-board">
+      <section className="rounded-md border border-line bg-white/95 p-5 shadow-board">
         <div className="grid gap-5 lg:grid-cols-[1fr_380px]">
           <label className="block">
             <span className="text-sm font-semibold text-ink">Idea or post text</span>
             <textarea
-              className="mt-2 min-h-44 w-full resize-y rounded-md border border-line bg-white px-4 py-3 text-base leading-7 text-ink outline-none transition focus:border-accent focus:ring-2 focus:ring-accent/15 disabled:bg-slate-50"
+              className="mt-2 min-h-44 w-full resize-y rounded-md border border-line bg-white px-4 py-3 text-base leading-7 text-ink outline-none transition duration-200 focus:border-accent focus:shadow-[0_0_0_4px_rgba(14,124,102,0.12)] disabled:bg-slate-50"
               value={ideaText}
               disabled={status === "loading"}
               onChange={(event) => setIdeaText(event.target.value)}
@@ -121,10 +131,12 @@ export default function PersonalizePage() {
             <button
               type="button"
               disabled={!canSubmit}
-              className="w-full rounded-md bg-accent px-6 py-3 text-sm font-bold text-white transition hover:bg-accent/90 disabled:cursor-not-allowed disabled:bg-slate-300 disabled:text-slate-600"
+              className="inline-flex w-full items-center justify-center gap-2 rounded-md bg-accent px-6 py-3 text-sm font-bold text-white shadow-sm transition duration-200 hover:-translate-y-0.5 hover:bg-accent/90 disabled:translate-y-0 disabled:cursor-not-allowed disabled:bg-slate-300 disabled:text-slate-600"
               onClick={handleSubmit}
             >
+              <Sparkles size={17} aria-hidden="true" />
               {status === "loading" ? "Generating..." : "Generate delivery plan"}
+              {status !== "loading" ? <ArrowRight size={17} aria-hidden="true" /> : null}
             </button>
           </div>
         </div>
@@ -139,7 +151,7 @@ export default function PersonalizePage() {
           <ReportGrid reports={result.reports} />
         </>
       ) : (
-        <section className="rounded-md border border-line bg-white p-6 text-muted shadow-board">
+        <section className="rounded-md border border-line bg-white/95 p-6 text-muted shadow-board">
           Delivery reports will appear here after you choose countries and platforms.
         </section>
       )}
@@ -194,7 +206,9 @@ function SelectionGroup<T extends string>({
               type="button"
               disabled={disabled || limitReached}
               className={`rounded-md border px-3 py-2 text-sm font-semibold transition ${
-                active ? "border-accent bg-accent text-white" : "border-line bg-white text-ink hover:border-accent/60"
+                active
+                  ? "border-accent bg-accent text-white shadow-sm"
+                  : "border-line bg-white text-ink hover:-translate-y-0.5 hover:border-accent/60"
               } disabled:cursor-not-allowed disabled:opacity-50`}
               onClick={() => toggle(option.value)}
             >
@@ -251,7 +265,7 @@ function ReportCard({ report }: { report: PersonalizedReport }) {
   }
 
   return (
-    <article className="rounded-md border border-line bg-white p-5 shadow-board">
+    <article className="rounded-md border border-line bg-white/95 p-5 shadow-board transition duration-200 hover:-translate-y-0.5 hover:border-accent/35">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
           <div className="text-xs font-bold uppercase tracking-wide text-muted">{report.platform}</div>

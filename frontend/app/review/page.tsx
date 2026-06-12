@@ -1,6 +1,6 @@
 "use client";
 
-import { Clock, MapPin } from "lucide-react";
+import { ArrowRight, Clock, MapPin, Radar } from "lucide-react";
 import { useMemo, useState } from "react";
 import { AppShell } from "@/components/AppShell";
 import { ComponentBars } from "@/components/ComponentBars";
@@ -10,6 +10,7 @@ import { GoalSelector } from "@/components/GoalSelector";
 import { IdeaSummaryCard } from "@/components/IdeaSummaryCard";
 import { ErrorBlock, LoadingBlock } from "@/components/StatusBlock";
 import { reviewIdea } from "@/lib/api";
+import { usePersistentState } from "@/lib/usePersistentState";
 import type { Goal, Ranking, ReviewResponse } from "@/types/route";
 
 const starterText =
@@ -26,12 +27,12 @@ const loadingSteps = [
 ];
 
 export default function ReviewPage() {
-  const [ideaText, setIdeaText] = useState(starterText);
-  const [goal, setGoal] = useState<Goal>("applications");
+  const [ideaText, setIdeaText] = usePersistentState("masar.review.ideaText", starterText);
+  const [goal, setGoal] = usePersistentState<Goal>("masar.review.goal", "applications");
   const [status, setStatus] = useState<Status>("idle");
   const [loadingStep, setLoadingStep] = useState(0);
   const [error, setError] = useState<string | null>(null);
-  const [result, setResult] = useState<ReviewResponse | null>(null);
+  const [result, setResult] = usePersistentState<ReviewResponse | null>("masar.review.result", null);
 
   const canSubmit = ideaText.trim().length > 0 && status !== "loading";
 
@@ -57,12 +58,12 @@ export default function ReviewPage() {
 
   return (
     <AppShell>
-      <section className="rounded-md border border-line bg-white p-5 shadow-board">
+      <section className="rounded-md border border-line bg-white/95 p-5 shadow-board">
         <div className="grid gap-4 lg:grid-cols-[1fr_360px]">
           <label className="block">
             <span className="text-sm font-semibold text-ink">Idea or post text</span>
             <textarea
-              className="mt-2 min-h-40 w-full resize-y rounded-md border border-line bg-white px-4 py-3 text-base leading-7 text-ink outline-none transition focus:border-accent focus:ring-2 focus:ring-accent/15 disabled:bg-slate-50"
+              className="mt-2 min-h-40 w-full resize-y rounded-md border border-line bg-white px-4 py-3 text-base leading-7 text-ink outline-none transition duration-200 focus:border-accent focus:shadow-[0_0_0_4px_rgba(14,124,102,0.12)] disabled:bg-slate-50"
               value={ideaText}
               disabled={status === "loading"}
               onChange={(event) => setIdeaText(event.target.value)}
@@ -82,10 +83,12 @@ export default function ReviewPage() {
             <button
               type="button"
               disabled={!canSubmit}
-              className="rounded-md bg-accent px-6 py-3 text-sm font-bold text-white transition hover:bg-accent/90 disabled:cursor-not-allowed disabled:bg-slate-300 disabled:text-slate-600"
+              className="inline-flex items-center justify-center gap-2 rounded-md bg-accent px-6 py-3 text-sm font-bold text-white shadow-sm transition duration-200 hover:-translate-y-0.5 hover:bg-accent/90 disabled:translate-y-0 disabled:cursor-not-allowed disabled:bg-slate-300 disabled:text-slate-600"
               onClick={handleSubmit}
             >
+              <Radar size={17} aria-hidden="true" />
               {status === "loading" ? "Reviewing..." : "Review my idea"}
+              {status !== "loading" ? <ArrowRight size={17} aria-hidden="true" /> : null}
             </button>
           </div>
         </div>
@@ -105,7 +108,7 @@ export default function ReviewPage() {
           </div>
         </>
       ) : (
-        <section className="rounded-md border border-line bg-white p-6 text-muted shadow-board">
+        <section className="rounded-md border border-line bg-white/95 p-6 text-muted shadow-board">
           Review results will appear here after you submit an idea.
         </section>
       )}
@@ -115,7 +118,7 @@ export default function ReviewPage() {
 
 function ReviewScopeNotice({ scope }: { scope: NonNullable<ReviewResponse["review_scope"]> }) {
   return (
-    <section className="rounded-md border border-accent/25 bg-accent/5 p-4 shadow-board">
+    <section className="rounded-md border border-accent/25 bg-white/95 p-4 shadow-board">
       <div className="text-xs font-bold uppercase tracking-wide text-accent">
         {scope.mode === "country_focus" ? "Country focus" : "Regional comparison"}
       </div>
@@ -132,7 +135,7 @@ function ReviewScopeNotice({ scope }: { scope: NonNullable<ReviewResponse["revie
 function MethodologyNote({ note }: { note: string }) {
   const [open, setOpen] = useState(false);
   return (
-    <section className="rounded-md border border-line bg-white p-5 shadow-board">
+    <section className="rounded-md border border-line bg-white/95 p-5 shadow-board">
       <button
         type="button"
         className="text-sm font-bold text-ink hover:text-accent"
@@ -161,7 +164,7 @@ function RankingCard({ ranking }: { ranking: Ranking }) {
 
   return (
     <article
-      className={`rounded-md border bg-white p-5 shadow-board ${
+      className={`rounded-md border bg-white/95 p-5 shadow-board transition duration-200 hover:-translate-y-0.5 hover:border-accent/35 ${
         lowFit ? "border-low/40 opacity-75" : "border-line"
       }`}
     >
@@ -193,7 +196,7 @@ function RankingCard({ ranking }: { ranking: Ranking }) {
           </div>
           <p className="mt-4 max-w-3xl text-sm leading-6 text-ink">{ranking.why}</p>
         </div>
-        <div className="rounded-md border border-line bg-paper p-4 text-center">
+        <div className="rounded-md border border-line bg-paper p-4 text-center shadow-sm">
           <div className={`text-5xl font-black leading-none ${lowFit ? "text-low" : "text-accent"}`}>
             {ranking.fit_score}
           </div>
@@ -215,7 +218,7 @@ function CountryOverview({ data }: { data: ReviewResponse["map_data"] }) {
   );
 
   return (
-    <aside className="rounded-md border border-line bg-white p-5 shadow-board">
+    <aside className="rounded-md border border-line bg-white/95 p-5 shadow-board">
       <h2 className="text-lg font-bold text-ink">Country overview</h2>
       <div className="mt-4 overflow-hidden rounded-md border border-line">
         <table className="w-full border-collapse text-left text-sm">

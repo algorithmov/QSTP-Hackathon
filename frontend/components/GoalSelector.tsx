@@ -21,7 +21,9 @@ export function GoalSelector({ value, disabled = false, onChange }: GoalSelector
             aria-checked={active}
             disabled={disabled}
             className={`rounded-md border px-4 py-2 text-sm font-semibold transition ${
-              active ? "border-accent bg-accent text-white" : "border-line bg-white text-ink hover:border-accent/60"
+              active
+                ? "border-accent bg-accent text-white shadow-sm"
+                : "border-line bg-white text-ink hover:-translate-y-0.5 hover:border-accent/60"
             } disabled:cursor-not-allowed disabled:opacity-60`}
             onClick={() => onChange(goal.value)}
           >
