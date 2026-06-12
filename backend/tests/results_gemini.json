@@ -1,0 +1,246 @@
+{
+  "provider": "gemini",
+  "review": [
+    {
+      "id": "review-01-qatar-product-demo",
+      "passed": true,
+      "errors": [],
+      "elapsed_s": 5.77,
+      "top_platform": "Instagram",
+      "top_score": 91,
+      "top_confidence": "high",
+      "why_words": 16,
+      "top_evidence_count": 5,
+      "total_rankings": 5
+    },
+    {
+      "id": "review-02-egypt-water-demo",
+      "passed": true,
+      "errors": [],
+      "elapsed_s": 6.13,
+      "top_platform": "YouTube",
+      "top_score": 93,
+      "top_confidence": "high",
+      "why_words": 17,
+      "top_evidence_count": 3,
+      "total_rankings": 5
+    },
+    {
+      "id": "review-03-saudi-solar-viewers",
+      "passed": true,
+      "errors": [],
+      "elapsed_s": 6.87,
+      "top_platform": "YouTube",
+      "top_score": 92,
+      "top_confidence": "high",
+      "why_words": 16,
+      "top_evidence_count": 3,
+      "total_rankings": 5
+    },
+    {
+      "id": "review-04-uae-ai-sponsors",
+      "passed": true,
+      "errors": [],
+      "elapsed_s": 5.12,
+      "top_platform": "LinkedIn",
+      "top_score": 86,
+      "top_confidence": "high",
+      "why_words": 17,
+      "top_evidence_count": 3,
+      "total_rankings": 5
+    },
+    {
+      "id": "review-05-jordan-education",
+      "passed": true,
+      "errors": [],
+      "elapsed_s": 6.25,
+      "top_platform": "YouTube",
+      "top_score": 91,
+      "top_confidence": "high",
+      "why_words": 17,
+      "top_evidence_count": 3,
+      "total_rankings": 5
+    },
+    {
+      "id": "review-06-morocco-bts",
+      "passed": false,
+      "errors": [
+        "top platform 'YouTube' unexpected"
+      ],
+      "elapsed_s": 5.92,
+      "top_platform": "YouTube",
+      "top_score": 86,
+      "top_confidence": "high",
+      "why_words": 16,
+      "top_evidence_count": 3,
+      "total_rankings": 5
+    },
+    {
+      "id": "review-07-kuwait-announcement",
+      "passed": true,
+      "errors": [],
+      "elapsed_s": 6.14,
+      "top_platform": "Instagram",
+      "top_score": 87,
+      "top_confidence": "high",
+      "why_words": 16,
+      "top_evidence_count": 3,
+      "total_rankings": 5
+    },
+    {
+      "id": "review-08-sudan-achievement",
+      "passed": true,
+      "errors": [],
+      "elapsed_s": 6.01,
+      "top_platform": "YouTube",
+      "top_score": 83,
+      "top_confidence": "high",
+      "why_words": 16,
+      "top_evidence_count": 3,
+      "total_rankings": 5
+    },
+    {
+      "id": "review-09-iraq-medical-device",
+      "passed": true,
+      "errors": [],
+      "elapsed_s": 7.91,
+      "top_platform": "YouTube",
+      "top_score": 86,
+      "top_confidence": "high",
+      "why_words": 17,
+      "top_evidence_count": 3,
+      "total_rankings": 5
+    },
+    {
+      "id": "review-10-regional-no-country",
+      "passed": true,
+      "errors": [],
+      "elapsed_s": 13.04,
+      "top_platform": "YouTube",
+      "top_score": 94,
+      "top_confidence": "high",
+      "why_words": 15,
+      "top_evidence_count": 3,
+      "total_rankings": 8
+    }
+  ],
+  "personalize": [
+    {
+      "id": "personalize-01-qatar-instagram-tiktok",
+      "passed": false,
+      "errors": [
+        "QA/TikTok: caption not topic-aware"
+      ],
+      "elapsed_s": 7.36,
+      "report_count": 2,
+      "avg_caption_words": 18.0,
+      "avg_evidence_count": 5.0,
+      "unique_captions": 2
+    },
+    {
+      "id": "personalize-02-eg-sa-mixed",
+      "passed": false,
+      "errors": [
+        "EG/YouTube: caption not topic-aware",
+        "EG/Instagram: caption not topic-aware",
+        "SA/YouTube: caption not topic-aware",
+        "SA/Instagram: caption not topic-aware"
+      ],
+      "elapsed_s": 11.35,
+      "report_count": 4,
+      "avg_caption_words": 17.8,
+      "avg_evidence_count": 3.0,
+      "unique_captions": 4
+    },
+    {
+      "id": "personalize-03-uae-sponsors",
+      "passed": true,
+      "errors": [],
+      "elapsed_s": 6.69,
+      "report_count": 2,
+      "avg_caption_words": 20.5,
+      "avg_evidence_count": 3.0,
+      "unique_captions": 2
+    },
+    {
+      "id": "personalize-04-jordan-education",
+      "passed": true,
+      "errors": [],
+      "elapsed_s": 7.33,
+      "report_count": 2,
+      "avg_caption_words": 24.0,
+      "avg_evidence_count": 3.0,
+      "unique_captions": 2
+    },
+    {
+      "id": "personalize-05-qatar-sponsors",
+      "passed": false,
+      "errors": [
+        "QA/Instagram: caption not topic-aware"
+      ],
+      "elapsed_s": 6.72,
+      "report_count": 2,
+      "avg_caption_words": 19.5,
+      "avg_evidence_count": 5.0,
+      "unique_captions": 2
+    },
+    {
+      "id": "personalize-06-morocco-bts",
+      "passed": false,
+      "errors": [
+        "MA/Instagram: caption not topic-aware",
+        "MA/TikTok: caption not topic-aware"
+      ],
+      "elapsed_s": 7.53,
+      "report_count": 2,
+      "avg_caption_words": 24.5,
+      "avg_evidence_count": 3.0,
+      "unique_captions": 2
+    },
+    {
+      "id": "personalize-07-saudi-announcement",
+      "passed": true,
+      "errors": [],
+      "elapsed_s": 7.32,
+      "report_count": 2,
+      "avg_caption_words": 21.5,
+      "avg_evidence_count": 3.0,
+      "unique_captions": 2
+    },
+    {
+      "id": "personalize-08-eg-qa-education-ai",
+      "passed": true,
+      "errors": [],
+      "elapsed_s": 9.8,
+      "report_count": 2,
+      "avg_caption_words": 19.0,
+      "avg_evidence_count": 4.0,
+      "unique_captions": 2
+    },
+    {
+      "id": "personalize-09-kuwait-iraq-product",
+      "passed": false,
+      "errors": [
+        "IQ/TikTok: caption not topic-aware",
+        "IQ/YouTube: caption not topic-aware"
+      ],
+      "elapsed_s": 11.26,
+      "report_count": 4,
+      "avg_caption_words": 17.0,
+      "avg_evidence_count": 3.0,
+      "unique_captions": 4
+    },
+    {
+      "id": "personalize-10-sudan-sponsor-story",
+      "passed": false,
+      "errors": [
+        "SD/Instagram: caption not topic-aware"
+      ],
+      "elapsed_s": 6.25,
+      "report_count": 2,
+      "avg_caption_words": 19.5,
+      "avg_evidence_count": 3.0,
+      "unique_captions": 2
+    }
+  ]
+}
