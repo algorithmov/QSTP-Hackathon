@@ -1,0 +1,328 @@
+"use client";
+
+import { Check, Clock, Copy, MapPin, X as XIcon } from "lucide-react";
+import { useMemo, useState } from "react";
+import { AppShell } from "@/components/AppShell";
+import { ConfidenceBadge } from "@/components/ConfidenceBadge";
+import { EvidenceDisclosure } from "@/components/EvidenceDisclosure";
+import { GoalSelector } from "@/components/GoalSelector";
+import { IdeaSummaryCard } from "@/components/IdeaSummaryCard";
+import { ErrorBlock, LoadingBlock } from "@/components/StatusBlock";
+import { personalizeIdea } from "@/lib/api";
+import {
+  supportedCountries,
+  supportedPlatforms,
+  type CountryCode,
+  type Goal,
+  type PersonalizeResponse,
+  type PersonalizedReport,
+  type Platform
+} from "@/types/route";
+
+const starterText =
+  "A 30-second clip idea: a Sudanese student demos a low-cost water purification filter she built from local materials.";
+
+type Status = "idle" | "loading" | "success" | "error";
+
+export default function PersonalizePage() {
+  const [ideaText, setIdeaText] = useState(starterText);
+  const [goal, setGoal] = useState<Goal>("applications");
+  const [countries, setCountries] = useState<CountryCode[]>(["EG", "SA"]);
+  const [platforms, setPlatforms] = useState<Platform[]>(["TikTok", "Instagram"]);
+  const [status, setStatus] = useState<Status>("idle");
+  const [error, setError] = useState<string | null>(null);
+  const [result, setResult] = useState<PersonalizeResponse | null>(null);
+
+  const canSubmit =
+    ideaText.trim().length > 0 &&
+    countries.length > 0 &&
+    platforms.length > 0 &&
+    status !== "loading";
+
+  async function handleSubmit() {
+    if (!canSubmit) return;
+    setStatus("loading");
+    setError(null);
+    try {
+      const response = await personalizeIdea({
+        idea_text: ideaText.trim(),
+        goal,
+        countries,
+        platforms
+      });
+      setResult(response);
+      setStatus("success");
+    } catch {
+      setError("Delivery plan generation failed. Check the backend connection or mock file and try again.");
+      setStatus("error");
+    }
+  }
+
+  return (
+    <AppShell>
+      <section className="rounded-md border border-line bg-white p-5 shadow-board">
+        <div className="grid gap-5 lg:grid-cols-[1fr_380px]">
+          <label className="block">
+            <span className="text-sm font-semibold text-ink">Idea or post text</span>
+            <textarea
+              className="mt-2 min-h-44 w-full resize-y rounded-md border border-line bg-white px-4 py-3 text-base leading-7 text-ink outline-none transition focus:border-accent focus:ring-2 focus:ring-accent/15 disabled:bg-slate-50"
+              value={ideaText}
+              disabled={status === "loading"}
+              onChange={(event) => setIdeaText(event.target.value)}
+              placeholder="Paste a campaign idea, caption, or post concept."
+            />
+            <span className="mt-2 block text-xs font-semibold text-muted">
+              {ideaText.length} characters
+            </span>
+          </label>
+          <div className="space-y-5">
+            <div>
+              <span className="text-sm font-semibold text-ink">Goal</span>
+              <div className="mt-2">
+                <GoalSelector value={goal} disabled={status === "loading"} onChange={setGoal} />
+              </div>
+            </div>
+            <SelectionGroup
+              label="Countries"
+              helper="Choose up to 3 countries."
+              options={supportedCountries.map((country) => ({
+                label: country.name,
+                value: country.code
+              }))}
+              values={countries}
+              limit={3}
+              disabled={status === "loading"}
+              onChange={setCountries}
+            />
+            <SelectionGroup
+              label="Platforms"
+              helper="Choose up to 2 platforms."
+              options={supportedPlatforms.map((platform) => ({ label: platform, value: platform }))}
+              values={platforms}
+              limit={2}
+              disabled={status === "loading"}
+              onChange={setPlatforms}
+            />
+            <button
+              type="button"
+              disabled={!canSubmit}
+              className="w-full rounded-md bg-accent px-6 py-3 text-sm font-bold text-white transition hover:bg-accent/90 disabled:cursor-not-allowed disabled:bg-slate-300 disabled:text-slate-600"
+              onClick={handleSubmit}
+            >
+              {status === "loading" ? "Generating..." : "Generate delivery plan"}
+            </button>
+          </div>
+        </div>
+      </section>
+
+      {status === "loading" ? <LoadingBlock label="Generating localized delivery plan..." /> : null}
+      {status === "error" && error ? <ErrorBlock message={error} /> : null}
+
+      {result ? (
+        <>
+          <IdeaSummaryCard summary={result.idea_summary} />
+          <ReportGrid reports={result.reports} />
+        </>
+      ) : (
+        <section className="rounded-md border border-line bg-white p-6 text-muted shadow-board">
+          Delivery reports will appear here after you choose countries and platforms.
+        </section>
+      )}
+    </AppShell>
+  );
+}
+
+type SelectionGroupProps<T extends string> = {
+  label: string;
+  helper: string;
+  options: Array<{ label: string; value: T }>;
+  values: T[];
+  limit: number;
+  disabled: boolean;
+  onChange: (values: T[]) => void;
+};
+
+function SelectionGroup<T extends string>({
+  label,
+  helper,
+  options,
+  values,
+  limit,
+  disabled,
+  onChange
+}: SelectionGroupProps<T>) {
+  function toggle(value: T) {
+    if (values.includes(value)) {
+      onChange(values.filter((item) => item !== value));
+      return;
+    }
+    if (values.length >= limit) return;
+    onChange([...values, value]);
+  }
+
+  return (
+    <div>
+      <div className="flex items-center justify-between gap-3">
+        <span className="text-sm font-semibold text-ink">{label}</span>
+        <span className="text-xs font-semibold text-muted">
+          {values.length}/{limit}
+        </span>
+      </div>
+      <p className="mt-1 text-xs text-muted">{helper}</p>
+      <div className="mt-2 flex flex-wrap gap-2">
+        {options.map((option) => {
+          const active = values.includes(option.value);
+          const limitReached = values.length >= limit && !active;
+          return (
+            <button
+              key={option.value}
+              type="button"
+              disabled={disabled || limitReached}
+              className={`rounded-md border px-3 py-2 text-sm font-semibold transition ${
+                active ? "border-accent bg-accent text-white" : "border-line bg-white text-ink hover:border-accent/60"
+              } disabled:cursor-not-allowed disabled:opacity-50`}
+              onClick={() => toggle(option.value)}
+            >
+              {option.label}
+            </button>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+function ReportGrid({ reports }: { reports: PersonalizedReport[] }) {
+  const grouped = useMemo(() => {
+    const map = new Map<string, PersonalizedReport[]>();
+    for (const report of reports) {
+      const key = report.country_name;
+      map.set(key, [...(map.get(key) ?? []), report]);
+    }
+    return Array.from(map.entries());
+  }, [reports]);
+
+  return (
+    <section className="space-y-5" aria-label="Delivery reports">
+      {grouped.map(([countryName, countryReports]) => (
+        <div key={countryName}>
+          <h2 className="mb-3 text-xl font-black text-ink">{countryName}</h2>
+          <div className="grid gap-4 lg:grid-cols-2">
+            {countryReports.map((report) => (
+              <ReportCard
+                key={`${report.country}-${report.platform}-${report.language}`}
+                report={report}
+              />
+            ))}
+          </div>
+        </div>
+      ))}
+    </section>
+  );
+}
+
+function ReportCard({ report }: { report: PersonalizedReport }) {
+  const [copied, setCopied] = useState(false);
+  const rtl = report.language_direction === "rtl";
+
+  async function copyCaption() {
+    try {
+      await navigator.clipboard.writeText(report.caption);
+      setCopied(true);
+      window.setTimeout(() => setCopied(false), 1400);
+    } catch {
+      setCopied(false);
+    }
+  }
+
+  return (
+    <article className="rounded-md border border-line bg-white p-5 shadow-board">
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <div>
+          <div className="text-xs font-bold uppercase tracking-wide text-muted">{report.platform}</div>
+          <h3 className="mt-1 text-xl font-bold text-ink">{report.language}</h3>
+        </div>
+        <ConfidenceBadge confidence={report.confidence} />
+      </div>
+
+      <p className="mt-4 rounded-md border border-line bg-paper p-3 text-sm leading-6 text-ink">
+        <span className="font-semibold">Format:</span> {report.recommended_format}
+      </p>
+
+      <div className="mt-4 rounded-md border border-accent/20 bg-accent/5 p-4">
+        <div className="text-xs font-bold uppercase tracking-wide text-accent">Hook</div>
+        <p className="mt-2 text-sm font-semibold leading-6 text-ink">{report.hook}</p>
+      </div>
+
+      <div className="mt-4 rounded-md border border-line bg-paper p-4">
+        <div className="flex items-center justify-between gap-3">
+          <div className="text-xs font-bold uppercase tracking-wide text-muted">Caption</div>
+          <button
+            type="button"
+            className="inline-flex items-center gap-2 rounded-md border border-line bg-white px-3 py-1.5 text-xs font-bold text-ink hover:border-accent/60"
+            onClick={copyCaption}
+          >
+            {copied ? <Check size={14} aria-hidden="true" /> : <Copy size={14} aria-hidden="true" />}
+            {copied ? "Copied" : "Copy"}
+          </button>
+        </div>
+        <p
+          dir={report.language_direction}
+          className={`mt-3 whitespace-pre-wrap text-base leading-8 text-ink ${rtl ? "text-right" : "text-left"}`}
+        >
+          {report.caption}
+        </p>
+        <div
+          dir={report.language_direction}
+          className={`mt-3 flex flex-wrap gap-2 ${rtl ? "justify-end text-right" : ""}`}
+        >
+          {report.hashtags.map((tag) => (
+            <span
+              key={tag}
+              className="rounded-md border border-line bg-white px-2.5 py-1 text-xs font-semibold text-ink"
+            >
+              {tag}
+            </span>
+          ))}
+        </div>
+      </div>
+
+      <div className="mt-4 flex flex-wrap gap-4 text-sm text-muted">
+        <span className="flex items-center gap-1.5">
+          <Clock size={15} aria-hidden="true" />
+          {report.post_time_local}
+        </span>
+        <span className="flex items-center gap-1.5">
+          <MapPin size={15} aria-hidden="true" />
+          {report.timezone}
+        </span>
+      </div>
+
+      <div className="mt-4 grid gap-3 sm:grid-cols-2">
+        <GuidanceList title="Do" items={report.dos} icon="check" />
+        <GuidanceList title="Do not" items={report.donts} icon="x" />
+      </div>
+
+      <p className="mt-4 text-sm leading-6 text-ink">{report.why}</p>
+      <EvidenceDisclosure evidence={report.evidence} />
+    </article>
+  );
+}
+
+function GuidanceList({ title, items, icon }: { title: string; items: string[]; icon: "check" | "x" }) {
+  return (
+    <div className="rounded-md border border-line bg-white p-3">
+      <div className="text-xs font-bold uppercase tracking-wide text-muted">{title}</div>
+      <ul className="mt-3 space-y-2">
+        {items.map((item) => (
+          <li key={item} className="flex gap-2 text-sm leading-6 text-ink">
+            <span className="mt-1 shrink-0 text-accent">
+              {icon === "check" ? <Check size={15} aria-hidden="true" /> : <XIcon size={15} aria-hidden="true" />}
+            </span>
+            {item}
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
