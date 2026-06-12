@@ -181,10 +181,15 @@ def _generate_why_lines(
         f"Goal: {goal}\n"
         f"Candidates: {candidates_block}\n"
         f"Evidence items: {chr(10).join(ev_blocks) or 'none'}\n\n"
-        "For each candidate, write a why line (max 25 words, name the platform and country), "
-        "a relevance_adjustment between -0.15 and 0.15 (only non-zero if evidence supports it), "
-        "and evidence_indices listing which evidence items were used (e.g. [\"Egypt:0\"]).\n"
-        "Return JSON: {\"<country>__<platform>\": {\"why\": \"...\", \"relevance_adjustment\": 0.0, \"evidence_indices\": []}, ...}"
+        "For each candidate produce a one-sentence explanation (12 to 20 words) of WHY this platform "
+        "fits this content in that country — mention the audience type, content format advantage, "
+        "or cultural fit. Do not just repeat the platform and country names. "
+        "Also output relevance_adjustment in [-0.15, 0.15] (non-zero only when evidence supports), "
+        "and evidence_indices listing which evidence items support it.\n"
+        "Return a JSON object like this (one key per candidate, key format exactly <COUNTRY_ISO>__<Platform>):\n"
+        "{\"EG__YouTube\": {\"why\": \"YouTube in Egypt reaches the largest student audience for demo-style innovation content.\", "
+        "\"relevance_adjustment\": 0.0, \"evidence_indices\": []}, ...}\n"
+        "Return only a JSON object, no markdown, no commentary."
     )
 
     try:
