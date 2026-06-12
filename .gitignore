@@ -1,6 +1,9 @@
-model_service/models/train_data.csv
 .DS_Store
-model_service/logs/
 scripts/*.log
 backend/uploads/
 frontend/tsconfig.tsbuildinfo
+# generated knowledge base SQLite (rebuilt from kb_seed.json on first import)
+backend/data/kb.sqlite
+backend/data/*.db
+# local test output files
+*.json.local

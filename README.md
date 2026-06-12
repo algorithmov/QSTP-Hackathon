@@ -1,4 +1,4 @@
-# QSTP-Hackathon — Masar v2
+# QSTP-Hackathon — Masar v2 (Checkpoint 2)
 
 Masar is an AI content co-pilot for Stars of Science marketing. It takes a text idea and campaign goal, then produces ranked platform and country recommendations with a transparent Fit Score and evidence-backed reasoning, plus fully localized delivery plans with dialect-appropriate captions.
 

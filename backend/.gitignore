@@ -6,4 +6,5 @@ __pycache__/
 data/masar.db
 data/trends_cache.db
 *.db
+*.sqlite
 .DS_Store

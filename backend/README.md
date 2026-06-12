@@ -1,6 +1,7 @@
-# Masar Backend
+# Stars of Science — Backend (v2)
 
-Routing engine for the Masar content router. FastAPI service that accepts a content post + goal, runs the weighted routing pipeline (knowledge base + live trends + model predictions + Claude), and returns a ranked route board.
+FastAPI service that powers the Fit Score ranking and personalized delivery reports.
+No model service, no GPU VM — just Groq LLM + SQLite knowledge base.
 
 ## Setup
 
@@ -16,7 +17,7 @@ Copy the env file and fill in your keys:
 
 ```bash
 cp .env.example .env
-# edit .env
+# set GROQ_API_KEY (optional — MOCK_MODE=true works with no keys)
 ```
 
 ## Run
@@ -25,62 +26,62 @@ cp .env.example .env
 uvicorn app.main:app --reload --port 8000
 ```
 
-With `MOCK_MODE=true` (the default), the full pipeline runs without the model service.
+Or use the repo helper:
 
-## Test
+```bash
+bash scripts/run_local.sh
+```
+
+## Endpoints
+
+| Method | Path | Description |
+|--------|------|-------------|
+| GET | `/health` | Health check + mock_mode flag |
+| POST | `/api/review` | Rank all 10 countries × 5 platforms, return top 8 |
+| POST | `/api/personalize` | Generate delivery reports for selected countries/platforms |
+
+### Quick test
 
 ```bash
 curl http://localhost:8000/health
 
-curl -s -X POST http://localhost:8000/api/route \
+curl -s -X POST http://localhost:8000/api/review \
   -H "Content-Type: application/json" \
-  -d '{
-    "content_text": "A 30-second clip of a Jordanian student showing her water-purification prototype.",
-    "media_url": "uploads/clip123.mp4",
-    "goal": "applications",
-    "topic_hint": "young inventors water tech"
-  }' | python3 -m json.tool
+  -d '{"idea_text": "A Jordanian student shows her water-purification prototype.", "goal": "applications"}' \
+  | python3 -m json.tool
 ```
+
+## Fit Score formula
+
+```
+fit_score = 100 × (0.30×topic + 0.25×audience + 0.20×platform + 0.15×language + 0.10×timing)
+```
+
+| Component | Weight | Source |
+|-----------|--------|--------|
+| topic_relevance | 0.30 | KB usage score ± LLM evidence adjustment |
+| audience_fit | 0.25 | KB usage score × goal preference multiplier |
+| platform_fit | 0.20 | KB content-type × platform fit |
+| language_fit | 0.15 | Derived from suggested language vs Arabic |
+| timing_fit | 0.10 | Fixed 0.8 (peak hours used for scheduling) |
 
 ## Architecture
 
 ```
-app/main.py          FastAPI app, /api/route, /api/upload, /health
-app/schemas.py       Pydantic v2 models (frozen contracts)
-knowledge_base.py    SQLite KB seeded from data/kb_seed.json
-live_signals.py      pytrends + YouTube, SQLite cache, JSON fallback
-model_client.py      HTTP client for model service, deterministic mock
-routing.py           Weighted scoring engine + Claude orchestration
-data/kb_seed.json    Knowledge base seed data (real, citable sources)
-data/trends_fallback.json  Captured snapshot for demo topics
+app/main.py           FastAPI app, lifespan, CORS, routes
+app/schemas.py        Pydantic v2 models — frozen contracts A + B
+app/review.py         POST /api/review handler
+app/personalize.py    POST /api/personalize handler
+app/scoring.py        compute_fit_score(), confidence()
+app/llm_client.py     Groq wrapper (primary + fallback model)
+app/kb_client.py      Thin wrapper over kb/ package
+kb/knowledge_base.py  SQLite KB, rebuilt from kb_seed.json on first import
+kb/evidence.py        Tavily search + SQLite cache + fallback_evidence.json
+data/kb_seed.json     10 countries, 5 platforms, 50 usage rows, 30 fit rows
+data/fallback_evidence.json  Pre-seeded evidence for demo topics
 ```
 
-## Scoring weights
+## Mock mode
 
-| Component           | Weight |
-|---------------------|--------|
-| platform_fit        | 0.20   |
-| audience_fit        | 0.15   |
-| geo_fit             | 0.25   |
-| timing_fit          | 0.10   |
-| language_fit        | 0.10   |
-| predicted_engagement| 0.20   |
-
-## Checkpoint 2 (connecting the real model service)
-
-Set in `.env`:
-
-```
-MOCK_MODE=false
-MODEL_SERVICE_URL=http://<mahmoud-vm-or-ngrok-url>
-```
-
-Restart the server. Run the test curl above and confirm `routes` are non-empty.
-
-## Capture live trend fallback before demo
-
-```bash
-python -c "from live_signals import capture_fallback; import asyncio; asyncio.run(capture_fallback())"
-```
-
-This overwrites `data/trends_fallback.json` with fresh data for the demo topics.
+Set `MOCK_MODE=true` in `.env` to run the full pipeline with zero API keys.
+All scoring, ranking, and report generation uses rule-based fallbacks.
