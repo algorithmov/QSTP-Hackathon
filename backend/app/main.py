@@ -23,9 +23,12 @@ logger = logging.getLogger(__name__)
 
 app = FastAPI(title="Masar Routing Engine", version="1.0.0")
 
+_origins_raw = os.getenv("ALLOWED_ORIGINS", "")
+_allowed_origins: list[str] = [o.strip() for o in _origins_raw.split(",") if o.strip()] or ["*"]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=_allowed_origins,
     allow_methods=["*"],
     allow_headers=["*"],
 )
