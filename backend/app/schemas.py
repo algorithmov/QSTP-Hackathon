@@ -43,6 +43,7 @@ class Route(BaseModel):
     match_score: int
     components: ScoreComponents
     why: str
+    tips: list[str] = []
     trend_direction: str
     trend_change_pct: Optional[int] = None
     dialect_rewrite: Optional[str] = None
@@ -70,3 +71,4 @@ class RouteResponse(BaseModel):
     routes: list[Route]
     map_data: list[MapEntry]
     trend_ticker: list[TrendTicker]
+    data_mode: str = "fallback"

@@ -38,6 +38,7 @@ export type RouteOption = {
     predicted_engagement: number;
   };
   why: string;
+  tips: string[];
   trend_direction: "rising" | "flat" | "falling";
   trend_change_pct: number | null;
   dialect_rewrite: string | null;
@@ -65,4 +66,5 @@ export type RouteResponse = {
   routes: RouteOption[];
   map_data: MapDatum[];
   trend_ticker: TrendDatum[];
+  data_mode: "live" | "cache" | "fallback";
 };

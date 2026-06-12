@@ -3,6 +3,7 @@ import hashlib
 import json
 import logging
 import os
+from pathlib import Path
 from typing import Optional
 
 import httpx
@@ -45,24 +46,31 @@ def _mock_prediction(candidate: dict) -> dict:
 
 # --- public API ---
 
+_BACKEND_ROOT = Path(__file__).parent
+
+
 async def vision_analyze(media_url: Optional[str], file_bytes: Optional[bytes] = None) -> Optional[dict]:
     if MOCK_MODE:
         if media_url:
             return _mock_visual_profile(media_url)
         return None
 
+    # Resolve local upload path to bytes so model service always receives multipart
+    if file_bytes is None and media_url and media_url.startswith("uploads/"):
+        local = _BACKEND_ROOT / media_url
+        if local.exists():
+            file_bytes = local.read_bytes()
+
+    if file_bytes is None:
+        logger.warning("vision_analyze: no file bytes available, skipping")
+        return None
+
     try:
         async with httpx.AsyncClient(timeout=20) as client:
-            if file_bytes:
-                resp = await client.post(
-                    f"{MODEL_SERVICE_URL}/vision/analyze",
-                    files={"file": ("upload", file_bytes, "video/mp4")},
-                )
-            else:
-                resp = await client.post(
-                    f"{MODEL_SERVICE_URL}/vision/analyze",
-                    json={"media_url": media_url},
-                )
+            resp = await client.post(
+                f"{MODEL_SERVICE_URL}/vision/analyze",
+                files={"file": ("upload", file_bytes, "application/octet-stream")},
+            )
             resp.raise_for_status()
             return resp.json()
     except Exception as exc:

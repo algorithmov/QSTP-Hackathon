@@ -9,7 +9,7 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from fastapi import FastAPI, File, UploadFile, HTTPException
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
-from typing import List, Optional
+from typing import List, Optional  # noqa: F401 — Optional used in Candidate
 import uvicorn
 
 import vision
@@ -55,15 +55,10 @@ def health():
 
 
 @app.post("/vision/analyze")
-async def analyze(file: Optional[UploadFile] = File(None), body: Optional[MediaURLRequest] = None):
+async def analyze(file: UploadFile = File(...)):
     try:
-        if file is not None:
-            contents = await file.read()
-            result = vision.analyze(contents)
-        elif body is not None:
-            result = vision.analyze(body.media_url)
-        else:
-            raise HTTPException(status_code=422, detail="Provide either a file upload or media_url JSON body.")
+        contents = await file.read()
+        result = vision.analyze(contents)
         return JSONResponse(content=result)
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

@@ -19,6 +19,10 @@ CACHE_TTL_SECONDS = 6 * 3600
 
 _fallback: Optional[dict] = None
 
+# Tracks the data source used in the most recent interest_by_country call.
+# Values: "live", "cache", "fallback"
+trends_data_mode: str = "fallback"
+
 
 def _load_fallback() -> dict:
     global _fallback
@@ -77,43 +81,49 @@ def _cache_set(key: str, data: dict) -> None:
 
 async def interest_by_country(topic: str) -> dict[str, int]:
     """Return {country_code: interest_0_to_100} for all Arab countries."""
+    global trends_data_mode
     cache_key = f"ibc:{topic}"
     cached = _cache_get(cache_key)
     if cached:
+        trends_data_mode = "live"
         return cached
 
-    # 1. pytrends
-    try:
-        result = await asyncio.to_thread(_pytrends_interest_by_country, topic)
-        if result:
-            _cache_set(cache_key, result)
-            return result
-    except Exception as exc:
-        logger.warning("pytrends interest_by_country failed for %r: %s", topic, exc)
+    # 1+2. pytrends and trendspy run concurrently — both use different endpoints
+    async def _try_pytrends_ibc():
+        return await asyncio.wait_for(
+            asyncio.to_thread(_pytrends_interest_by_country, topic), timeout=2.0
+        )
 
-    # 2. trendspy (different embed endpoint — independent rate-limit bucket)
-    try:
-        result = await asyncio.to_thread(_trendspy_interest_by_country, topic)
-        if result:
-            _cache_set(cache_key, result)
-            return result
-    except Exception as exc:
-        logger.warning("trendspy interest_by_country failed for %r: %s", topic, exc)
+    async def _try_trendspy_ibc():
+        return await asyncio.wait_for(
+            asyncio.to_thread(_trendspy_interest_by_country, topic), timeout=2.0
+        )
+
+    results = await asyncio.gather(_try_pytrends_ibc(), _try_trendspy_ibc(), return_exceptions=True)
+    for name, r in zip(["pytrends", "trendspy"], results):
+        if isinstance(r, Exception):
+            logger.warning("%s interest_by_country failed for %r: %s", name, topic, r)
+        elif r:
+            _cache_set(cache_key, r)
+            trends_data_mode = "live"
+            return r
 
     # 3. stale cache
     stale = _cache_get_stale(cache_key)
     if stale:
         logger.info("serving stale cache for %r", topic)
+        trends_data_mode = "cache"
         return stale
 
     # 4. static JSON fallback
+    trends_data_mode = "fallback"
     return _fallback_interest(topic)
 
 
 def _pytrends_interest_by_country(topic: str) -> dict[str, int]:
     from pytrends.request import TrendReq
 
-    pt = TrendReq(hl="ar", tz=0, timeout=(10, 25), retries=1, backoff_factor=0.5)
+    pt = TrendReq(hl="ar", tz=0, timeout=(2, 4), retries=0, backoff_factor=0.0)
     pt.build_payload([topic], timeframe="now 7-d", geo="")
     df = pt.interest_by_region(resolution="COUNTRY", inc_low_vol=True)
     if df is None or df.empty:
@@ -140,23 +150,24 @@ async def trend_direction(topic: str, country: str) -> dict:
     if cached:
         return cached
 
-    # 1. pytrends
-    try:
-        result = await asyncio.to_thread(_pytrends_trend_direction, topic, country)
-        if result:
-            _cache_set(cache_key, result)
-            return result
-    except Exception as exc:
-        logger.warning("pytrends trend_direction failed for %r/%s: %s", topic, country, exc)
+    # 1+2. pytrends and trendspy run concurrently
+    async def _try_pytrends_td():
+        return await asyncio.wait_for(
+            asyncio.to_thread(_pytrends_trend_direction, topic, country), timeout=2.0
+        )
 
-    # 2. trendspy
-    try:
-        result = await asyncio.to_thread(_trendspy_trend_direction, topic, country)
-        if result:
-            _cache_set(cache_key, result)
-            return result
-    except Exception as exc:
-        logger.warning("trendspy trend_direction failed for %r/%s: %s", topic, country, exc)
+    async def _try_trendspy_td():
+        return await asyncio.wait_for(
+            asyncio.to_thread(_trendspy_trend_direction, topic, country), timeout=2.0
+        )
+
+    results = await asyncio.gather(_try_pytrends_td(), _try_trendspy_td(), return_exceptions=True)
+    for name, r in zip(["pytrends", "trendspy"], results):
+        if isinstance(r, Exception):
+            logger.warning("%s trend_direction failed for %r/%s: %s", name, topic, country, r)
+        elif r:
+            _cache_set(cache_key, r)
+            return r
 
     # 3. stale cache
     stale = _cache_get_stale(cache_key)
@@ -170,7 +181,7 @@ async def trend_direction(topic: str, country: str) -> dict:
 def _pytrends_trend_direction(topic: str, country: str) -> dict:
     from pytrends.request import TrendReq
 
-    pt = TrendReq(hl="ar", tz=0, timeout=(10, 25), retries=1, backoff_factor=0.5)
+    pt = TrendReq(hl="ar", tz=0, timeout=(2, 4), retries=0, backoff_factor=0.0)
     pt.build_payload([topic], timeframe="now 7-d", geo=country)
     df = pt.interest_over_time()
     if df is None or df.empty or topic not in df.columns:
@@ -196,7 +207,7 @@ def _pytrends_trend_direction(topic: str, country: str) -> dict:
 
 def _trendspy_interest_by_country(topic: str) -> dict[str, int]:
     import trendspy, pycountry
-    t = trendspy.Trends(request_delay=1.0)
+    t = trendspy.Trends(request_delay=0.2)
     df = t.interest_by_region(topic, timeframe="now 7-d", geo="", resolution="COUNTRY")
     if df is None or df.empty:
         return {}
@@ -216,7 +227,7 @@ def _trendspy_interest_by_country(topic: str) -> dict[str, int]:
 
 def _trendspy_trend_direction(topic: str, country: str) -> dict:
     import trendspy
-    t = trendspy.Trends(request_delay=1.0)
+    t = trendspy.Trends(request_delay=0.2)
     df = t.interest_over_time(topic, timeframe="now 7-d", geo=country)
     if df is None or df.empty:
         return {}

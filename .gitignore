@@ -1,3 +1,6 @@
 model_service/models/train_data.csv
 .DS_Store
 model_service/logs/
+scripts/*.log
+backend/uploads/
+frontend/tsconfig.tsbuildinfo

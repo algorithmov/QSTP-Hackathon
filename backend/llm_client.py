@@ -50,16 +50,50 @@ def _strip_fences(text: str) -> str:
     return text.strip()
 
 
+def _repair_json(text: str) -> str:
+    """Fix common LLM JSON issues: trailing commas, unescaped control chars."""
+    # Remove trailing commas before } or ]
+    text = re.sub(r",\s*([\]}])", r"\1", text)
+    # Remove literal newlines/tabs inside string values (replace with space)
+    text = re.sub(r'(?<=["\w])\n(?=["\w])', " ", text)
+    return text
+
+
 def _extract_json(text: str) -> dict:
     text = _strip_fences(text)
-    try:
-        return json.loads(text)
-    except json.JSONDecodeError:
-        pass
+    for candidate in (text, _repair_json(text)):
+        try:
+            return json.loads(candidate)
+        except json.JSONDecodeError:
+            pass
+    # Try largest {...} block
     m = re.search(r"\{.*\}", text, re.DOTALL)
     if m:
-        return json.loads(m.group())
-    raise ValueError(f"No JSON object found in LLM response: {text[:200]!r}")
+        for candidate in (m.group(), _repair_json(m.group())):
+            try:
+                return json.loads(candidate)
+            except json.JSONDecodeError:
+                pass
+    # Last resort: extract individual fields with regex
+    result: dict = {}
+    summary_m = re.search(r'"content_summary"\s*:\s*"([^"]+)"', text)
+    if summary_m:
+        result["content_summary"] = summary_m.group(1)
+    why_m = re.search(r'"why"\s*:\s*(\{[^}]+\})', text, re.DOTALL)
+    if why_m:
+        try:
+            result["why"] = json.loads(_repair_json(why_m.group(1)))
+        except Exception:
+            pass
+    tips_m = re.search(r'"tips"\s*:\s*(\{.*?\}\s*\})', text, re.DOTALL)
+    if tips_m:
+        try:
+            result["tips"] = json.loads(_repair_json(tips_m.group(1)))
+        except Exception:
+            pass
+    if result:
+        return result
+    raise ValueError(f"No JSON found in LLM response: {text[:300]!r}")
 
 
 # ── Prompt builders ───────────────────────────────────────────────────────────
@@ -67,32 +101,48 @@ def _extract_json(text: str) -> dict:
 def _build_analysis_prompt(content_text: str, goal: str, routes: list[dict]) -> str:
     routes_summary = [
         {
-            "rank":           r["rank"],
-            "platform":       r["platform"],
-            "country_name":   r["country_name"],
-            "audience":       r["audience"],
-            "language":       r["language"],
-            "match_score":    r["match_score"],
-            "components":     r["components"],
+            "rank":            r["rank"],
+            "platform":        r["platform"],
+            "country_name":    r["country_name"],
+            "audience":        r["audience"],
+            "language":        r["language"],
+            "match_score":     r["match_score"],
             "trend_direction": r["trend_direction"],
             "trend_change_pct": r.get("trend_change_pct"),
         }
         for r in routes
     ]
-    ranks = ", ".join(f'"{r["rank"]}"' for r in routes)
+
+    # Build the expected JSON shape with one entry per route so the LLM can
+    # see exactly which rank maps to which platform+country.
+    why_lines = "\n".join(
+        f'    "{r["rank"]}": "sentence about rank {r["rank"]} — {r["platform"]} in {r["country_name"]}, max 18 words"'
+        for r in routes
+    )
+    tips_lines = "\n".join(
+        f'    "{r["rank"]}": ["tip 1 for {r["country_name"]} on {r["platform"]}", "tip 2", "tip 3"]'
+        for r in routes
+    )
+
     return (
-        f"Content description: {content_text}\n"
-        f"Goal: {goal}\n"
-        f"Routes:\n{json.dumps(routes_summary, ensure_ascii=False)}\n\n"
-        "Return this exact JSON shape (no extra keys):\n"
+        f"Content: {content_text}\n"
+        f"Campaign goal: {goal}\n"
+        f"Top routes (ranked by fit score):\n{json.dumps(routes_summary, ensure_ascii=False)}\n\n"
+        "Reply with ONLY this JSON object (no markdown, no extra keys):\n"
         "{\n"
         '  "content_summary": "one sentence, max 20 words",\n'
         '  "why": {\n'
-        f'    {ranks.replace(", ", chr(58) + " ...," + chr(10) + "    ")}: "one line per route, max 15 words"\n'
+        f"{why_lines}\n"
+        "  },\n"
+        '  "tips": {\n'
+        f"{tips_lines}\n"
         "  }\n"
-        "}\n"
-        'Keys in "why" are the route rank as a string integer.\n'
-        "Write in English unless the route language is Arabic — then use Modern Standard Arabic."
+        "}\n\n"
+        "Rules:\n"
+        '- Each "why" value must name the EXACT platform and country for that rank. Max 18 words.\n'
+        '- Each "tips" value: exactly 3 short imperative sentences (10 words max each) '
+        "specific to that country's culture, platform norms, and the trend direction shown.\n"
+        "- Write in English."
     )
 
 
@@ -122,7 +172,7 @@ async def _call_fanar(prompt: str) -> dict:
                 ],
                 "response_format": {"type": "json_object"},
                 "temperature": 0.3,
-                "max_tokens": 600,
+                "max_tokens": 2500,
             },
         )
         resp.raise_for_status()
@@ -141,10 +191,14 @@ async def _call_gemini(prompt: str) -> dict:
             system_instruction=_SYSTEM_PROMPT,
             response_mime_type="application/json",
             temperature=0.3,
-            max_output_tokens=600,
+            max_output_tokens=2500,
         ),
     )
-    return _extract_json(response.text)
+    try:
+        return _extract_json(response.text)
+    except Exception as exc:
+        logger.warning("Gemini JSON parse failed (%s); raw: %s", exc, (response.text or "")[:500])
+        raise
 
 
 async def _call_local(prompt: str) -> dict:
@@ -159,7 +213,7 @@ async def _call_local(prompt: str) -> dict:
                 ],
                 "response_format": {"type": "json_object"},
                 "temperature": 0.3,
-                "max_tokens": 600,
+                "max_tokens": 2500,
             },
         )
         resp.raise_for_status()
@@ -172,15 +226,20 @@ def _rule_based_output(content_text: str, routes: list[dict]) -> dict:
     if len(content_text) > 120:
         summary += " [auto-summary]"
     why: dict[str, str] = {}
+    tips: dict[str, list[str]] = {}
     for r in routes:
         post_time = r.get("post_time_local", "peak time")
         tz        = r.get("timezone", "")
         why[str(r["rank"])] = (
-            f"Score {r['match_score']}/100 — best fit: {r['platform']} in "
-            f"{r['country_name']} for {r['audience']} audience "
-            f"at {post_time} {tz}."
+            f"Score {r['match_score']}/100 — {r['platform']} in "
+            f"{r['country_name']} for {r['audience']} at {post_time} {tz}."
         )
-    return {"content_summary": summary, "why": why}
+        tips[str(r["rank"])] = [
+            f"Post at {post_time} {tz} for peak {r['country_name']} audience activity.",
+            f"Use {r.get('language', 'local language')} captions throughout the content.",
+            f"Engage every comment within 60 minutes to boost {r['platform']} ranking.",
+        ]
+    return {"content_summary": summary, "why": why, "tips": tips}
 
 
 # ── Provider ladder ───────────────────────────────────────────────────────────
@@ -233,19 +292,27 @@ async def get_llm_output(
     analysis_prompt = _build_analysis_prompt(content_text, goal, routes)
     raw, provider_used = await _try_providers(analysis_prompt, LLM_PROVIDER)
 
+    rb = _rule_based_output(content_text, routes)
+
     if not raw:
-        rb = _rule_based_output(content_text, routes)
         content_summary = rb["content_summary"]
         why             = rb["why"]
+        tips            = rb["tips"]
         provider_used   = "rule_based"
     else:
         content_summary = raw.get("content_summary", content_text[:80])
         why = {str(k): v for k, v in raw.get("why", {}).items()}
+        tips = {
+            str(k): v for k, v in raw.get("tips", {}).items()
+            if isinstance(v, list)
+        }
         # Fill any missing ranks with rule-based fallback
-        rb = _rule_based_output(content_text, routes)
         for r in routes:
-            if str(r["rank"]) not in why:
-                why[str(r["rank"])] = rb["why"][str(r["rank"])]
+            key = str(r["rank"])
+            if key not in why:
+                why[key] = rb["why"][key]
+            if key not in tips:
+                tips[key] = rb["tips"][key]
 
     # Dialect rewrites — one separate call per Arabic route
     dialect_rewrites: dict[str, Optional[str]] = {str(r["rank"]): None for r in routes}
@@ -262,6 +329,7 @@ async def get_llm_output(
     return {
         "content_summary":  content_summary,
         "why":              why,
+        "tips":             tips,
         "dialect_rewrites": dialect_rewrites,
         "provider_used":    provider_used,
     }

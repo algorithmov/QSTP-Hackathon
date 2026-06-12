@@ -1,4 +1,5 @@
 """Routing engine: weighted scoring + LLM orchestration."""
+import asyncio
 import logging
 import os
 import uuid
@@ -140,12 +141,13 @@ async def route_content(request: RouteRequest) -> RouteResponse:
         }]
     audience_info = audience_infos[0]
 
-    # 4. Live interest across Arab countries, top 8
+    # 4. Live interest across Arab countries (all with data, no hard cap)
     country_interests = await live_signals.interest_by_country(topic)
     top_countries = sorted(
         [(c, v) for c, v in country_interests.items() if v > 0],
-        key=lambda x: x[1], reverse=True
-    )[:8]
+        key=lambda x: x[1], reverse=True,
+    )
+    max_interest = max((v for _, v in top_countries), default=1)
 
     # 5. Build candidates
     candidates: list[dict] = []
@@ -158,11 +160,22 @@ async def route_content(request: RouteRequest) -> RouteResponse:
     energy_score = raw_visual["energy_score"] if raw_visual else 0.50
     has_text_overlay = raw_visual["has_text_overlay"] if raw_visual else False
 
+    # Fetch all trend directions concurrently rather than sequentially
+    _trend_futures = await asyncio.gather(
+        *[live_signals.trend_direction(topic, code) for code, _ in top_countries],
+        return_exceptions=True,
+    )
+    _flat = {"direction": "flat", "change_pct": 0}
+    trend_by_country = {
+        code: (r if isinstance(r, dict) else _flat)
+        for (code, _), r in zip(top_countries, _trend_futures)
+    }
+
     for country_code, interest in top_countries:
         country_info = kb.get_country(country_code)
         if not country_info:
             continue
-        trend_info = await live_signals.trend_direction(topic, country_code)
+        trend_info = trend_by_country.get(country_code, _flat)
 
         tz = pytz.timezone(country_info["timezone"])
         day_of_week = datetime.now(tz).weekday()
@@ -226,7 +239,9 @@ async def route_content(request: RouteRequest) -> RouteResponse:
     # 7. Score and rank
     scored: list[dict] = []
     for meta, pred in zip(candidate_meta, predictions):
-        geo_fit = meta["interest"] / 100.0
+        # Normalize against the top country in this batch, not an absolute 100,
+        # so Sudan/Iraq are not permanently buried below Egypt when fallback data is used.
+        geo_fit = meta["interest"] / max_interest
         if meta["trend_direction"] == "rising":
             geo_fit = min(1.0, geo_fit * 1.10)
 
@@ -249,7 +264,19 @@ async def route_content(request: RouteRequest) -> RouteResponse:
         scored.append({**meta, "components": components, "match_score": match_score})
 
     scored.sort(key=lambda x: x["match_score"], reverse=True)
-    top_6 = scored[:6]
+
+    # Enforce country diversity: no country appears more than twice in the top 6.
+    # Without this, fallback scores permanently put Egypt × 3 + Saudi × 3 every run.
+    top_6: list[dict] = []
+    _country_count: dict[str, int] = {}
+    for row in scored:
+        cc = row["country"]
+        if _country_count.get(cc, 0) >= 2:
+            continue
+        top_6.append(row)
+        _country_count[cc] = _country_count.get(cc, 0) + 1
+        if len(top_6) == 6:
+            break
 
     # 8. LLM: content_summary + why lines (Fanar → Gemini → local → rule-based)
     routes_for_llm = [
@@ -275,6 +302,7 @@ async def route_content(request: RouteRequest) -> RouteResponse:
     )
     content_summary: str    = llm_out["content_summary"]
     why_by_rank:     dict   = llm_out["why"]
+    tips_by_rank:    dict   = llm_out["tips"]
     rewrites_by_rank: dict  = llm_out["dialect_rewrites"]
     logger.info("LLM provider: %s", llm_out["provider_used"])
 
@@ -282,6 +310,7 @@ async def route_content(request: RouteRequest) -> RouteResponse:
     routes = []
     for rank, r in enumerate(top_6, 1):
         why     = why_by_rank.get(str(rank), _fallback_why(r, topic))
+        tips    = tips_by_rank.get(str(rank), [])
         rewrite = rewrites_by_rank.get(str(rank)) if ENABLE_DIALECT_REWRITE else None
         routes.append(Route(
             rank=rank,
@@ -295,6 +324,7 @@ async def route_content(request: RouteRequest) -> RouteResponse:
             match_score=r["match_score"],
             components=ScoreComponents(**r["components"]),
             why=why,
+            tips=tips,
             trend_direction=r["trend_direction"],
             trend_change_pct=r["trend_change_pct"] if r["trend_change_pct"] else None,
             dialect_rewrite=rewrite if ENABLE_DIALECT_REWRITE else None,
@@ -308,7 +338,7 @@ async def route_content(request: RouteRequest) -> RouteResponse:
         country_info = kb.get_country(country_code)
         if not country_info:
             continue
-        trend_info = await live_signals.trend_direction(topic, country_code)
+        trend_info = trend_by_country.get(country_code, _flat)
         country_routes = [r for r in top_6 if r["country"] == country_code]
         best_platform = country_routes[0]["platform"] if country_routes else "TikTok"
 
@@ -338,4 +368,5 @@ async def route_content(request: RouteRequest) -> RouteResponse:
         routes=routes,
         map_data=map_data,
         trend_ticker=trend_ticker,
+        data_mode=live_signals.trends_data_mode,
     )

@@ -5,6 +5,7 @@ import { useState } from "react";
 import { InputPanel } from "@/components/InputPanel";
 import { MenaMap } from "@/components/MenaMap";
 import { RouteBoard } from "@/components/RouteBoard";
+import { TrendTicker } from "@/components/TrendTicker";
 import { VisualProfilePanel } from "@/components/VisualProfilePanel";
 import { routeContent, uploadMedia } from "@/lib/api";
 import type { Goal, RouteRequest, RouteResponse } from "@/types/route";
@@ -65,6 +66,13 @@ export default function Page() {
           onMediaChange={setMediaFile}
           onSubmit={handleSubmit}
         />
+
+        {result && (
+          <TrendTicker
+            trends={result.trend_ticker}
+            dataMode={result.data_mode}
+          />
+        )}
 
         {status === "loading" ? (
           <div className="flex items-center gap-3 rounded-md border border-line bg-white px-5 py-4 text-sm font-semibold text-muted shadow-board">
