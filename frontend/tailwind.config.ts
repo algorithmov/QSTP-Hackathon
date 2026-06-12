@@ -5,12 +5,12 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        ink: "#17202a",
-        accent: "#0e7c66",
-        muted: "#64748b",
-        low: "#8b949e",
-        line: "#d9e0e7",
-        paper: "#f7f8f9"
+        ink: "#082529",
+        accent: "#f15a21",
+        muted: "#50646b",
+        low: "#7a8d94",
+        line: "#e2e8f0",
+        paper: "#f5f3f3"
       },
       fontFamily: {
         sans: ["Inter", "ui-sans-serif", "system-ui", "sans-serif"]

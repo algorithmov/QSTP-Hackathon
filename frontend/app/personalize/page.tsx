@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowRight, Check, Clock, Copy, MapPin, Sparkles, X as XIcon } from "lucide-react";
+import { Check, Clock, Copy, MapPin, X as XIcon } from "lucide-react";
 import { useMemo, useState } from "react";
 import { AppShell } from "@/components/AppShell";
 import { ConfidenceBadge } from "@/components/ConfidenceBadge";
@@ -33,9 +33,17 @@ const loadingSteps = [
   "Finalizing delivery plan..."
 ];
 
+function normalizeGoal(value: Goal | string): Goal {
+  return value === "viewers" || value === "sponsors" ? value : "applications";
+}
+
 export default function PersonalizePage() {
   const [ideaText, setIdeaText] = usePersistentState("masar.personalize.ideaText", starterText);
-  const [goal, setGoal] = usePersistentState<Goal>("masar.personalize.goal", "applications");
+  const [goal, setGoal] = usePersistentState<Goal>(
+    "masar.personalize.goal",
+    "applications",
+    normalizeGoal,
+  );
   const [countries, setCountries] = usePersistentState<CountryCode[]>(
     "masar.personalize.countries",
     ["EG", "SA"]
@@ -131,12 +139,10 @@ export default function PersonalizePage() {
             <button
               type="button"
               disabled={!canSubmit}
-              className="inline-flex w-full items-center justify-center gap-2 rounded-md bg-accent px-6 py-3 text-sm font-bold text-white shadow-sm transition duration-200 hover:-translate-y-0.5 hover:bg-accent/90 disabled:translate-y-0 disabled:cursor-not-allowed disabled:bg-slate-300 disabled:text-slate-600"
+              className="w-full rounded-md bg-accent px-6 py-3 text-sm font-bold text-white shadow-sm transition duration-200 hover:-translate-y-0.5 hover:bg-accent/90 disabled:translate-y-0 disabled:cursor-not-allowed disabled:bg-slate-300 disabled:text-slate-600"
               onClick={handleSubmit}
             >
-              <Sparkles size={17} aria-hidden="true" />
               {status === "loading" ? "Generating..." : "Generate delivery plan"}
-              {status !== "loading" ? <ArrowRight size={17} aria-hidden="true" /> : null}
             </button>
           </div>
         </div>

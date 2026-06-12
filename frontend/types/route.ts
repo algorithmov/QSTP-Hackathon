@@ -1,4 +1,4 @@
-export type Goal = "applications" | "viewers" | "sponsors" | "buzz";
+export type Goal = "applications" | "viewers" | "sponsors";
 
 export type Confidence = "high" | "medium" | "low";
 export type LanguageDirection = "rtl" | "ltr";
@@ -106,8 +106,7 @@ export type PersonalizeResponse = {
 export const goals: Array<{ label: string; value: Goal }> = [
   { label: "Applications", value: "applications" },
   { label: "Viewers", value: "viewers" },
-  { label: "Sponsors", value: "sponsors" },
-  { label: "Buzz", value: "buzz" }
+  { label: "Sponsors", value: "sponsors" }
 ];
 
 export const supportedCountries: Array<{ code: CountryCode; name: string }> = [

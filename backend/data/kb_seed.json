@@ -40,7 +40,7 @@
       "name": "X",
       "primary_age_band": "20-35",
       "rewarded_formats": ["thread", "short_video", "live"],
-      "notes": "High reach for buzz and announcement content; MENA accounts among most active globally per Sprout Social Index 2024."
+      "notes": "High reach for announcements and trending conversations; MENA accounts among most active globally per Sprout Social Index 2024."
     }
   ],
   "platform_country_usage": [
@@ -154,12 +154,6 @@
       "audiences": ["sponsors"],
       "preferred_platforms": ["LinkedIn", "X", "YouTube"],
       "preferred_languages": ["en", "mixed"]
-    },
-    {
-      "goal": "buzz",
-      "audiences": ["general_public"],
-      "preferred_platforms": ["TikTok", "Instagram", "X"],
-      "preferred_languages": ["ar", "mixed", "en"]
     }
   ]
 }

@@ -4,7 +4,7 @@ from typing import Literal, Optional
 
 from pydantic import BaseModel
 
-VALID_GOALS = frozenset({"applications", "viewers", "sponsors", "buzz"})
+VALID_GOALS = frozenset({"applications", "viewers", "sponsors"})
 VALID_COUNTRIES = frozenset({"EG", "SA", "AE", "QA", "DZ", "MA", "JO", "SD", "IQ", "KW"})
 VALID_PLATFORMS = frozenset({"Instagram", "LinkedIn", "X", "YouTube", "TikTok"})
 VALID_CONTENT_TYPES = frozenset({

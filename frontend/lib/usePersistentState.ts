@@ -2,7 +2,13 @@
 
 import { useEffect, useState } from "react";
 
-export function usePersistentState<T>(key: string, initialValue: T) {
+type NormalizeState<T> = (value: T) => T;
+
+export function usePersistentState<T>(
+  key: string,
+  initialValue: T,
+  normalize?: NormalizeState<T>,
+) {
   const [value, setValue] = useState<T>(initialValue);
   const [hydrated, setHydrated] = useState(false);
 
@@ -10,23 +16,25 @@ export function usePersistentState<T>(key: string, initialValue: T) {
     try {
       const stored = window.localStorage.getItem(key);
       if (stored) {
-        setValue(JSON.parse(stored) as T);
+        const parsed = JSON.parse(stored) as T;
+        setValue(normalize ? normalize(parsed) : parsed);
       }
     } catch {
       // Ignore invalid or blocked storage and keep the default state.
     } finally {
       setHydrated(true);
     }
-  }, [key]);
+  }, [key, normalize]);
 
   useEffect(() => {
     if (!hydrated) return;
     try {
-      window.localStorage.setItem(key, JSON.stringify(value));
+      const nextValue = normalize ? normalize(value) : value;
+      window.localStorage.setItem(key, JSON.stringify(nextValue));
     } catch {
       // Persistence is a convenience; the app should still work if storage is blocked.
     }
-  }, [hydrated, key, value]);
+  }, [hydrated, key, normalize, value]);
 
   return [value, setValue] as const;
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowRight, Clock, MapPin, Radar } from "lucide-react";
+import { Clock, MapPin } from "lucide-react";
 import { useMemo, useState } from "react";
 import { AppShell } from "@/components/AppShell";
 import { ComponentBars } from "@/components/ComponentBars";
@@ -26,9 +26,17 @@ const loadingSteps = [
   "Writing recommendations..."
 ];
 
+function normalizeGoal(value: Goal | string): Goal {
+  return value === "viewers" || value === "sponsors" ? value : "applications";
+}
+
 export default function ReviewPage() {
   const [ideaText, setIdeaText] = usePersistentState("masar.review.ideaText", starterText);
-  const [goal, setGoal] = usePersistentState<Goal>("masar.review.goal", "applications");
+  const [goal, setGoal] = usePersistentState<Goal>(
+    "masar.review.goal",
+    "applications",
+    normalizeGoal,
+  );
   const [status, setStatus] = useState<Status>("idle");
   const [loadingStep, setLoadingStep] = useState(0);
   const [error, setError] = useState<string | null>(null);
@@ -83,12 +91,10 @@ export default function ReviewPage() {
             <button
               type="button"
               disabled={!canSubmit}
-              className="inline-flex items-center justify-center gap-2 rounded-md bg-accent px-6 py-3 text-sm font-bold text-white shadow-sm transition duration-200 hover:-translate-y-0.5 hover:bg-accent/90 disabled:translate-y-0 disabled:cursor-not-allowed disabled:bg-slate-300 disabled:text-slate-600"
+              className="rounded-md bg-accent px-6 py-3 text-sm font-bold text-white shadow-sm transition duration-200 hover:-translate-y-0.5 hover:bg-accent/90 disabled:translate-y-0 disabled:cursor-not-allowed disabled:bg-slate-300 disabled:text-slate-600"
               onClick={handleSubmit}
             >
-              <Radar size={17} aria-hidden="true" />
               {status === "loading" ? "Reviewing..." : "Review my idea"}
-              {status !== "loading" ? <ArrowRight size={17} aria-hidden="true" /> : null}
             </button>
           </div>
         </div>

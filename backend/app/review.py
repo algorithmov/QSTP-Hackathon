@@ -76,7 +76,6 @@ _GOAL_DEFAULT_LANGUAGE = {
     "applications": "mixed",
     "viewers": "ar",
     "sponsors": "mixed",
-    "buzz": "mixed",
 }
 
 _COUNTRY_ALIASES: dict[str, list[str]] = {

@@ -18,7 +18,7 @@ export function AppShell({ children }: { children: ReactNode }) {
       <div className="relative z-10 mx-auto flex w-full max-w-7xl flex-col gap-5 px-4 py-5 sm:px-6 lg:px-8">
         <header className="rounded-md border border-line bg-white/95 px-5 py-4 shadow-board md:flex md:items-end md:justify-between">
           <div>
-            <div className="text-xs font-black uppercase tracking-wide text-accent">Stars of Science</div>
+            <div className="text-xs font-black uppercase tracking-wide text-ink">Stars of Science</div>
             <h1 className="mt-1 text-3xl font-black tracking-normal text-ink sm:text-4xl">Masar</h1>
             <p className="mt-2 max-w-2xl text-base leading-7 text-muted">
               Evidence-backed routing and localized delivery plans for Stars of Science ideas.
