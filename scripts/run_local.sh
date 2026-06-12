@@ -65,10 +65,11 @@ GROQ_API_KEY=
 GROQ_MODEL=llama-3.3-70b-versatile
 GROQ_FALLBACK_MODEL=llama-3.1-8b-instant
 TAVILY_API_KEY=
+SERPER_API_KEY=
 EVIDENCE_CACHE_TTL_HOURS=24
 ALLOWED_ORIGINS=http://localhost:3000
 ENVEOF
-  echo "Created $BACKEND_DIR/.env — add GROQ_API_KEY and TAVILY_API_KEY to enable live LLM calls."
+  echo "Created $BACKEND_DIR/.env — add GROQ_API_KEY, TAVILY_API_KEY, and SERPER_API_KEY to enable live calls."
 fi
 
 if [[ ! -f "$FRONTEND_DIR/.env.local" ]]; then

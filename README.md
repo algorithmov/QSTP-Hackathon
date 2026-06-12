@@ -12,8 +12,7 @@ Masar is an AI content co-pilot for Stars of Science marketing. It takes a text 
 ## One-command local start
 
 ```bash
-chmod +x scripts/run_local.sh
-./scripts/run_local.sh
+./setup.sh
 ```
 
 This installs all dependencies, starts the backend (`:8000`) and frontend (`:3000`), and opens the app. Press `Ctrl+C` to stop.
