@@ -9,6 +9,12 @@ from typing import Any
 from pydantic import BaseModel
 
 import app.kb_client as kb
+from app.evidence_helpers import (
+    build_platform_note_evidence,
+    build_usage_evidence,
+    evidence_target_count,
+    merge_evidence,
+)
 from app.scoring import compute_fit_score, confidence
 from app.schemas import (
     EvidenceItem,
@@ -25,6 +31,7 @@ from app.schemas import (
 logger = logging.getLogger(__name__)
 
 MOCK_MODE = os.getenv("MOCK_MODE", "true").lower() == "true"
+USE_LLM_ENRICHMENT = os.getenv("USE_LLM_ENRICHMENT", "false").lower() == "true"
 
 METHODOLOGY_NOTE = (
     "Fit Score combines topic relevance, audience fit, platform fit, language fit, "
@@ -49,6 +56,20 @@ _MOCK_IDEA_SUMMARY = IdeaSummary(
     suggested_language="mixed",
     key_themes=["innovation", "technology", "youth"],
 )
+
+_GOAL_AUDIENCE_LABEL = {
+    "applications": "student applicants",
+    "viewers": "broad regional viewers",
+    "sponsors": "innovation stakeholders",
+}
+
+_PLATFORM_STRENGTH = {
+    "TikTok": "quick proof and first-second retention",
+    "Instagram": "replayable reels and shareable saves",
+    "YouTube": "explained demos and higher intent viewing",
+    "LinkedIn": "credibility with professional and sponsor audiences",
+    "X": "conversation hooks around timely ideas",
+}
 
 
 def _infer_content_type(text: str) -> str:
@@ -107,7 +128,7 @@ def _detect_country_scope(idea_text: str, countries: list[dict]) -> list[dict]:
 def _extract_idea_summary(idea_text: str, goal: str) -> IdeaSummary:
     from app.llm_client import llm_available
 
-    if MOCK_MODE or not llm_available():
+    if MOCK_MODE or not USE_LLM_ENRICHMENT or not llm_available():
         content_type = _infer_content_type(idea_text)
         detected = _infer_language(idea_text)
         language = detected if detected in ("ar",) else _GOAL_DEFAULT_LANGUAGE.get(goal, "mixed")
@@ -174,14 +195,16 @@ def _generate_why_lines(
 ) -> dict[str, Any]:
     from app.llm_client import llm_available
 
-    if MOCK_MODE or not llm_available():
+    if MOCK_MODE or not USE_LLM_ENRICHMENT or not llm_available():
         result: dict[str, Any] = {}
         for c in candidates:
             key = f"{c['country']}__{c['platform']}"
+            audience_label = _GOAL_AUDIENCE_LABEL.get(goal, idea_summary.primary_audience)
+            topic_slice = " ".join(idea_summary.topic.split()[:4]).rstrip(".,")
             result[key] = {
                 "why": (
-                    f"{c['platform']} in {c['country_name']} scores well for "
-                    f"{idea_summary.content_type} content reaching {idea_summary.primary_audience}."
+                    f"{c['platform']} in {c['country_name']} fits {topic_slice} because it rewards "
+                    f"{_PLATFORM_STRENGTH.get(c['platform'], 'clear storytelling')} for {audience_label}."
                 ),
                 "relevance_adjustment": 0.0,
                 "evidence_indices": [],
@@ -244,6 +267,7 @@ async def handle_review(request: ReviewRequest) -> ReviewResponse:
     detected_countries = _detect_country_scope(request.idea_text, countries)
     scoring_countries = detected_countries or countries
     platforms = kb.list_platforms()
+    platform_map = {platform["name"]: platform for platform in platforms}
     goal_map = kb.get_audience_goal_map(request.goal)
     preferred_platforms = goal_map.get("preferred_platforms", [p["name"] for p in platforms])
 
@@ -294,7 +318,11 @@ async def handle_review(request: ReviewRequest) -> ReviewResponse:
     for iso in top3_countries:
         country_info = next((c for c in countries if c["iso_code"] == iso), None)
         if country_info:
-            ev = kb.search_topic_evidence(idea_summary.topic, country_info["name"])
+            ev = kb.search_topic_evidence(
+                idea_summary.topic,
+                country_info["name"],
+                max_results=evidence_target_count(iso),
+            )
             evidence_map[country_info["name"]] = ev
 
     top_candidates = [c for c in all_candidates if c["country"] in top3_countries]
@@ -328,14 +356,26 @@ async def handle_review(request: ReviewRequest) -> ReviewResponse:
             except Exception:
                 pass
         if not used_evidence and ev_list:
-            used_evidence = ev_list[:2]
+            used_evidence = ev_list[: max(1, evidence_target_count(c["country"]) - 2)]
+        contextual_evidence = merge_evidence(
+            used_evidence,
+            ev_list,
+            build_usage_evidence(c["country_name"], c["platform"], {
+                "source_note": c["source_note"],
+            }),
+            build_platform_note_evidence(platform_map.get(c["platform"], {})),
+            limit=evidence_target_count(c["country"]),
+        )
         final_candidates.append({
             **c,
             "topic_relevance": topic_relevance,
             "fit_score": fit,
             "confidence": confidence(evidence_used, c["usage_score"]),
-            "why": why_data.get("why", f"{c['platform']} fits this content type in {c['country_name']}."),
-            "evidence": used_evidence,
+            "why": why_data.get(
+                "why",
+                f"{c['platform']} fits {idea_summary.content_type} content in {c['country_name']}.",
+            ),
+            "evidence": contextual_evidence,
         })
 
     final_candidates.sort(key=lambda x: x["fit_score"], reverse=True)

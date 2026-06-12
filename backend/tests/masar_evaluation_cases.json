@@ -1,0 +1,166 @@
+{
+  "review": [
+    {
+      "id": "review-01-qatar-product-demo",
+      "idea_text": "A Qatari engineering student demos a compact desalination prototype built for dorm and lab use in Doha.",
+      "goal": "applications",
+      "expected_country": "QA",
+      "expected_any_platforms": ["TikTok", "Instagram", "YouTube"],
+      "min_top_evidence": 5
+    },
+    {
+      "id": "review-02-egypt-water-demo",
+      "idea_text": "An Egyptian student shows a low-cost water filtration invention made from local materials.",
+      "goal": "applications",
+      "expected_country": "EG",
+      "expected_any_platforms": ["TikTok", "Instagram", "YouTube"],
+      "min_top_evidence": 3
+    },
+    {
+      "id": "review-03-saudi-solar-viewers",
+      "idea_text": "A Saudi founder explains a solar cooling idea for homes in Riyadh during the summer.",
+      "goal": "viewers",
+      "expected_country": "SA",
+      "expected_any_platforms": ["YouTube", "TikTok", "Instagram", "X"],
+      "min_top_evidence": 3
+    },
+    {
+      "id": "review-04-uae-ai-sponsors",
+      "idea_text": "A UAE university team introduces an AI logistics tool and wants to attract corporate backers.",
+      "goal": "sponsors",
+      "expected_country": "AE",
+      "expected_any_platforms": ["LinkedIn", "YouTube", "X"],
+      "min_top_evidence": 3
+    },
+    {
+      "id": "review-05-jordan-education",
+      "idea_text": "A Jordanian mentor shares a practical STEM lesson that helps teenagers build a robot arm.",
+      "goal": "viewers",
+      "expected_country": "JO",
+      "expected_any_platforms": ["YouTube", "TikTok", "Instagram"],
+      "min_top_evidence": 3
+    },
+    {
+      "id": "review-06-morocco-bts",
+      "idea_text": "Behind the scenes of a Moroccan startup building a sensor that reduces farm water waste.",
+      "goal": "applications",
+      "expected_country": "MA",
+      "expected_any_platforms": ["Instagram", "TikTok"],
+      "min_top_evidence": 3
+    },
+    {
+      "id": "review-07-kuwait-announcement",
+      "idea_text": "A Kuwaiti student announces a science camp challenge and invites young builders to submit.",
+      "goal": "applications",
+      "expected_country": "KW",
+      "expected_any_platforms": ["Instagram", "TikTok", "X"],
+      "min_top_evidence": 3
+    },
+    {
+      "id": "review-08-sudan-achievement",
+      "idea_text": "A Sudanese finalist celebrates winning a regional innovation prize with her mobility device.",
+      "goal": "sponsors",
+      "expected_country": "SD",
+      "expected_any_platforms": ["LinkedIn", "YouTube", "Instagram"],
+      "min_top_evidence": 3
+    },
+    {
+      "id": "review-09-iraq-medical-device",
+      "idea_text": "An Iraqi biomedical student demonstrates a low-cost screening device for clinics.",
+      "goal": "viewers",
+      "expected_country": "IQ",
+      "expected_any_platforms": ["YouTube", "TikTok", "Instagram"],
+      "min_top_evidence": 3
+    },
+    {
+      "id": "review-10-regional-no-country",
+      "idea_text": "An Arab student explains a device that turns kitchen waste into usable energy for homes.",
+      "goal": "viewers",
+      "expected_scope": "regional",
+      "expected_any_platforms": ["YouTube", "TikTok", "Instagram"],
+      "min_top_evidence": 3
+    }
+  ],
+  "personalize": [
+    {
+      "id": "personalize-01-qatar-instagram-tiktok",
+      "idea_text": "A Qatari student demonstrates a wearable sensor that warns workers about heat stress.",
+      "goal": "applications",
+      "countries": ["QA"],
+      "platforms": ["Instagram", "TikTok"],
+      "min_evidence_per_report": 5
+    },
+    {
+      "id": "personalize-02-eg-sa-mixed",
+      "idea_text": "A student founder explains a water-saving irrigation controller for small farms.",
+      "goal": "viewers",
+      "countries": ["EG", "SA"],
+      "platforms": ["YouTube", "Instagram"],
+      "min_evidence_per_report": 3
+    },
+    {
+      "id": "personalize-03-uae-sponsors",
+      "idea_text": "A UAE robotics team introduces a warehouse sorting system and wants sponsor interest.",
+      "goal": "sponsors",
+      "countries": ["AE"],
+      "platforms": ["LinkedIn", "YouTube"],
+      "min_evidence_per_report": 3
+    },
+    {
+      "id": "personalize-04-jordan-education",
+      "idea_text": "A Jordanian teacher shares a step-by-step science challenge for school makerspaces.",
+      "goal": "viewers",
+      "countries": ["JO"],
+      "platforms": ["YouTube", "TikTok"],
+      "min_evidence_per_report": 3
+    },
+    {
+      "id": "personalize-05-qatar-sponsors",
+      "idea_text": "A Doha-based climate startup founder presents a compact desalination system for off-grid sites.",
+      "goal": "sponsors",
+      "countries": ["QA"],
+      "platforms": ["LinkedIn", "Instagram"],
+      "min_evidence_per_report": 5
+    },
+    {
+      "id": "personalize-06-morocco-bts",
+      "idea_text": "Behind the scenes of a Moroccan university team building a smart composting bin.",
+      "goal": "applications",
+      "countries": ["MA"],
+      "platforms": ["Instagram", "TikTok"],
+      "min_evidence_per_report": 3
+    },
+    {
+      "id": "personalize-07-saudi-announcement",
+      "idea_text": "A Saudi innovation lab announces a student challenge for clean mobility ideas.",
+      "goal": "applications",
+      "countries": ["SA"],
+      "platforms": ["Instagram", "X"],
+      "min_evidence_per_report": 3
+    },
+    {
+      "id": "personalize-08-eg-qa-education-ai",
+      "idea_text": "A bilingual explainer shows how an AI tutor helps students revise science concepts faster.",
+      "goal": "viewers",
+      "countries": ["EG", "QA"],
+      "platforms": ["YouTube"],
+      "min_evidence_per_report": 3
+    },
+    {
+      "id": "personalize-09-kuwait-iraq-product",
+      "idea_text": "Two young inventors showcase a compact medical device for early screening in clinics.",
+      "goal": "viewers",
+      "countries": ["KW", "IQ"],
+      "platforms": ["TikTok", "YouTube"],
+      "min_evidence_per_report": 3
+    },
+    {
+      "id": "personalize-10-sudan-sponsor-story",
+      "idea_text": "A Sudanese finalist tells the story of turning a lab prototype into an award-winning product.",
+      "goal": "sponsors",
+      "countries": ["SD"],
+      "platforms": ["LinkedIn", "Instagram"],
+      "min_evidence_per_report": 3
+    }
+  ]
+}

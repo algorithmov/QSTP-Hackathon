@@ -13,11 +13,17 @@ _HERE = Path(__file__).parent
 _DATA = _HERE.parent / "data"
 _DB = _DATA / "kb.sqlite"
 _FALLBACK = _DATA / "fallback_evidence.json"
+_COUNTRY = _DATA / "country_evidence.json"
 
 MOCK_MODE = os.getenv("MOCK_MODE", "true").lower() == "true"
 TAVILY_API_KEY = os.getenv("TAVILY_API_KEY", "")
 SERPER_API_KEY = os.getenv("SERPER_API_KEY", "")
 TTL_HOURS = float(os.getenv("EVIDENCE_CACHE_TTL_HOURS", "24"))
+
+_STOPWORDS = {
+    "a", "an", "and", "the", "for", "with", "from", "into", "about", "that", "this",
+    "idea", "video", "clip", "post", "content", "student", "students", "young", "show",
+}
 
 
 def _ensure_cache_table() -> None:
@@ -38,11 +44,36 @@ def _load_fallback(topic: str, country_name: str) -> list[dict]:
         return []
     topic_norm = topic.strip().lower()
     entries = json.loads(_FALLBACK.read_text())
+    best_overlap: tuple[int, list[dict]] = (0, [])
+    topic_terms = _topic_terms(topic_norm)
     for entry in entries:
-        if (entry["topic"].strip().lower() == topic_norm and
-                entry["country_name"].strip().lower() == country_name.strip().lower()):
+        if entry["country_name"].strip().lower() != country_name.strip().lower():
+            continue
+        entry_topic = entry["topic"].strip().lower()
+        if entry_topic == topic_norm:
+            return entry.get("evidence", [])
+        overlap = len(topic_terms & _topic_terms(entry_topic))
+        if overlap > best_overlap[0]:
+            best_overlap = (overlap, entry.get("evidence", []))
+    return best_overlap[1]
+
+
+def _load_country_evidence(country_name: str) -> list[dict]:
+    if not _COUNTRY.exists():
+        return []
+    entries = json.loads(_COUNTRY.read_text())
+    for entry in entries:
+        if entry["country_name"].strip().lower() == country_name.strip().lower():
             return entry.get("evidence", [])
     return []
+
+
+def _topic_terms(text: str) -> set[str]:
+    return {
+        token
+        for token in "".join(c if c.isalnum() else " " for c in text.lower()).split()
+        if len(token) > 2 and token not in _STOPWORDS
+    }
 
 
 def _cache_get(topic_norm: str, country_name: str) -> list[dict] | None:
@@ -157,17 +188,19 @@ def _serper_search(topic: str, country_name: str, max_results: int) -> list[dict
 
 def search_topic_evidence(topic: str, country_name: str, max_results: int = 3) -> list[dict]:
     topic_norm = topic.strip().lower()
+    curated_country = _load_country_evidence(country_name)
     cached = _cache_get(topic_norm, country_name)
     if cached is not None:
         if MOCK_MODE or (not TAVILY_API_KEY and not SERPER_API_KEY) or any(item.get("url") for item in cached):
-            return cached[:max_results]
+            return (cached + curated_country)[:max_results]
 
     if TAVILY_API_KEY:
         try:
             results = _tavily_search(topic, country_name, max_results)
             if results:
-                _cache_set(topic_norm, country_name, results)
-                return results[:max_results]
+                combined = results + curated_country
+                _cache_set(topic_norm, country_name, combined)
+                return combined[:max_results]
         except Exception:
             pass
 
@@ -175,14 +208,15 @@ def search_topic_evidence(topic: str, country_name: str, max_results: int = 3) -
         try:
             results = _serper_search(topic, country_name, max_results)
             if results:
-                _cache_set(topic_norm, country_name, results)
-                return results[:max_results]
+                combined = results + curated_country
+                _cache_set(topic_norm, country_name, combined)
+                return combined[:max_results]
         except Exception:
             pass
 
     # Fallback evidence is only for offline/demo safety. In live mode with search
     # keys configured, returning [] is more honest than showing stale curated claims.
     if MOCK_MODE or (not TAVILY_API_KEY and not SERPER_API_KEY):
-        return _load_fallback(topic, country_name)[:max_results]
+        return (_load_fallback(topic, country_name) + curated_country)[:max_results]
 
-    return []
+    return curated_country[:max_results]

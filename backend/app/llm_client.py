@@ -82,9 +82,10 @@ def _call_gemini_json(system_prompt: str, user_prompt: str) -> dict:
     if not GEMINI_API_KEYS:
         raise RuntimeError("Gemini API keys are not configured")
     if time.time() < _gemini_disabled_until:
-        raise RuntimeError("Gemini is temporarily disabled after a full key-rotation failure")
+        raise RuntimeError("Gemini is temporarily disabled after quota exhaustion")
 
     last_error: Exception | None = None
+    quota_failures = 0
     for offset, key in enumerate(_gemini_ordered_keys()):
         try:
             url = f"https://generativelanguage.googleapis.com/v1beta/models/{GEMINI_MODEL}:generateContent"
@@ -97,22 +98,36 @@ def _call_gemini_json(system_prompt: str, user_prompt: str) -> dict:
                 },
             }
             response = httpx.post(url, params={"key": key}, json=payload, timeout=45.0)
+
+            # Config errors (bad model name, malformed request) — fail fast, don't rotate
+            if response.status_code in (400, 404):
+                msg = response.json().get("error", {}).get("message", response.text[:200])
+                raise RuntimeError(f"Gemini config error (HTTP {response.status_code}): {msg}")
+
+            # Quota exhausted for this key — rotate to next
+            if response.status_code == 429:
+                quota_failures += 1
+                last_error = RuntimeError(f"Gemini key slot {offset + 1} quota exceeded (429)")
+                logger.warning("Gemini key slot %s/%s quota exceeded", offset + 1, len(GEMINI_API_KEYS))
+                _gemini_key_index = (_gemini_key_index + 1) % len(GEMINI_API_KEYS)
+                continue
+
             response.raise_for_status()
             data = response.json()
             text = data["candidates"][0]["content"]["parts"][0]["text"]
             _gemini_key_index = (GEMINI_API_KEYS.index(key) + 1) % len(GEMINI_API_KEYS)
             return _extract_json(text)
+        except RuntimeError:
+            raise  # fast-fail config errors bubble up immediately
         except Exception as exc:
             _gemini_key_index = (_gemini_key_index + 1) % len(GEMINI_API_KEYS)
-            logger.warning(
-                "Gemini model %s failed with key slot %s/%s: %s",
-                GEMINI_MODEL,
-                offset + 1,
-                len(GEMINI_API_KEYS),
-                _safe_error(exc),
-            )
+            logger.warning("Gemini key slot %s/%s failed: %s", offset + 1, len(GEMINI_API_KEYS), _safe_error(exc))
             last_error = exc
-    _gemini_disabled_until = time.time() + 600
+
+    # Only apply backoff when ALL keys were quota-exhausted (not for other transient errors)
+    if quota_failures == len(GEMINI_API_KEYS):
+        _gemini_disabled_until = time.time() + 600
+        logger.warning("All %s Gemini keys quota-exhausted — disabling for 10 min", len(GEMINI_API_KEYS))
     raise RuntimeError(f"All Gemini keys failed: {_safe_error(last_error) if last_error else 'unknown error'}")
 
 

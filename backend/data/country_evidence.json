@@ -1,0 +1,136 @@
+[
+  {
+    "country_name": "Egypt",
+    "evidence": [
+      {
+        "claim": "DataReportal publishes an annual digital profile for Egypt covering internet, mobile, social media, and platform audience benchmarks.",
+        "source": "DataReportal Egypt 2026",
+        "url": "https://datareportal.com/digital-in-egypt",
+        "snippet": "Country-level digital profile for Egypt."
+      }
+    ]
+  },
+  {
+    "country_name": "Saudi Arabia",
+    "evidence": [
+      {
+        "claim": "DataReportal publishes an annual digital profile for Saudi Arabia covering internet, mobile, social media, and platform audience benchmarks.",
+        "source": "DataReportal Saudi Arabia 2026",
+        "url": "https://datareportal.com/digital-in-saudi-arabia",
+        "snippet": "Country-level digital profile for Saudi Arabia."
+      }
+    ]
+  },
+  {
+    "country_name": "UAE",
+    "evidence": [
+      {
+        "claim": "DataReportal publishes an annual digital profile for the United Arab Emirates covering internet, mobile, social media, and platform audience benchmarks.",
+        "source": "DataReportal UAE 2026",
+        "url": "https://datareportal.com/digital-in-the-united-arab-emirates",
+        "snippet": "Country-level digital profile for the UAE."
+      }
+    ]
+  },
+  {
+    "country_name": "Qatar",
+    "evidence": [
+      {
+        "claim": "DataReportal publishes a dedicated Digital 2026 report for Qatar with internet, social media, mobile, and platform audience benchmarks.",
+        "source": "DataReportal Qatar 2026",
+        "url": "https://datareportal.com/reports/digital-2026-qatar",
+        "snippet": "Digital 2026: Qatar."
+      },
+      {
+        "claim": "QRDI Council says its talent program targets youth in Qatar, including high school and undergraduate students interested in research careers.",
+        "source": "QRDI Talent Development",
+        "url": "https://qrdi.org.qa/en-us/Talent-Development",
+        "snippet": "Develop, retain and attract research talent targeting youth in Qatar."
+      },
+      {
+        "claim": "Qatar Foundation says QSTP is Qatar’s premier hub for applied research, technology innovation, incubation, and entrepreneurship.",
+        "source": "Qatar Science & Technology Park",
+        "url": "https://www.qf.org.qa/research/qatar-science-and-technology-park",
+        "snippet": "QSTP is Qatar’s premier innovation and incubation hub."
+      },
+      {
+        "claim": "Qatar Foundation says Stars of Science aims to transform innovative ideas into tangible solutions and strengthen innovation culture among Arab youth.",
+        "source": "Stars of Science | Qatar Foundation",
+        "url": "https://www.qf.org.qa/research/stars-of-science",
+        "snippet": "Leading scientific edutainment TV initiative of Qatar Foundation."
+      },
+      {
+        "claim": "Qatar Foundation’s 2026 Schools Showcase brings students, experts, and partners together to advance applied learning and future-ready skills.",
+        "source": "QF Schools Showcase 2026",
+        "url": "https://www.qf.org.qa/stories/qatar-foundation-schools-showcase-launches-to-spotlight-student-innovation",
+        "snippet": "Student innovation showcase in Qatar."
+      }
+    ]
+  },
+  {
+    "country_name": "Algeria",
+    "evidence": [
+      {
+        "claim": "DataReportal publishes an annual digital profile for Algeria covering internet, mobile, social media, and platform audience benchmarks.",
+        "source": "DataReportal Algeria 2026",
+        "url": "https://datareportal.com/digital-in-algeria",
+        "snippet": "Country-level digital profile for Algeria."
+      }
+    ]
+  },
+  {
+    "country_name": "Morocco",
+    "evidence": [
+      {
+        "claim": "DataReportal publishes an annual digital profile for Morocco covering internet, mobile, social media, and platform audience benchmarks.",
+        "source": "DataReportal Morocco 2026",
+        "url": "https://datareportal.com/digital-in-morocco",
+        "snippet": "Country-level digital profile for Morocco."
+      }
+    ]
+  },
+  {
+    "country_name": "Jordan",
+    "evidence": [
+      {
+        "claim": "DataReportal publishes an annual digital profile for Jordan covering internet, mobile, social media, and platform audience benchmarks.",
+        "source": "DataReportal Jordan 2026",
+        "url": "https://datareportal.com/digital-in-jordan",
+        "snippet": "Country-level digital profile for Jordan."
+      }
+    ]
+  },
+  {
+    "country_name": "Sudan",
+    "evidence": [
+      {
+        "claim": "DataReportal publishes an annual digital profile for Sudan covering internet, mobile, social media, and platform audience benchmarks.",
+        "source": "DataReportal Sudan 2026",
+        "url": "https://datareportal.com/digital-in-sudan",
+        "snippet": "Country-level digital profile for Sudan."
+      }
+    ]
+  },
+  {
+    "country_name": "Iraq",
+    "evidence": [
+      {
+        "claim": "DataReportal publishes an annual digital profile for Iraq covering internet, mobile, social media, and platform audience benchmarks.",
+        "source": "DataReportal Iraq 2026",
+        "url": "https://datareportal.com/digital-in-iraq",
+        "snippet": "Country-level digital profile for Iraq."
+      }
+    ]
+  },
+  {
+    "country_name": "Kuwait",
+    "evidence": [
+      {
+        "claim": "DataReportal publishes an annual digital profile for Kuwait covering internet, mobile, social media, and platform audience benchmarks.",
+        "source": "DataReportal Kuwait 2026",
+        "url": "https://datareportal.com/digital-in-kuwait",
+        "snippet": "Country-level digital profile for Kuwait."
+      }
+    ]
+  }
+]
