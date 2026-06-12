@@ -3,19 +3,27 @@
 import { useMemo, useState } from "react";
 import type { MapDatum, RouteOption } from "@/types/route";
 
-const countryTiles: Array<{ code: string; x: number; y: number; label: string }> = [
-  { code: "MA", x: 4, y: 48, label: "MA" },
-  { code: "DZ", x: 18, y: 44, label: "DZ" },
-  { code: "TN", x: 30, y: 38, label: "TN" },
-  { code: "LY", x: 37, y: 49, label: "LY" },
-  { code: "EG", x: 51, y: 49, label: "EG" },
-  { code: "SD", x: 55, y: 67, label: "SD" },
-  { code: "JO", x: 60, y: 39, label: "JO" },
-  { code: "SA", x: 69, y: 55, label: "SA" },
-  { code: "IQ", x: 69, y: 38, label: "IQ" },
-  { code: "KW", x: 76, y: 45, label: "KW" },
-  { code: "QA", x: 82, y: 54, label: "QA" },
-  { code: "AE", x: 88, y: 57, label: "AE" }
+type CountryShape = {
+  code: string;
+  label: string;
+  cx: number;
+  cy: number;
+  points: string;
+};
+
+const countryShapes: CountryShape[] = [
+  { code: "MA", label: "MA", cx: 7,  cy: 23, points: "1,9 14,9 15,20 12,32 7,40 1,32" },
+  { code: "DZ", label: "DZ", cx: 22, cy: 34, points: "14,9 32,8 32,60 14,60 12,32 15,20" },
+  { code: "TN", label: "TN", cx: 34, cy: 16, points: "32,8 37,8 39,15 36,24 32,22" },
+  { code: "LY", label: "LY", cx: 43, cy: 36, points: "32,22 36,24 39,15 37,8 54,8 54,60 32,60" },
+  { code: "EG", label: "EG", cx: 61, cy: 34, points: "54,8 65,8 69,14 72,18 70,30 65,33 64,58 54,58" },
+  { code: "SD", label: "SD", cx: 59, cy: 70, points: "54,58 66,58 68,74 67,82 54,82" },
+  { code: "JO", label: "JO", cx: 70, cy: 24, points: "69,14 74,14 76,20 74,34 66,34 65,33 70,30 72,18" },
+  { code: "IQ", label: "IQ", cx: 81, cy: 16, points: "74,6 90,6 90,24 83,28 77,24 76,20 74,14" },
+  { code: "KW", label: "KW", cx: 85, cy: 30, points: "83,28 87,28 87,32 83,32" },
+  { code: "SA", label: "SA", cx: 82, cy: 50, points: "66,34 74,34 77,24 83,28 87,28 91,32 96,40 94,58 88,62 79,64 70,58" },
+  { code: "QA", label: "QA", cx: 92, cy: 37, points: "91,34 94,34 93,40 91,40" },
+  { code: "AE", label: "AE", cx: 95, cy: 42, points: "94,32 100,30 100,50 90,50 90,40 93,40 94,34" },
 ];
 
 type MenaMapProps = {
@@ -27,21 +35,21 @@ export function MenaMap({ data, routes }: MenaMapProps) {
   const [selected, setSelected] = useState<MapDatum | null>(null);
 
   const byCountry = useMemo(
-    () => new Map(data.map((datum) => [datum.country, datum])),
+    () => new Map(data.map((d) => [d.country, d])),
     [data]
   );
 
   const routesByCountry = useMemo(() => {
     const map = new Map<string, RouteOption[]>();
-    for (const route of routes) {
-      const existing = map.get(route.country) ?? [];
-      map.set(route.country, [...existing, route]);
+    for (const r of routes) {
+      map.set(r.country, [...(map.get(r.country) ?? []), r]);
     }
     return map;
   }, [routes]);
 
-  function handleTileClick(code: string) {
-    const datum = byCountry.get(code) ?? null;
+  function handleClick(code: string) {
+    const datum = byCountry.get(code);
+    if (!datum) return;
     setSelected((prev) => (prev?.country === code ? null : datum));
   }
 
@@ -49,51 +57,53 @@ export function MenaMap({ data, routes }: MenaMapProps) {
 
   return (
     <section className="rounded-md border border-line bg-white p-5 shadow-board" aria-label="MENA interest map">
-      <div>
-        <h2 className="text-xl font-bold text-ink">MENA map</h2>
-        <p className="text-sm text-muted">Click a country to see why it scored the way it did.</p>
-      </div>
+      <h2 className="text-xl font-bold text-ink">MENA map</h2>
+      <p className="text-sm text-muted">
+        {data.length > 0 ? "Click a country to see why it scored the way it did." : "Submit a request to see the map."}
+      </p>
 
       <svg
-        viewBox="0 0 100 78"
+        viewBox="0 0 100 82"
         role="img"
-        aria-label="Simplified Arab countries choropleth map"
-        className="mt-4 h-auto w-full rounded-md bg-paper"
+        aria-label="MENA region choropleth map"
+        className="mt-4 h-auto w-full rounded-md"
+        style={{ background: "#c8dce8" }}
       >
-        <path
-          d="M0 30 C18 20 29 26 41 20 C51 15 62 21 77 16 C91 12 98 20 100 29 L100 78 L0 78 Z"
-          fill="#eef2f4"
-        />
-        {countryTiles.map((tile) => {
-          const datum = byCountry.get(tile.code);
-          const isSelected = selected?.country === tile.code;
+        {countryShapes.map((shape) => {
+          const datum = byCountry.get(shape.code);
+          const isSelected = selected?.country === shape.code;
+          const hasData = !!datum;
+
           return (
             <g
-              key={tile.code}
-              onClick={() => handleTileClick(tile.code)}
-              style={{ cursor: datum ? "pointer" : "default" }}
-              role="button"
-              aria-label={datum ? `${datum.country_name}, interest ${datum.interest}` : tile.code}
+              key={shape.code}
+              onClick={() => handleClick(shape.code)}
+              style={{ cursor: hasData ? "pointer" : "default" }}
+              aria-label={datum ? `${datum.country_name}, interest ${datum.interest}` : shape.code}
             >
-              <rect
-                x={tile.x}
-                y={tile.y}
-                width="10"
-                height="8"
-                rx="1.5"
-                fill={isSelected ? "#0e7c66" : interestColor(datum?.interest ?? 10)}
-                stroke={isSelected ? "#0a6355" : "#ffffff"}
-                strokeWidth={isSelected ? "1.2" : "0.8"}
+              <polygon
+                points={shape.points}
+                fill={
+                  isSelected
+                    ? "#0a6355"
+                    : hasData
+                    ? interestColor(datum.interest)
+                    : "#dde4e8"
+                }
+                stroke="#ffffff"
+                strokeWidth="0.6"
+                strokeLinejoin="round"
               />
               <text
-                x={tile.x + 5}
-                y={tile.y + 5.4}
+                x={shape.cx}
+                y={shape.cy + 1}
                 textAnchor="middle"
-                fontSize="2.7"
+                fontSize={shape.code === "KW" || shape.code === "QA" ? "2.0" : "2.6"}
                 fontWeight="700"
-                fill={isSelected ? "#ffffff" : "#17202a"}
+                fill={isSelected ? "#ffffff" : hasData ? "#17202a" : "#9aacb6"}
+                style={{ pointerEvents: "none", userSelect: "none" }}
               >
-                {tile.label}
+                {shape.label}
               </text>
             </g>
           );
@@ -109,12 +119,11 @@ export function MenaMap({ data, routes }: MenaMapProps) {
       {selected && (
         <div className="mt-4 rounded-md border border-line bg-paper p-4 text-sm">
           <div className="flex items-center justify-between">
-            <span className="font-bold text-ink text-base">{selected.country_name}</span>
+            <span className="text-base font-bold text-ink">{selected.country_name}</span>
             <button
               type="button"
               onClick={() => setSelected(null)}
               className="text-xs font-semibold text-muted hover:text-ink"
-              aria-label="Close"
             >
               close
             </button>
@@ -125,10 +134,7 @@ export function MenaMap({ data, routes }: MenaMapProps) {
               <div className="text-xs font-semibold text-muted">Interest score</div>
               <div className="mt-1 font-bold text-ink">{selected.interest} / 100</div>
               <div className="mt-1.5 h-1.5 rounded-full bg-slate-100">
-                <div
-                  className="h-1.5 rounded-full bg-accent"
-                  style={{ width: `${selected.interest}%` }}
-                />
+                <div className="h-1.5 rounded-full bg-accent" style={{ width: `${selected.interest}%` }} />
               </div>
             </div>
 
@@ -149,8 +155,10 @@ export function MenaMap({ data, routes }: MenaMapProps) {
             <div className="mt-3 space-y-2">
               {selectedRoutes.map((route) => (
                 <div key={`${route.rank}-${route.platform}`} className="rounded-md border border-line bg-white px-3 py-3">
-                  <div className="flex items-center gap-2 flex-wrap">
-                    <span className="rounded bg-ink px-2 py-0.5 text-xs font-bold text-white">Rank {route.rank}</span>
+                  <div className="flex flex-wrap items-center gap-2">
+                    <span className="rounded bg-ink px-2 py-0.5 text-xs font-bold text-white">
+                      Rank {route.rank}
+                    </span>
                     <span className="font-semibold text-ink">{route.platform}</span>
                     <span className="text-muted">{route.language}</span>
                     <span className="ml-auto font-bold text-accent">{route.match_score} pts</span>
@@ -161,9 +169,7 @@ export function MenaMap({ data, routes }: MenaMapProps) {
             </div>
           ) : (
             <p className="mt-3 text-muted">
-              {data.length > 0
-                ? "This country did not rank in the top routes for this request."
-                : "Submit a request to see route reasons."}
+              This country did not rank in the top routes for this request.
             </p>
           )}
         </div>
