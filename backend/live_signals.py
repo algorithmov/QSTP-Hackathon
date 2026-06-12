@@ -1,4 +1,4 @@
-"""Live trend signals: pytrends + YouTube, with SQLite caching and JSON fallback."""
+"""Live trend signals: pytrends → trendspy → stale cache → JSON fallback."""
 import asyncio
 import json
 import logging
@@ -82,6 +82,7 @@ async def interest_by_country(topic: str) -> dict[str, int]:
     if cached:
         return cached
 
+    # 1. pytrends
     try:
         result = await asyncio.to_thread(_pytrends_interest_by_country, topic)
         if result:
@@ -90,11 +91,22 @@ async def interest_by_country(topic: str) -> dict[str, int]:
     except Exception as exc:
         logger.warning("pytrends interest_by_country failed for %r: %s", topic, exc)
 
+    # 2. trendspy (different embed endpoint — independent rate-limit bucket)
+    try:
+        result = await asyncio.to_thread(_trendspy_interest_by_country, topic)
+        if result:
+            _cache_set(cache_key, result)
+            return result
+    except Exception as exc:
+        logger.warning("trendspy interest_by_country failed for %r: %s", topic, exc)
+
+    # 3. stale cache
     stale = _cache_get_stale(cache_key)
     if stale:
         logger.info("serving stale cache for %r", topic)
         return stale
 
+    # 4. static JSON fallback
     return _fallback_interest(topic)
 
 
@@ -128,6 +140,7 @@ async def trend_direction(topic: str, country: str) -> dict:
     if cached:
         return cached
 
+    # 1. pytrends
     try:
         result = await asyncio.to_thread(_pytrends_trend_direction, topic, country)
         if result:
@@ -136,10 +149,21 @@ async def trend_direction(topic: str, country: str) -> dict:
     except Exception as exc:
         logger.warning("pytrends trend_direction failed for %r/%s: %s", topic, country, exc)
 
+    # 2. trendspy
+    try:
+        result = await asyncio.to_thread(_trendspy_trend_direction, topic, country)
+        if result:
+            _cache_set(cache_key, result)
+            return result
+    except Exception as exc:
+        logger.warning("trendspy trend_direction failed for %r/%s: %s", topic, country, exc)
+
+    # 3. stale cache
     stale = _cache_get_stale(cache_key)
     if stale:
         return stale
 
+    # 4. static JSON fallback
     return _fallback_direction(topic, country)
 
 
@@ -167,6 +191,44 @@ def _pytrends_trend_direction(topic: str, country: str) -> dict:
         direction = "falling"
     else:
         direction = "flat"
+    return {"direction": direction, "change_pct": change_pct}
+
+
+def _trendspy_interest_by_country(topic: str) -> dict[str, int]:
+    import trendspy, pycountry
+    t = trendspy.Trends(request_delay=1.0)
+    df = t.interest_by_region(topic, timeframe="now 7-d", geo="", resolution="COUNTRY")
+    if df is None or df.empty:
+        return {}
+    result = {}
+    col = df.columns[0]
+    for code in ARAB_COUNTRIES:
+        country = pycountry.countries.get(alpha_2=code)
+        if country is None:
+            continue
+        for name_attr in ("name", "common_name", "official_name"):
+            name = getattr(country, name_attr, None)
+            if name and name in df.index:
+                result[code] = int(df.loc[name, col])
+                break
+    return result
+
+
+def _trendspy_trend_direction(topic: str, country: str) -> dict:
+    import trendspy
+    t = trendspy.Trends(request_delay=1.0)
+    df = t.interest_over_time(topic, timeframe="now 7-d", geo=country)
+    if df is None or df.empty:
+        return {}
+    col = df.columns[0]
+    values = df[col].tolist()
+    if len(values) < 2:
+        return {"direction": "flat", "change_pct": 0}
+    mid = len(values) // 2
+    first_half = sum(values[:mid]) / max(mid, 1)
+    second_half = sum(values[mid:]) / max(len(values) - mid, 1)
+    change_pct = round((second_half - first_half) / first_half * 100) if first_half else 0
+    direction = "rising" if change_pct >= 10 else "falling" if change_pct <= -10 else "flat"
     return {"direction": direction, "change_pct": change_pct}
 
 
