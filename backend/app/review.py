@@ -7,8 +7,17 @@ import os
 import uuid
 
 import app.kb_client as kb
+from app.evidence_helpers import (
+    build_platform_note_evidence,
+    build_usage_evidence,
+    evidence_target_count,
+    merge_evidence,
+)
 from app.scoring import confidence
 from app.schemas import (
+    CountryFitBreakdownItem,
+    CountryFitInsight,
+    CountryFitResponse,
     EvidenceItem,
     IdeaSummary,
     MediaAsset,
@@ -112,6 +121,114 @@ def _apply_media_overrides(
     return updated, ds or None
 
 
+def _build_rank_candidates(
+    idea_text: str,
+    goal: str,
+    idea_summary: IdeaSummary,
+    duration_hint: str | None = None,
+) -> list[dict]:
+    candidates: list[dict] = []
+    for platform_meta in kb.list_platforms():
+        platform = platform_meta["name"]
+        content_platform_fit = kb.get_content_platform_fit(idea_summary.content_type, platform)
+        intelligence = kb.get_platform_intelligence(
+            idea_text=idea_text,
+            topic=idea_summary.topic,
+            content_type=idea_summary.content_type,
+            suggested_language=idea_summary.suggested_language,
+            goal=goal,
+            platform=platform,
+            content_platform_fit=content_platform_fit,
+            duration_hint=duration_hint,
+        )
+        conf = confidence(bool(intelligence["top_evidence"]), max(
+            intelligence.get("semantic_match", 0.0),
+            intelligence.get("performance_strength", 0.0),
+        ))
+        candidates.append({
+            **intelligence,
+            "confidence": conf,
+        })
+    candidates.sort(key=_ranking_sort_key, reverse=True)
+    return candidates
+
+
+def _country_fit_reason(country_name: str, strongest_platform: str, fit_score: int) -> str:
+    if fit_score >= 78:
+        tone = "very strong"
+    elif fit_score >= 66:
+        tone = "strong"
+    else:
+        tone = "moderate"
+    return (
+        f"{country_name} is a {tone} audience match for this idea, led by {strongest_platform} "
+        "and supported by the current Stars of Science platform patterns."
+    )
+
+
+async def handle_country_fit(request: ReviewRequest) -> CountryFitResponse:
+    idea_summary = _extract_idea_summary(request.idea_text, request.goal)
+    candidates = _build_rank_candidates(request.idea_text, request.goal, idea_summary)
+    platform_meta_map = {platform["name"]: platform for platform in kb.list_platforms()}
+    platform_weight_total = sum(max(candidate["fit_score"], 1) for candidate in candidates) or 1
+
+    countries: list[CountryFitInsight] = []
+    for country in kb.list_countries():
+        breakdown: list[CountryFitBreakdownItem] = []
+        evidence_groups: list[list[dict]] = []
+        top_platform = candidates[0]["platform"]
+        top_contribution = -1.0
+        weighted_sum = 0.0
+
+        for candidate in candidates:
+            usage = kb.get_usage(candidate["platform"], country["iso_code"])
+            platform_weight = max(candidate["fit_score"], 1) / platform_weight_total
+            contribution = platform_weight * usage["usage_score"] * 100
+            weighted_sum += contribution
+            if contribution > top_contribution:
+                top_contribution = contribution
+                top_platform = candidate["platform"]
+
+            evidence_groups.append(candidate["top_evidence"])
+            evidence_groups.append(build_usage_evidence(country["name"], candidate["platform"], usage))
+            evidence_groups.append(build_platform_note_evidence(platform_meta_map.get(candidate["platform"], {})))
+            breakdown.append(
+                CountryFitBreakdownItem(
+                    platform=candidate["platform"],
+                    platform_fit_score=candidate["fit_score"],
+                    country_usage_score=round(float(usage["usage_score"]), 2),
+                    blended_contribution=round(contribution, 1),
+                    reason=(
+                        f"{candidate['platform']} review fit ({candidate['fit_score']}) is blended with "
+                        f"{country['name']}'s local usage score ({usage['usage_score']:.2f})."
+                    ),
+                )
+            )
+
+        breakdown.sort(key=lambda item: item.blended_contribution, reverse=True)
+        audience_fit_score = max(1, min(100, round(weighted_sum)))
+        merged_evidence = merge_evidence(*evidence_groups, limit=evidence_target_count(country["iso_code"]))
+        country_confidence = confidence(bool(merged_evidence), audience_fit_score / 100)
+        countries.append(
+            CountryFitInsight(
+                country=country["iso_code"],
+                country_name=country["name"],
+                audience_fit_score=audience_fit_score,
+                confidence=country_confidence,
+                strongest_platform=top_platform,
+                why=_country_fit_reason(country["name"], top_platform, audience_fit_score),
+                breakdown=breakdown,
+                evidence=[EvidenceItem(**item) for item in merged_evidence],
+            )
+        )
+
+    countries.sort(
+        key=lambda item: (item.audience_fit_score, item.breakdown[0].blended_contribution, item.country_name),
+        reverse=True,
+    )
+    return CountryFitResponse(request_id=str(uuid.uuid4()), countries=countries)
+
+
 def _ranking_sort_key(candidate: dict) -> tuple:
     return (
         candidate["fit_score"],
@@ -206,30 +323,7 @@ async def handle_review(
     if media_context and media_context.get("media_kind") != "none":
         idea_summary, duration_hint = _apply_media_overrides(idea_summary, media_context)
 
-    candidates: list[dict] = []
-    for platform_meta in kb.list_platforms():
-        platform = platform_meta["name"]
-        content_platform_fit = kb.get_content_platform_fit(idea_summary.content_type, platform)
-        intelligence = kb.get_platform_intelligence(
-            idea_text=request.idea_text,
-            topic=idea_summary.topic,
-            content_type=idea_summary.content_type,
-            suggested_language=idea_summary.suggested_language,
-            goal=request.goal,
-            platform=platform,
-            content_platform_fit=content_platform_fit,
-            duration_hint=duration_hint,
-        )
-        conf = confidence(bool(intelligence["top_evidence"]), max(
-            intelligence.get("semantic_match", 0.0),
-            intelligence.get("performance_strength", 0.0),
-        ))
-        candidates.append({
-            **intelligence,
-            "confidence": conf,
-        })
-
-    candidates.sort(key=_ranking_sort_key, reverse=True)
+    candidates = _build_rank_candidates(request.idea_text, request.goal, idea_summary, duration_hint)
     rankings: list[Ranking] = []
     for index, candidate in enumerate(candidates[:5], start=1):
         rankings.append(

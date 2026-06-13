@@ -4,6 +4,7 @@ import axios from "axios";
 import type {
   PersonalizeRequest,
   PersonalizeResponse,
+  Platform,
   PlatformReportRequest,
   PlatformReportResponse,
   ReviewRequest,
@@ -22,6 +23,17 @@ async function loadMock<T>(path: string): Promise<T> {
     throw new Error("Mock response could not be loaded.");
   }
   return response.json() as Promise<T>;
+}
+
+async function loadMockPlatformReport(platform: Platform): Promise<PlatformReportResponse> {
+  const payload = await loadMock<Record<Platform, PlatformReportResponse>>(
+    "/mocks/platform_report_responses.json"
+  );
+  const report = payload[platform];
+  if (!report) {
+    throw new Error(`Mock platform report missing for ${platform}.`);
+  }
+  return report;
 }
 
 export async function reviewIdea(payload: ReviewRequest): Promise<ReviewResponse> {
@@ -57,10 +69,13 @@ export async function personalizeIdea(payload: PersonalizeRequest): Promise<Pers
 export async function fetchPlatformReport(
   payload: PlatformReportRequest
 ): Promise<PlatformReportResponse> {
+  if (mockMode()) {
+    return loadMockPlatformReport(payload.platform);
+  }
+
   const { data } = await axios.post<PlatformReportResponse>(
     `${backendUrl()}/api/review/report`,
     payload
   );
   return data;
 }
-

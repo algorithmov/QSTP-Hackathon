@@ -13,6 +13,7 @@ from fastapi import FastAPI, File, Form, HTTPException, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.schemas import (
+    CountryFitResponse,
     ImportResponse,
     ImportRunResult,
     PersonalizeRequest,
@@ -27,7 +28,7 @@ from app.schemas import (
     VALID_COUNTRIES,
     VALID_PLATFORMS,
 )
-from app.review import handle_platform_report, handle_review
+from app.review import handle_country_fit, handle_platform_report, handle_review
 from app.review import _extract_idea_summary
 import app.kb_client as kb
 
@@ -145,6 +146,22 @@ async def review_report(request: PlatformReportRequest) -> PlatformReportRespons
     except Exception as exc:
         logger.exception("handle_platform_report failed")
         raise HTTPException(status_code=500, detail="Platform report failed. Try again.") from exc
+
+
+@app.post("/api/review/country-fit", response_model=CountryFitResponse)
+async def review_country_fit(request: ReviewRequest) -> CountryFitResponse:
+    if not request.idea_text.strip():
+        raise HTTPException(status_code=422, detail="idea_text must not be empty")
+    if request.goal not in VALID_GOALS:
+        raise HTTPException(
+            status_code=422,
+            detail=f"goal must be one of: {', '.join(sorted(VALID_GOALS))}",
+        )
+    try:
+        return await handle_country_fit(request)
+    except Exception as exc:
+        logger.exception("handle_country_fit failed")
+        raise HTTPException(status_code=500, detail="Country fit generation failed. Try again.") from exc
 
 
 @app.post("/api/admin/stars/sync", response_model=StarsSyncResponse)

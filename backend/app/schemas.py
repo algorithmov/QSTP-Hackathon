@@ -138,6 +138,30 @@ class PlatformReportResponse(BaseModel):
     media_summary: Optional[str] = None
 
 
+class CountryFitBreakdownItem(BaseModel):
+    platform: str
+    platform_fit_score: int
+    country_usage_score: float
+    blended_contribution: float
+    reason: str
+
+
+class CountryFitInsight(BaseModel):
+    country: str
+    country_name: str
+    audience_fit_score: int
+    confidence: str
+    strongest_platform: str
+    why: str
+    breakdown: list[CountryFitBreakdownItem]
+    evidence: list[EvidenceItem]
+
+
+class CountryFitResponse(BaseModel):
+    request_id: str
+    countries: list[CountryFitInsight]
+
+
 class PersonalizedReport(BaseModel):
     country: str
     country_name: str

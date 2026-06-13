@@ -1,0 +1,186 @@
+{
+  "TikTok": {
+    "request_id": "mock-report-tiktok",
+    "platform": "TikTok",
+    "fit_score": 82,
+    "confidence": "high",
+    "why": "TikTok's short-form format is ideal for a 30-second prototype demo. Stars of Science posts on TikTok show the highest engagement rates for product reveal content among Arab youth.",
+    "analysis": "TikTok is the strongest fit because the idea already matches the platform's winning pattern inside the Stars of Science dataset: short, proof-led demos that show the invention working before explaining it. The best matched records pair a fast visual hook with a clear utility payoff, and the evidence suggests that prototype reveal posts outperform the platform baseline on reach and sharing. For an applications goal, this matters because TikTok can convert curiosity into action when the first few seconds immediately show the problem and the device solving it.",
+    "strengths": [
+      "Native fit for 30-second hook-first editing",
+      "Prototype reveal format is already validated in matched Stars of Science posts",
+      "Strong re-share behavior for innovation content among younger audiences"
+    ],
+    "risks": [
+      "Too much setup before the reveal will hurt retention",
+      "Dense technical explanation may flatten the opening",
+      "Weak on-screen text can reduce comprehension in autoplay contexts"
+    ],
+    "recommendations": [
+      "Open with the device in action within the first two seconds",
+      "Use concise bilingual text overlays instead of long narration",
+      "End on a direct application-oriented CTA tied to the innovation outcome"
+    ],
+    "evidence": [
+      {
+        "claim": "Stars of Science TikTok posts featuring working prototypes averaged 2.1× the platform median reach",
+        "source": "Stars of Science TikTok",
+        "url": null,
+        "evidence_type": "stars_post",
+        "platform": "TikTok",
+        "relevance_score": 0.84,
+        "metrics": { "views": 210000, "likes": 18000, "shares": 4200, "comments": 940 }
+      },
+      {
+        "claim": "Water and environment innovation posts on TikTok show strong re-share behaviour in MENA",
+        "source": "Stars of Science TikTok",
+        "url": null,
+        "evidence_type": "stars_post",
+        "platform": "TikTok",
+        "relevance_score": 0.79,
+        "metrics": { "views": 185000, "likes": 14000, "shares": 3100, "comments": 710 }
+      }
+    ],
+    "media_summary": null
+  },
+  "Instagram": {
+    "request_id": "mock-report-instagram",
+    "platform": "Instagram",
+    "fit_score": 75,
+    "confidence": "high",
+    "why": "Instagram Reels and carousel posts give strong visual reach for prototype demos. Stars of Science performs consistently well here with photo + short-video hybrid content.",
+    "analysis": "Instagram works well when the idea is treated as a visual proof story rather than only a clip. The strongest Stars of Science examples on this platform combine a Reel for reach with supporting static frames that slow the audience down and reinforce credibility. That makes Instagram a strong second option here: the demo is visually legible, the concept can benefit from before-and-after framing, and the applications goal can be supported with captions and story reshares that carry the CTA further than the Reel alone.",
+    "strengths": [
+      "Reels support short visual demos cleanly",
+      "Carousel follow-up can add credibility and context",
+      "Strong fit for proof moments and caption-led CTAs"
+    ],
+    "risks": [
+      "A single clip may feel too lightweight without supporting visuals",
+      "Overly technical captions can reduce completion and save intent",
+      "The CTA can get buried if the final frame is weak"
+    ],
+    "recommendations": [
+      "Cut a Reel version first, then support it with a carousel or story sequence",
+      "Make the invention outcome visible in the thumbnail and first frame",
+      "Use the caption to bridge from demo to application motivation"
+    ],
+    "evidence": [
+      {
+        "claim": "Stars of Science Instagram Reels featuring student inventors averaged 1.7× the account baseline reach",
+        "source": "Stars of Science Instagram",
+        "url": null,
+        "evidence_type": "stars_post",
+        "platform": "Instagram",
+        "relevance_score": 0.78,
+        "metrics": { "views": 95000, "likes": 8200, "shares": 1100, "comments": 430 }
+      }
+    ],
+    "media_summary": null
+  },
+  "YouTube": {
+    "request_id": "mock-report-youtube",
+    "platform": "YouTube",
+    "fit_score": 70,
+    "confidence": "medium",
+    "why": "YouTube suits longer-form follow-up content. A 30-second clip works as a teaser but the platform rewards depth — consider a 3-minute explainer as the main piece.",
+    "analysis": "YouTube is viable, but mainly as an expansion path rather than the primary home for this exact asset. The matched Stars of Science evidence favors longer walkthroughs and educational storytelling, so a 30-second demo is better positioned as a Short that points into a fuller explanation. If the team wants application intent rather than only awareness, the platform can still help, but only if the short clip is framed as an entry point to a more complete inventor narrative.",
+    "strengths": [
+      "Strong credibility environment for science and engineering content",
+      "Supports bilingual subtitles and deeper project explanation",
+      "Can extend a teaser into a fuller conversion journey"
+    ],
+    "risks": [
+      "The current asset length is below YouTube's strongest pattern",
+      "Shorts-only execution may not carry enough context",
+      "A demo without narrative depth can underperform against explainers"
+    ],
+    "recommendations": [
+      "Use the 30-second cut as a YouTube Short, not the whole strategy",
+      "Pair it with a longer explainer or inventor-focused follow-up",
+      "Add subtitles and a strong title that makes the problem clear"
+    ],
+    "evidence": [
+      {
+        "claim": "Stars of Science YouTube videos over 3 minutes received 4× more comments than clips under 1 minute",
+        "source": "Stars of Science YouTube",
+        "url": null,
+        "evidence_type": "stars_post",
+        "platform": "YouTube",
+        "relevance_score": 0.71,
+        "metrics": { "views": 420000, "likes": 22000, "shares": 5100, "comments": 1800 }
+      }
+    ],
+    "media_summary": null
+  },
+  "LinkedIn": {
+    "request_id": "mock-report-linkedin",
+    "platform": "LinkedIn",
+    "fit_score": 63,
+    "confidence": "medium",
+    "why": "LinkedIn reaches sponsors and industry decision-makers but engagement for short video is lower than on consumer platforms. Best used as a secondary channel for the applications goal.",
+    "analysis": "LinkedIn can support this idea, but only after the framing is shifted from novelty to achievement and relevance. The evidence in the Stars of Science dataset suggests the platform responds better to innovation milestones, institutional credibility, and inventor narratives than to consumer-style short clips alone. That means the current concept should be translated into a more professional story: what problem the prototype solves, why it matters, and what it says about the builder or program.",
+    "strengths": [
+      "Good secondary channel for credibility and partner visibility",
+      "Professional framing can make the invention more legible",
+      "Useful for institution-tagged distribution"
+    ],
+    "risks": [
+      "The current short-form asset is not natively optimized for LinkedIn",
+      "Pure visual hooks can feel lightweight in this context",
+      "Application CTAs may need stronger institutional framing"
+    ],
+    "recommendations": [
+      "Lead with the innovation outcome and founder credibility, not only the clip",
+      "Use embedded video with supporting text rather than video-only posting",
+      "Tag relevant institutions where appropriate to strengthen distribution"
+    ],
+    "evidence": [
+      {
+        "claim": "Stars of Science LinkedIn posts mentioning finalist names received 1.4× more impressions than generic posts",
+        "source": "Stars of Science LinkedIn",
+        "url": null,
+        "evidence_type": "stars_post",
+        "platform": "LinkedIn",
+        "relevance_score": 0.62,
+        "metrics": { "views": 28000, "likes": 1400, "shares": 310, "comments": 95 }
+      }
+    ],
+    "media_summary": null
+  },
+  "X": {
+    "request_id": "mock-report-x",
+    "platform": "X",
+    "fit_score": 58,
+    "confidence": "low",
+    "why": "X has limited Stars of Science post volume and lower organic reach for video content. Works for real-time updates during broadcast but not ideal for reaching new applicants.",
+    "analysis": "X is the weakest fit for this idea as a standalone distribution choice. The local evidence base shows that Stars of Science performs better here when posts are tied to live moments, season launches, or thread-style updates rather than when relying on a single short demo to reach new audiences. The current concept can still play a supporting role, but it should be attached to a timely event, a thread, or a sharper announcement angle rather than treated as the main acquisition surface.",
+    "strengths": [
+      "Useful for real-time commentary and launch support",
+      "Short clip length is compatible with the platform",
+      "Can reinforce broader campaign moments"
+    ],
+    "risks": [
+      "Lower organic leverage for standalone video discovery",
+      "Sparse historical match quality in the Stars of Science dataset",
+      "Weaker conversion path for applications versus stronger consumer platforms"
+    ],
+    "recommendations": [
+      "Use the clip inside a thread or season-timed announcement",
+      "Keep copy tight and news-oriented rather than explanatory",
+      "Treat X as a support channel, not the lead destination"
+    ],
+    "evidence": [
+      {
+        "claim": "Stars of Science X posts during season launch windows saw 3× normal impression volume",
+        "source": "Stars of Science X",
+        "url": null,
+        "evidence_type": "stars_post",
+        "platform": "X",
+        "relevance_score": 0.55,
+        "metrics": { "views": 41000, "likes": 1900, "shares": 820, "comments": 210 }
+      }
+    ],
+    "media_summary": null
+  }
+}

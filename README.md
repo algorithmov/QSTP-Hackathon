@@ -1,64 +1,151 @@
-# QSTP-Hackathon — Masar v2 (Checkpoint 2)
+# Masar
 
-Masar is an AI content co-pilot for Stars of Science marketing. It takes a text idea and campaign goal, then produces ranked platform and country recommendations with a transparent Fit Score and evidence-backed reasoning, plus fully localized delivery plans with dialect-appropriate captions.
+Masar is an evidence-backed decision layer for Stars of Science social distribution. It helps judges and operators move from a raw content idea to three concrete outputs: the best official platform, the strongest countries for that idea, and a localized posting plan for the chosen route.
 
-## Two-page product
+## What judges should look at
 
-| Page | URL | What it does |
-|---|---|---|
-| AI Reviewer | `/review` | Ranks country + platform combinations by Fit Score, shows score breakdown and cited evidence |
-| Personalized Targeter | `/personalize` | Generates ready-to-use delivery plans: format, hook, caption (RTL where needed), hashtags, best time, dos/don'ts |
+Masar is built around three pages:
 
-## One-command local start
+| Page | Purpose |
+| --- | --- |
+| `/review` | Scores and ranks the five official Stars of Science platforms, then shows a country choropleth of where the idea is strongest by audience fit. |
+| `/personalize` | Generates localized delivery plans by country and platform: hook, caption, hashtags, timing, and do/don’t guidance. |
+| `/about` | Explains the product, methodology, evidence model, and recommended judge demo path. |
+
+## What is new in this version
+
+- Stronger product shell and cleaner navigation across three pages
+- Guided review dashboard instead of one long stacked report
+- Platform ranking overview that keeps all five scores visible at once
+- Evidence-backed country heatmap on the reviewer page
+- More prominent media upload flow for Gemini-assisted context extraction
+- Judge-facing About page and repo documentation
+
+## How Masar makes decisions
+
+### 1. Platform ranking
+
+The reviewer scores only the five official Stars of Science platforms:
+
+- TikTok
+- Instagram
+- YouTube
+- LinkedIn
+- X
+
+The fit score blends:
+
+- semantic match with similar Stars of Science posts
+- content-type to platform fit
+- performance strength from matched posts
+- language fit
+- goal alignment
+- duration fit
+
+### 2. Country audience fit
+
+The country choropleth does not use a separate disconnected heuristic. It takes the current platform review result and uses those platform scores as weights, then blends them with country-specific platform usage scores from the local knowledge base. The output is an `audience_fit_score` per supported country plus:
+
+- strongest contributing platform
+- breakdown by platform contribution
+- supporting evidence
+
+### 3. Localized delivery plans
+
+After the user chooses countries and platforms, Masar generates:
+
+- recommended format
+- localized hook
+- caption
+- hashtags
+- best posting time
+- recommended day window
+- country-specific do/don’t guidance
+
+## Why this matters for Stars of Science
+
+Masar is not a generic social media recommender. It is intentionally constrained to the Stars of Science operating context:
+
+- the five official channels
+- Stars of Science post evidence
+- country-level audience usage references
+- judge-friendly transparency through evidence disclosures
+
+That gives the product a clearer evaluation story: it ranks, explains, localizes, and exposes the evidence behind each recommendation.
+
+## Judge demo script
+
+1. Start on `/review`.
+2. Paste the seeded idea already shown in the UI.
+3. Run the review and inspect the top-ranked platform.
+4. Compare the five platform scores in the ranking overview.
+5. Hover the country map and inspect the audience fit breakdown and evidence.
+6. Open one platform’s score breakdown and deep report.
+7. Move to `/personalize`.
+8. Generate a delivery plan for selected countries and platforms.
+9. Open `/about` for the methodology and product summary.
+
+## Local run
+
+### One-command startup
 
 ```bash
 ./setup.sh
 ```
 
-This installs all dependencies, starts the backend (`:8000`) and frontend (`:3000`), and opens the app. Press `Ctrl+C` to stop.
+This installs dependencies if needed, starts:
 
-By default `MOCK_MODE=true` in `backend/.env` — both pages work instantly with no API keys. To enable live LLM calls, set `MOCK_MODE=false`, add one or more comma-separated `GEMINI_API_KEYS`, and keep `LLM_PROVIDER_ORDER=gemini,groq`. `GROQ_API_KEY` can stay configured as the fallback provider.
+- backend on `http://localhost:8000`
+- frontend on `http://localhost:3000`
 
-## Architecture
+### Frontend-only
 
-```
-frontend/       Next.js 14 App Router — two pages, mock-ready
-backend/
-  app/          FastAPI, two endpoints, Gemini-first/Groq-fallback LLM, scoring formula
-  kb/           Knowledge base package (SQLite + Tavily evidence)
-  data/         kb_seed.json (50 usage rows, 30 fit rows), fallback evidence
-contracts/      Frozen example responses for both endpoints
-scripts/        run_local.sh, log files
+```bash
+cd frontend
+npm install
+npm run dev
 ```
 
-## Fit Score formula
+### Backend-only
 
+```bash
+cd backend
+python3.11 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+uvicorn app.main:app --reload --port 8000
 ```
-fit_score = 100 × (0.30 × topic_relevance + 0.25 × audience_fit + 0.20 × platform_fit + 0.15 × language_fit + 0.10 × timing_fit)
+
+## Mock mode vs live mode
+
+By default, the project can run in mock mode for a stable demo:
+
+- frontend reads seeded mock responses
+- backend can run without live provider keys
+
+To use live model-backed behavior, configure backend keys and disable frontend mocks as needed.
+
+## Architecture summary
+
+```text
+frontend/   Next.js 14 App Router, TypeScript, Tailwind CSS
+backend/    FastAPI, Pydantic, scoring logic, Gemini/Groq integration hooks
+backend/kb/ SQLite-backed country/platform usage and Stars of Science evidence layer
 ```
 
-Every number is traceable: `platform_fit` comes from the KB's content-type/platform table, `audience_fit` from the platform usage score weighted by goal preference, `language_fit` from the detected idea language, `timing_fit` from peak hours in the KB. `topic_relevance` starts at the usage score baseline and is adjusted ±0.15 when live Tavily evidence is available. `confidence` is `high` when evidence was used, `medium` when not but usage score ≥ 0.6, `low` otherwise.
+Key implementation pieces:
 
-## API endpoints
+- `frontend/app/review/page.tsx` — platform ranking dashboard + country choropleth
+- `frontend/app/personalize/page.tsx` — localized delivery planner
+- `frontend/app/about/page.tsx` — judge-facing explanation page
+- `backend/app/review.py` — review scoring and country-fit generation
+- `backend/app/personalize.py` — country/platform delivery-plan generation
 
-**`POST /api/review`** — returns ranked country/platform list with Fit Scores, component breakdown, why lines, and cited evidence.
+## Verification expectation
 
-**`POST /api/personalize`** — accepts up to 3 countries + 2 platforms, returns a localized delivery report per pair: format, hook, dialect caption with RTL/LTR direction, hashtags, post time, dos/don'ts.
+This version should be checked by:
 
-**`GET /health`** — service status and mock mode flag.
-
-## Stack
-
-- **Backend**: Python 3.11, FastAPI, Pydantic v2, Gemini REST, Groq SDK fallback, Tavily/Serper search, SQLite KB
-- **Frontend**: Next.js 14 App Router, TypeScript, Tailwind CSS, Recharts, Axios, localStorage page persistence
-- **LLM**: Gemini primary with multi-key rotation, Groq fallback — provider order controlled by `LLM_PROVIDER_ORDER`
-- **Evidence**: Tavily free tier — 1000 credits/month, SQLite-cached with 24-hour TTL
-
-## Submission requirements
-
-1. Product Requirements document
-2. MVP link (working demo)
-3. Pitch deck
-4. Pitch video
-
-Deadline: Saturday 11:59 PM
+- running `next build` in the frontend
+- compiling backend Python modules
+- exercising `/review`, `/personalize`, and `/about`
+- verifying ranking, map, modal, and upload flows in the browser

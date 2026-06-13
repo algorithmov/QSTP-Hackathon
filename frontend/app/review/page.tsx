@@ -149,12 +149,12 @@ export default function ReviewPage() {
 
   return (
     <AppShell>
-      <section className="rounded-md border border-line bg-white/95 p-5 shadow-board">
+      <section className="rounded-md border border-line/90 bg-white/95 p-5 shadow-board ring-1 ring-white/60">
         <div className="grid gap-4 lg:grid-cols-[1fr_360px]">
           <label className="block">
             <span className="text-sm font-semibold text-ink">Idea or post text</span>
             <textarea
-              className="mt-2 min-h-40 w-full resize-y rounded-md border border-line bg-white px-4 py-3 text-base leading-7 text-ink outline-none transition duration-200 focus:border-accent focus:shadow-[0_0_0_4px_rgba(14,124,102,0.12)] disabled:bg-slate-50"
+              className="mt-2 min-h-40 w-full resize-y rounded-md border border-line/90 bg-[linear-gradient(180deg,#ffffff,rgba(245,243,243,0.65))] px-4 py-3 text-base leading-7 text-ink outline-none transition duration-200 focus:border-accent focus:shadow-[0_0_0_4px_rgba(14,124,102,0.12)] disabled:bg-slate-50"
               value={ideaText}
               disabled={isLoading}
               onChange={(event) => setIdeaText(event.target.value)}
@@ -177,7 +177,7 @@ export default function ReviewPage() {
             <button
               type="button"
               disabled={!canSubmit}
-              className="rounded-md bg-accent px-6 py-3 text-sm font-bold text-white shadow-sm transition duration-200 hover:-translate-y-0.5 hover:bg-accent/90 disabled:translate-y-0 disabled:cursor-not-allowed disabled:bg-slate-300 disabled:text-slate-600"
+              className="rounded-md border border-accent bg-accent px-6 py-3 text-sm font-bold text-white shadow-[0_16px_30px_rgba(241,90,33,0.2)] transition duration-200 hover:-translate-y-0.5 hover:bg-accent/90 disabled:translate-y-0 disabled:cursor-not-allowed disabled:border-slate-300 disabled:bg-slate-300 disabled:text-slate-600 disabled:shadow-none"
               onClick={handleSubmit}
             >
               {isLoading ? LOADING_STEPS[status] || "Reviewing..." : "Review for Stars of Science"}
@@ -185,8 +185,7 @@ export default function ReviewPage() {
           </div>
         </div>
 
-        {/* Media upload block */}
-        <div className="mt-4 border-t border-line pt-4">
+        <div className="mt-4 rounded-md border border-dashed border-line/90 bg-[linear-gradient(180deg,rgba(245,243,243,0.45),rgba(255,255,255,0.92))] p-4">
           <div className="flex items-center justify-between gap-3">
             <span className="text-sm font-semibold text-ink">
               Media{" "}
@@ -195,7 +194,7 @@ export default function ReviewPage() {
             <button
               type="button"
               disabled={isLoading}
-              className="rounded-md border border-line bg-white px-3 py-1.5 text-xs font-bold text-ink transition hover:border-accent hover:text-accent disabled:cursor-not-allowed disabled:opacity-50"
+              className="rounded-md border-2 border-accent/70 bg-white px-3.5 py-2 text-xs font-black uppercase tracking-wide text-accent shadow-sm transition hover:-translate-y-0.5 hover:border-accent hover:bg-accent hover:text-white disabled:cursor-not-allowed disabled:border-line disabled:text-muted disabled:opacity-70"
               onClick={() => fileInputRef.current?.click()}
             >
               Add file
@@ -215,7 +214,7 @@ export default function ReviewPage() {
               {mediaFiles.map((file) => (
                 <li
                   key={file.name}
-                  className="flex items-center gap-2 rounded-md border border-line bg-paper px-3 py-2 text-xs"
+                  className="flex items-center gap-2 rounded-md border border-line/90 bg-white px-3 py-2 text-xs shadow-sm"
                 >
                   {mediaIcon(file.type)}
                   <span className="flex-1 truncate text-ink">{file.name}</span>
@@ -255,7 +254,7 @@ export default function ReviewPage() {
           <InsightRail rankings={result.rankings} />
         </>
       ) : (
-        <section className="rounded-md border border-line bg-white/95 p-6 text-muted shadow-board">
+        <section className="rounded-md border border-line/90 bg-white/95 p-6 text-muted shadow-board ring-1 ring-white/60">
           Review results will appear here after you submit an idea.
         </section>
       )}
