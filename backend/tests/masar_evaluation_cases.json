@@ -14,7 +14,7 @@
       "goal": "applications",
       "expected_country": "EG",
       "expected_any_platforms": ["TikTok", "Instagram", "YouTube"],
-      "min_top_evidence": 3
+      "min_top_evidence": 5
     },
     {
       "id": "review-03-saudi-solar-viewers",
@@ -22,7 +22,7 @@
       "goal": "viewers",
       "expected_country": "SA",
       "expected_any_platforms": ["YouTube", "TikTok", "Instagram", "X"],
-      "min_top_evidence": 3
+      "min_top_evidence": 5
     },
     {
       "id": "review-04-uae-ai-sponsors",
@@ -30,7 +30,7 @@
       "goal": "sponsors",
       "expected_country": "AE",
       "expected_any_platforms": ["LinkedIn", "YouTube", "X"],
-      "min_top_evidence": 3
+      "min_top_evidence": 5
     },
     {
       "id": "review-05-jordan-education",
@@ -38,7 +38,7 @@
       "goal": "viewers",
       "expected_country": "JO",
       "expected_any_platforms": ["YouTube", "TikTok", "Instagram"],
-      "min_top_evidence": 3
+      "min_top_evidence": 5
     },
     {
       "id": "review-06-morocco-bts",
@@ -46,7 +46,7 @@
       "goal": "applications",
       "expected_country": "MA",
       "expected_any_platforms": ["Instagram", "TikTok"],
-      "min_top_evidence": 3
+      "min_top_evidence": 5
     },
     {
       "id": "review-07-kuwait-announcement",
@@ -54,7 +54,7 @@
       "goal": "applications",
       "expected_country": "KW",
       "expected_any_platforms": ["Instagram", "TikTok", "X"],
-      "min_top_evidence": 3
+      "min_top_evidence": 5
     },
     {
       "id": "review-08-sudan-achievement",
@@ -62,7 +62,7 @@
       "goal": "sponsors",
       "expected_country": "SD",
       "expected_any_platforms": ["LinkedIn", "YouTube", "Instagram"],
-      "min_top_evidence": 3
+      "min_top_evidence": 5
     },
     {
       "id": "review-09-iraq-medical-device",
@@ -70,7 +70,7 @@
       "goal": "viewers",
       "expected_country": "IQ",
       "expected_any_platforms": ["YouTube", "TikTok", "Instagram"],
-      "min_top_evidence": 3
+      "min_top_evidence": 5
     },
     {
       "id": "review-10-regional-no-country",
@@ -78,7 +78,28 @@
       "goal": "viewers",
       "expected_scope": "regional",
       "expected_any_platforms": ["YouTube", "TikTok", "Instagram"],
-      "min_top_evidence": 3
+      "min_top_evidence": 5
+    },
+    {
+      "id": "review-11-sponsor-credibility-linkedin",
+      "idea_text": "A venture-building update explains how a finalist's health-tech prototype is ready for ecosystem partners and sponsor backing.",
+      "goal": "sponsors",
+      "expected_any_platforms": ["LinkedIn"],
+      "min_top_evidence": 5
+    },
+    {
+      "id": "review-12-longform-explainer-youtube",
+      "idea_text": "A six-minute explainer walks through how a robotics prototype works, how it was tested, and what the judges challenged.",
+      "goal": "viewers",
+      "expected_any_platforms": ["YouTube"],
+      "min_top_evidence": 5
+    },
+    {
+      "id": "review-13-fast-demo-tiktok-instagram",
+      "idea_text": "A proof-first vertical video shows a smart wristband working before the inventor says a word.",
+      "goal": "applications",
+      "expected_any_platforms": ["TikTok", "Instagram"],
+      "min_top_evidence": 5
     }
   ],
   "personalize": [
@@ -96,7 +117,7 @@
       "goal": "viewers",
       "countries": ["EG", "SA"],
       "platforms": ["YouTube", "Instagram"],
-      "min_evidence_per_report": 3
+      "min_evidence_per_report": 5
     },
     {
       "id": "personalize-03-uae-sponsors",
@@ -104,7 +125,7 @@
       "goal": "sponsors",
       "countries": ["AE"],
       "platforms": ["LinkedIn", "YouTube"],
-      "min_evidence_per_report": 3
+      "min_evidence_per_report": 5
     },
     {
       "id": "personalize-04-jordan-education",
@@ -112,7 +133,7 @@
       "goal": "viewers",
       "countries": ["JO"],
       "platforms": ["YouTube", "TikTok"],
-      "min_evidence_per_report": 3
+      "min_evidence_per_report": 5
     },
     {
       "id": "personalize-05-qatar-sponsors",
@@ -128,7 +149,7 @@
       "goal": "applications",
       "countries": ["MA"],
       "platforms": ["Instagram", "TikTok"],
-      "min_evidence_per_report": 3
+      "min_evidence_per_report": 5
     },
     {
       "id": "personalize-07-saudi-announcement",
@@ -136,7 +157,7 @@
       "goal": "applications",
       "countries": ["SA"],
       "platforms": ["Instagram", "X"],
-      "min_evidence_per_report": 3
+      "min_evidence_per_report": 5
     },
     {
       "id": "personalize-08-eg-qa-education-ai",
@@ -144,7 +165,7 @@
       "goal": "viewers",
       "countries": ["EG", "QA"],
       "platforms": ["YouTube"],
-      "min_evidence_per_report": 3
+      "min_evidence_per_report": 5
     },
     {
       "id": "personalize-09-kuwait-iraq-product",
@@ -152,7 +173,7 @@
       "goal": "viewers",
       "countries": ["KW", "IQ"],
       "platforms": ["TikTok", "YouTube"],
-      "min_evidence_per_report": 3
+      "min_evidence_per_report": 5
     },
     {
       "id": "personalize-10-sudan-sponsor-story",
@@ -160,7 +181,49 @@
       "goal": "sponsors",
       "countries": ["SD"],
       "platforms": ["LinkedIn", "Instagram"],
-      "min_evidence_per_report": 3
+      "min_evidence_per_report": 5
     }
-  ]
+  ],
+  "adversarial": {
+    "review": [
+      {
+        "id": "review-adv-01-short-text",
+        "idea_text": "Solar cooling demo",
+        "goal": "viewers"
+      },
+      {
+        "id": "review-adv-02-mixed-language",
+        "idea_text": "طالبة قطرية تعرض desalination prototype for student housing in Doha.",
+        "goal": "applications"
+      },
+      {
+        "id": "review-adv-03-ambiguous-country",
+        "idea_text": "A Gulf startup founder explains a compact water sensor for schools.",
+        "goal": "sponsors"
+      }
+    ],
+    "personalize": [
+      {
+        "id": "personalize-adv-01-mixed-language",
+        "idea_text": "طالب سعودي يشرح AI tutor for physics revision with bilingual examples.",
+        "goal": "viewers",
+        "countries": ["SA"],
+        "platforms": ["YouTube"]
+      },
+      {
+        "id": "personalize-adv-02-same-topic-variant-a",
+        "idea_text": "A Qatari founder explains a desalination device for off-grid clinics.",
+        "goal": "sponsors",
+        "countries": ["QA"],
+        "platforms": ["LinkedIn"]
+      },
+      {
+        "id": "personalize-adv-03-same-topic-variant-b",
+        "idea_text": "A Qatari student demos the same desalination device but frames it for student applicants.",
+        "goal": "applications",
+        "countries": ["QA"],
+        "platforms": ["Instagram"]
+      }
+    ]
+  }
 }

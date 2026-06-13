@@ -1,8 +1,8 @@
 """Fit Score formula. Weights and logic are the single source of truth for the pitch."""
 
-W_TOPIC = 0.30
+W_TOPIC = 0.25
 W_AUDIENCE = 0.25
-W_PLATFORM = 0.20
+W_PLATFORM = 0.25
 W_LANGUAGE = 0.15
 W_TIMING = 0.10
 

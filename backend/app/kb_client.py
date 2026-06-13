@@ -13,6 +13,20 @@ from kb.knowledge_base import (
     list_platforms,
 )
 from kb.evidence import search_topic_evidence
+from kb.stars_intelligence import (
+    generate_platform_report_context,
+    get_last_sync,
+    get_platform_intelligence,
+    get_platform_stats,
+    list_posts,
+    sync_all_platforms,
+    sync_seed_posts,
+)
+from kb.stars_importer import (
+    import_all_from_dir,
+    import_file,
+    get_import_stats,
+)
 
 __all__ = [
     "list_countries",
@@ -22,4 +36,14 @@ __all__ = [
     "get_audience_goal_map",
     "get_country",
     "search_topic_evidence",
+    "list_posts",
+    "get_platform_intelligence",
+    "generate_platform_report_context",
+    "sync_seed_posts",
+    "sync_all_platforms",
+    "get_last_sync",
+    "get_platform_stats",
+    "import_all_from_dir",
+    "import_file",
+    "get_import_stats",
 ]

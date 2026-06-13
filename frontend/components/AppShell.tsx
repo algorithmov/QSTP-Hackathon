@@ -6,7 +6,7 @@ import type { ReactNode } from "react";
 
 const tabs = [
   { href: "/review", label: "AI Reviewer" },
-  { href: "/personalize", label: "Personalized Targeter" }
+  { href: "/personalize", label: "Target an Audience" }
 ];
 
 export function AppShell({ children }: { children: ReactNode }) {
@@ -21,7 +21,7 @@ export function AppShell({ children }: { children: ReactNode }) {
             <div className="text-xs font-black uppercase tracking-wide text-ink">Stars of Science</div>
             <h1 className="mt-1 text-3xl font-black tracking-normal text-ink sm:text-4xl">Masar</h1>
             <p className="mt-2 max-w-2xl text-base leading-7 text-muted">
-              Evidence-backed routing and localized delivery plans for Stars of Science ideas.
+              Platform intelligence and audience delivery planning built specifically for Stars of Science.
             </p>
           </div>
           <nav className="mt-4 flex w-full rounded-md border border-line bg-paper p-1 md:mt-0 md:w-auto">

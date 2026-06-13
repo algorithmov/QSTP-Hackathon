@@ -63,7 +63,7 @@ if [[ ! -f "$BACKEND_DIR/.env" ]]; then
 MOCK_MODE=true
 LLM_PROVIDER_ORDER=gemini,groq
 GEMINI_API_KEYS=
-GEMINI_MODEL=gemini-1.5-flash
+GEMINI_MODEL=gemini-2.5-flash
 GROQ_API_KEY=
 GROQ_MODEL=llama-3.3-70b-versatile
 GROQ_FALLBACK_MODEL=llama-3.1-8b-instant

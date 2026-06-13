@@ -34,7 +34,12 @@ goal_map = kb.get_audience_goal_map("applications")
 assert "preferred_platforms" in goal_map
 print(f"get_audience_goal_map applications: {goal_map}")
 
-ev = evidence.search_topic_evidence("water purification invention", "Egypt")
+ev = evidence.search_topic_evidence(
+    "water purification invention",
+    "Egypt",
+    idea_text="An Egyptian student demos a water purification invention for farms.",
+    platform="TikTok",
+)
 print(f"search_topic_evidence water/Egypt: {len(ev)} items returned")
 for item in ev:
     assert "claim" in item and "source" in item

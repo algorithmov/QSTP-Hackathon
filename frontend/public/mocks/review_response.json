@@ -1,1 +1,140 @@
-{"request_id":"5b713fc0-52dc-4521-b962-884794d8ffeb","idea_summary":{"topic":"30-second Sudanese student demos low-cost water","content_type":"product_demo","primary_audience":"young Arab innovators and students","suggested_language":"mixed","key_themes":["innovation","technology","Arab youth"]},"rankings":[{"rank":1,"country":"EG","country_name":"Egypt","platform":"YouTube","fit_score":91,"confidence":"medium","components":{"topic_relevance":0.92,"audience_fit":0.92,"platform_fit":0.88,"language_fit":1.0,"timing_fit":0.8},"why":"YouTube in Egypt scores well for product_demo content reaching young Arab innovators and students.","evidence":[],"recommended_time_local":"21:00","timezone":"Africa/Cairo"},{"rank":2,"country":"AE","country_name":"UAE","platform":"Instagram","fit_score":90,"confidence":"medium","components":{"topic_relevance":0.9,"audience_fit":0.9,"platform_fit":0.85,"language_fit":1.0,"timing_fit":0.8},"why":"Instagram in UAE scores well for product_demo content reaching young Arab innovators and students.","evidence":[],"recommended_time_local":"20:00","timezone":"Asia/Dubai"},{"rank":3,"country":"EG","country_name":"Egypt","platform":"TikTok","fit_score":89,"confidence":"medium","components":{"topic_relevance":0.88,"audience_fit":0.88,"platform_fit":0.9,"language_fit":1.0,"timing_fit":0.8},"why":"TikTok in Egypt scores well for product_demo content reaching young Arab innovators and students.","evidence":[],"recommended_time_local":"21:00","timezone":"Africa/Cairo"},{"rank":4,"country":"SA","country_name":"Saudi Arabia","platform":"YouTube","fit_score":89,"confidence":"medium","components":{"topic_relevance":0.88,"audience_fit":0.88,"platform_fit":0.88,"language_fit":1.0,"timing_fit":0.8},"why":"YouTube in Saudi Arabia scores well for product_demo content reaching young Arab innovators and students.","evidence":[],"recommended_time_local":"21:00","timezone":"Asia/Riyadh"},{"rank":5,"country":"SA","country_name":"Saudi Arabia","platform":"Instagram","fit_score":88,"confidence":"medium","components":{"topic_relevance":0.87,"audience_fit":0.87,"platform_fit":0.85,"language_fit":1.0,"timing_fit":0.8},"why":"Instagram in Saudi Arabia scores well for product_demo content reaching young Arab innovators and students.","evidence":[],"recommended_time_local":"21:00","timezone":"Asia/Riyadh"},{"rank":6,"country":"QA","country_name":"Qatar","platform":"Instagram","fit_score":88,"confidence":"medium","components":{"topic_relevance":0.88,"audience_fit":0.88,"platform_fit":0.85,"language_fit":1.0,"timing_fit":0.8},"why":"Instagram fits this content type in Qatar.","evidence":[],"recommended_time_local":"21:00","timezone":"Asia/Qatar"},{"rank":7,"country":"EG","country_name":"Egypt","platform":"Instagram","fit_score":87,"confidence":"medium","components":{"topic_relevance":0.85,"audience_fit":0.85,"platform_fit":0.85,"language_fit":1.0,"timing_fit":0.8},"why":"Instagram in Egypt scores well for product_demo content reaching young Arab innovators and students.","evidence":[],"recommended_time_local":"21:00","timezone":"Africa/Cairo"},{"rank":8,"country":"AE","country_name":"UAE","platform":"YouTube","fit_score":87,"confidence":"medium","components":{"topic_relevance":0.84,"audience_fit":0.84,"platform_fit":0.88,"language_fit":1.0,"timing_fit":0.8},"why":"YouTube in UAE scores well for product_demo content reaching young Arab innovators and students.","evidence":[],"recommended_time_local":"20:00","timezone":"Asia/Dubai"}],"map_data":[{"country":"EG","country_name":"Egypt","best_fit_score":91,"best_platform":"YouTube"},{"country":"AE","country_name":"UAE","best_fit_score":90,"best_platform":"Instagram"},{"country":"SA","country_name":"Saudi Arabia","best_fit_score":89,"best_platform":"YouTube"},{"country":"QA","country_name":"Qatar","best_fit_score":88,"best_platform":"Instagram"},{"country":"DZ","country_name":"Algeria","best_fit_score":86,"best_platform":"YouTube"},{"country":"JO","country_name":"Jordan","best_fit_score":86,"best_platform":"YouTube"},{"country":"MA","country_name":"Morocco","best_fit_score":85,"best_platform":"YouTube"},{"country":"KW","country_name":"Kuwait","best_fit_score":85,"best_platform":"Instagram"},{"country":"IQ","country_name":"Iraq","best_fit_score":84,"best_platform":"YouTube"},{"country":"SD","country_name":"Sudan","best_fit_score":80,"best_platform":"YouTube"}],"methodology_note":"Fit Score combines topic relevance, audience fit, platform fit, language fit, and timing fit using a transparent weighted formula. It is a directional fit ranking, not a prediction of views or engagement. Confidence reflects how much current evidence supports the topic relevance component."}
+{
+  "request_id": "mock-000-0000-0000-000000000001",
+  "idea_summary": {
+    "topic": "30-second student demos low-cost water filter prototype",
+    "content_type": "product_demo",
+    "primary_audience": "young Arab innovators and students",
+    "suggested_language": "mixed",
+    "key_themes": ["innovation", "technology", "Arab youth"]
+  },
+  "rankings": [
+    {
+      "rank": 1,
+      "platform": "TikTok",
+      "fit_score": 82,
+      "confidence": "high",
+      "why": "TikTok's short-form format is ideal for a 30-second prototype demo. Stars of Science posts on TikTok show the highest engagement rates for product reveal content among Arab youth.",
+      "score_breakdown": [
+        { "label": "Semantic match",      "score": 0.76, "reason": "Matched Stars of Science TikTok posts share strong overlap with water-tech and product-demo framing." },
+        { "label": "Format history",      "score": 0.90, "reason": "TikTok historically suits product demo content in the Stars of Science format model." },
+        { "label": "Performance strength","score": 0.92, "reason": "Top matched TikTok posts show strong relative reach and engagement in the dataset." },
+        { "label": "Goal alignment",      "score": 0.95, "reason": "TikTok aligns well with the applications goal based on Stars of Science usage patterns." },
+        { "label": "Language fit",        "score": 0.80, "reason": "Mixed-language content performs well on TikTok in the Arab world." },
+        { "label": "Duration fit",        "score": 0.95, "reason": "30-second clips match TikTok's optimal content window for this audience." }
+      ],
+      "supporting_patterns": [
+        "Short-form prototype reveals drive high saves and shares on TikTok",
+        "Arabic-language captions increase reach among Gulf and Levant audiences",
+        "Hook-first editing style aligns with Stars of Science TikTok top performers"
+      ],
+      "top_evidence": [
+        { "claim": "Stars of Science TikTok posts featuring working prototypes averaged 2.1× the platform median reach", "source": "Stars of Science TikTok", "url": null, "evidence_type": "stars_post", "platform": "TikTok", "relevance_score": 0.84, "metrics": { "views": 210000, "likes": 18000, "shares": 4200, "comments": 940 } },
+        { "claim": "Water and environment innovation posts on TikTok show strong re-share behaviour in MENA", "source": "Stars of Science TikTok", "url": null, "evidence_type": "stars_post", "platform": "TikTok", "relevance_score": 0.79, "metrics": { "views": 185000, "likes": 14000, "shares": 3100, "comments": 710 } }
+      ],
+      "report_available": true
+    },
+    {
+      "rank": 2,
+      "platform": "Instagram",
+      "fit_score": 75,
+      "confidence": "high",
+      "why": "Instagram Reels and carousel posts give strong visual reach for prototype demos. Stars of Science performs consistently well here with photo + short-video hybrid content.",
+      "score_breakdown": [
+        { "label": "Semantic match",      "score": 0.71, "reason": "Matched Stars of Science Instagram posts share overlapping themes with product demo ideas." },
+        { "label": "Format history",      "score": 0.85, "reason": "Instagram suits product demo and announcement content in the Stars of Science format model." },
+        { "label": "Performance strength","score": 0.78, "reason": "Matched Instagram posts show good relative engagement in the dataset." },
+        { "label": "Goal alignment",      "score": 0.85, "reason": "Instagram aligns well with the applications goal for Stars of Science campaigns." },
+        { "label": "Language fit",        "score": 0.80, "reason": "Mixed-language captions work well on Instagram for Arab-world audiences." },
+        { "label": "Duration fit",        "score": 0.75, "reason": "30-second Reels sit within Instagram's recommended content window." }
+      ],
+      "supporting_patterns": [
+        "Carousel + Reel hybrid posts outperform single-image posts for prototype reveals",
+        "Stars of Science Instagram posts with clear CTA see higher story saves",
+        "Visual proof moments (before/after) drive comment engagement on Instagram"
+      ],
+      "top_evidence": [
+        { "claim": "Stars of Science Instagram Reels featuring student inventors averaged 1.7× the account baseline reach", "source": "Stars of Science Instagram", "url": null, "evidence_type": "stars_post", "platform": "Instagram", "relevance_score": 0.78, "metrics": { "views": 95000, "likes": 8200, "shares": 1100, "comments": 430 } }
+      ],
+      "report_available": true
+    },
+    {
+      "rank": 3,
+      "platform": "YouTube",
+      "fit_score": 70,
+      "confidence": "medium",
+      "why": "YouTube suits longer-form follow-up content. A 30-second clip works as a teaser but the platform rewards depth — consider a 3-minute explainer as the main piece.",
+      "score_breakdown": [
+        { "label": "Semantic match",      "score": 0.68, "reason": "Stars of Science YouTube posts overlap in topic but favour longer educational formats." },
+        { "label": "Format history",      "score": 0.70, "reason": "YouTube suits educational and explainer content more than quick demos." },
+        { "label": "Performance strength","score": 0.82, "reason": "Matched YouTube posts show strong watch-time signals in the Stars of Science dataset." },
+        { "label": "Goal alignment",      "score": 0.75, "reason": "YouTube serves the applications goal well through in-depth storytelling." },
+        { "label": "Language fit",        "score": 0.80, "reason": "Bilingual content with subtitles performs well on YouTube MENA." },
+        { "label": "Duration fit",        "score": 0.45, "reason": "30-second content underperforms on YouTube where 3-10 minute content is optimal." }
+      ],
+      "supporting_patterns": [
+        "Stars of Science YouTube posts with full project walkthroughs average 3× more watch time",
+        "Short teasers work as YouTube Shorts to drive subscribers to the main channel",
+        "Subtitles in Arabic and English double average view duration"
+      ],
+      "top_evidence": [
+        { "claim": "Stars of Science YouTube videos over 3 minutes received 4× more comments than clips under 1 minute", "source": "Stars of Science YouTube", "url": null, "evidence_type": "stars_post", "platform": "YouTube", "relevance_score": 0.71, "metrics": { "views": 420000, "likes": 22000, "shares": 5100, "comments": 1800 } }
+      ],
+      "report_available": true
+    },
+    {
+      "rank": 4,
+      "platform": "LinkedIn",
+      "fit_score": 63,
+      "confidence": "medium",
+      "why": "LinkedIn reaches sponsors and industry decision-makers but engagement for short video is lower than on consumer platforms. Best used as a secondary channel for the applications goal.",
+      "score_breakdown": [
+        { "label": "Semantic match",      "score": 0.60, "reason": "Stars of Science LinkedIn posts focus on professional milestones more than live demos." },
+        { "label": "Format history",      "score": 0.65, "reason": "LinkedIn suits announcement and achievement content rather than product demos." },
+        { "label": "Performance strength","score": 0.55, "reason": "LinkedIn posts in the dataset show moderate engagement relative to other platforms." },
+        { "label": "Goal alignment",      "score": 0.70, "reason": "LinkedIn has some alignment with applications goal through professional network reach." },
+        { "label": "Language fit",        "score": 0.65, "reason": "English-first content outperforms on LinkedIn in the MENA professional audience." },
+        { "label": "Duration fit",        "score": 0.60, "reason": "Short-form video is less native to LinkedIn but performs acceptably as a teaser." }
+      ],
+      "supporting_patterns": [
+        "Stars of Science LinkedIn posts perform best when framing innovation as a professional achievement",
+        "Posts with tagged universities and research institutions see 2× connection growth",
+        "Text-heavy posts with embedded video outperform video-only posts on LinkedIn"
+      ],
+      "top_evidence": [
+        { "claim": "Stars of Science LinkedIn posts mentioning finalist names received 1.4× more impressions than generic posts", "source": "Stars of Science LinkedIn", "url": null, "evidence_type": "stars_post", "platform": "LinkedIn", "relevance_score": 0.62, "metrics": { "views": 28000, "likes": 1400, "shares": 310, "comments": 95 } }
+      ],
+      "report_available": true
+    },
+    {
+      "rank": 5,
+      "platform": "X",
+      "fit_score": 58,
+      "confidence": "low",
+      "why": "X has limited Stars of Science post volume and lower organic reach for video content. Works for real-time updates during broadcast but not ideal for reaching new applicants.",
+      "score_breakdown": [
+        { "label": "Semantic match",      "score": 0.52, "reason": "Stars of Science X posts are sparse and mostly text-based announcements." },
+        { "label": "Format history",      "score": 0.55, "reason": "X suits real-time announcements and news but not sustained product demo campaigns." },
+        { "label": "Performance strength","score": 0.48, "reason": "Matched X posts show below-average engagement in the Stars of Science dataset." },
+        { "label": "Goal alignment",      "score": 0.60, "reason": "X can support the applications goal for real-time season announcements." },
+        { "label": "Language fit",        "score": 0.65, "reason": "Arabic-language posts perform modestly on X in the Gulf region." },
+        { "label": "Duration fit",        "score": 0.70, "reason": "Short video clips are native to X and perform well when paired with a strong tweet." }
+      ],
+      "supporting_patterns": [
+        "X works best for Stars of Science as a live-broadcast companion channel",
+        "Thread-style posts with one clip per tweet outperform single-video posts",
+        "Hashtag campaigns tied to season launch dates drive the highest X impressions"
+      ],
+      "top_evidence": [
+        { "claim": "Stars of Science X posts during season launch windows saw 3× normal impression volume", "source": "Stars of Science X", "url": null, "evidence_type": "stars_post", "platform": "X", "relevance_score": 0.55, "metrics": { "views": 41000, "likes": 1900, "shares": 820, "comments": 210 } }
+      ],
+      "report_available": true
+    }
+  ],
+  "methodology_note": "The AI Reviewer ranks only the five official Stars of Science platforms. Each score blends semantic similarity to matched Stars of Science posts, historical format fit, relative post performance inside the local dataset, goal alignment, and language fit. The score is directional and evidence-backed; it is not a forecast of guaranteed views.",
+  "media_context_used": false,
+  "media_assets": [],
+  "media_summary": null,
+  "transcript_excerpt": null,
+  "caption_drafts": [],
+  "media_context": null
+}

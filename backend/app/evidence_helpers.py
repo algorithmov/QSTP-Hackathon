@@ -1,6 +1,7 @@
 """Shared evidence assembly helpers for review and personalization flows."""
 from __future__ import annotations
 
+import hashlib
 from typing import Iterable
 
 COUNTRY_DIGITAL_REPORT_URLS = {
@@ -32,7 +33,17 @@ _SOURCE_URLS = {
 
 
 def evidence_target_count(country_iso: str) -> int:
-    return 5 if country_iso == "QA" else 3
+    return 8 if country_iso in {"QA", "AE"} else 5
+
+
+def normalize_text(value: str) -> str:
+    normalized = " ".join(value.lower().split())
+    return "".join(char if char.isalnum() or char.isspace() else " " for char in normalized)
+
+
+def hash_idea_text(idea_text: str) -> str:
+    normalized = " ".join(normalize_text(idea_text).split())
+    return hashlib.sha256(normalized.encode("utf-8")).hexdigest()[:16]
 
 
 def build_usage_evidence(country_name: str, platform: str, usage: dict) -> list[dict]:

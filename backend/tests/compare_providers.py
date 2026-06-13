@@ -33,7 +33,7 @@ def _run_review(client: httpx.Client, case: dict) -> dict:
     rankings = payload.get("rankings", [])
     top = rankings[0] if rankings else {}
     why = str(top.get("why", ""))
-    top_evidence = top.get("evidence", [])
+    top_evidence = top.get("top_evidence", [])
 
     errors = []
     if not rankings:

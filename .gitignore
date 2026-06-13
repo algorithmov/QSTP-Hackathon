@@ -5,5 +5,9 @@ frontend/tsconfig.tsbuildinfo
 # generated knowledge base SQLite (rebuilt from kb_seed.json on first import)
 backend/data/kb.sqlite
 backend/data/*.db
+# uploaded review media (persisted locally, not in repo)
+backend/data/media/
+# scraped import files (drop in locally, not in repo)
+backend/data/imports/
 # local test output files
 *.json.local

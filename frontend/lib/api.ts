@@ -4,6 +4,8 @@ import axios from "axios";
 import type {
   PersonalizeRequest,
   PersonalizeResponse,
+  PlatformReportRequest,
+  PlatformReportResponse,
   ReviewRequest,
   ReviewResponse
 } from "@/types/route";
@@ -27,7 +29,16 @@ export async function reviewIdea(payload: ReviewRequest): Promise<ReviewResponse
     return loadMock<ReviewResponse>("/mocks/review_response.json");
   }
 
-  const { data } = await axios.post<ReviewResponse>(`${backendUrl()}/api/review`, payload);
+  // Always send multipart/form-data — backend accepts Form fields + optional file uploads
+  const form = new FormData();
+  form.append("idea_text", payload.idea_text);
+  form.append("goal", payload.goal);
+  for (const file of payload.files ?? []) {
+    form.append("files", file);
+  }
+
+  // Do NOT set Content-Type manually — axios must set it so it includes the multipart boundary.
+  const { data } = await axios.post<ReviewResponse>(`${backendUrl()}/api/review`, form);
   return data;
 }
 
@@ -43,11 +54,13 @@ export async function personalizeIdea(payload: PersonalizeRequest): Promise<Pers
   return data;
 }
 
-// Legacy no-op helpers retained until old v1 components are removed.
-export async function uploadMedia(): Promise<string | null> {
-  return null;
+export async function fetchPlatformReport(
+  payload: PlatformReportRequest
+): Promise<PlatformReportResponse> {
+  const { data } = await axios.post<PlatformReportResponse>(
+    `${backendUrl()}/api/review/report`,
+    payload
+  );
+  return data;
 }
 
-export async function routeContent(): Promise<never> {
-  throw new Error("The v1 route endpoint was replaced by /api/review and /api/personalize.");
-}

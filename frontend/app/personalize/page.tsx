@@ -114,6 +114,9 @@ export default function PersonalizePage() {
               <div className="mt-2">
                 <GoalSelector value={goal} disabled={status === "loading"} onChange={setGoal} />
               </div>
+              <p className="mt-3 text-sm leading-6 text-muted">
+                Target an audience with delivery plans grounded in matched Stars of Science content plus local country timing and platform context.
+              </p>
             </div>
             <SelectionGroup
               label="Countries"
@@ -142,7 +145,7 @@ export default function PersonalizePage() {
               className="w-full rounded-md bg-accent px-6 py-3 text-sm font-bold text-white shadow-sm transition duration-200 hover:-translate-y-0.5 hover:bg-accent/90 disabled:translate-y-0 disabled:cursor-not-allowed disabled:bg-slate-300 disabled:text-slate-600"
               onClick={handleSubmit}
             >
-              {status === "loading" ? "Generating..." : "Generate delivery plan"}
+              {status === "loading" ? "Generating..." : "Generate audience plan"}
             </button>
           </div>
         </div>
@@ -158,7 +161,7 @@ export default function PersonalizePage() {
         </>
       ) : (
         <section className="rounded-md border border-line bg-white/95 p-6 text-muted shadow-board">
-          Delivery reports will appear here after you choose countries and platforms.
+          Audience delivery reports will appear here after you choose countries and platforms.
         </section>
       )}
     </AppShell>
@@ -331,6 +334,12 @@ function ReportCard({ report }: { report: PersonalizedReport }) {
           <MapPin size={15} aria-hidden="true" />
           {report.timezone}
         </span>
+      </div>
+
+      <div className="mt-4 rounded-md border border-line bg-paper p-4">
+        <div className="text-xs font-bold uppercase tracking-wide text-muted">Timing</div>
+        <p className="mt-2 text-sm font-semibold leading-6 text-ink">{report.recommended_day_window}</p>
+        <p className="mt-2 text-sm leading-6 text-muted">{report.timing_rationale}</p>
       </div>
 
       <div className="mt-4 grid gap-3 sm:grid-cols-2">
