@@ -5,9 +5,9 @@
 :root {
   color: #082529;
   background:
-    radial-gradient(circle at top left, rgba(241, 90, 33, 0.12), transparent 28%),
-    radial-gradient(circle at 85% 18%, rgba(8, 37, 41, 0.08), transparent 22%),
-    linear-gradient(180deg, #fbf8f5 0%, #f5f3f3 46%, #efeded 100%);
+    radial-gradient(circle at top left, rgba(241, 90, 33, 0.18), transparent 30%),
+    radial-gradient(circle at 85% 18%, rgba(8, 37, 41, 0.14), transparent 24%),
+    linear-gradient(180deg, #fcfbf8 0%, #f2efeb 44%, #ebe7e3 100%);
 }
 
 * {
@@ -22,9 +22,9 @@ body {
   margin: 0;
   min-height: 100vh;
   background:
-    radial-gradient(circle at top left, rgba(241, 90, 33, 0.12), transparent 28%),
-    radial-gradient(circle at 85% 18%, rgba(8, 37, 41, 0.08), transparent 22%),
-    linear-gradient(180deg, #fbf8f5 0%, #f5f3f3 46%, #efeded 100%);
+    radial-gradient(circle at top left, rgba(241, 90, 33, 0.18), transparent 30%),
+    radial-gradient(circle at 85% 18%, rgba(8, 37, 41, 0.14), transparent 24%),
+    linear-gradient(180deg, #fcfbf8 0%, #f2efeb 44%, #ebe7e3 100%);
   color: #082529;
   font-family: Inter, ui-sans-serif, system-ui, sans-serif;
 }
@@ -79,20 +79,20 @@ input {
 }
 
 .live-halo-a {
-  left: -60px;
-  top: 92px;
-  width: 220px;
-  height: 220px;
-  background: radial-gradient(circle, rgba(241, 90, 33, 0.16), rgba(241, 90, 33, 0));
+  left: -80px;
+  top: 80px;
+  width: 300px;
+  height: 300px;
+  background: radial-gradient(circle, rgba(241, 90, 33, 0.24), rgba(241, 90, 33, 0));
   animation: drift-slow 24s ease-in-out infinite;
 }
 
 .live-halo-b {
-  right: 4%;
-  bottom: 12%;
-  width: 280px;
-  height: 280px;
-  background: radial-gradient(circle, rgba(8, 37, 41, 0.11), rgba(8, 37, 41, 0));
+  right: 2%;
+  bottom: 10%;
+  width: 360px;
+  height: 360px;
+  background: radial-gradient(circle, rgba(8, 37, 41, 0.16), rgba(8, 37, 41, 0));
   animation: drift-slow 28s ease-in-out infinite reverse;
 }
 
@@ -104,19 +104,19 @@ input {
 }
 
 .live-panel-a {
-  right: -40px;
-  top: 34%;
-  width: 180px;
-  height: 260px;
+  right: -30px;
+  top: 28%;
+  width: 220px;
+  height: 320px;
   transform: rotate(-8deg);
   animation: panel-float 20s ease-in-out infinite;
 }
 
 .live-panel-b {
-  left: -60px;
-  bottom: 10%;
-  width: 210px;
-  height: 150px;
+  left: -70px;
+  bottom: 8%;
+  width: 260px;
+  height: 180px;
   transform: rotate(7deg);
   animation: panel-float 18s ease-in-out infinite reverse;
 }

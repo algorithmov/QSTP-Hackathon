@@ -1,6 +1,6 @@
 "use client";
 
-import { Check, Clock, Copy, MapPin, X as XIcon } from "lucide-react";
+import { Check, Clock, Copy, Layers3, MapPin, X as XIcon } from "lucide-react";
 import { useMemo, useState } from "react";
 import { AppShell } from "@/components/AppShell";
 import { ConfidenceBadge } from "@/components/ConfidenceBadge";
@@ -93,12 +93,17 @@ export default function PersonalizePage() {
 
   return (
     <AppShell>
-      <section className="rounded-md border border-line bg-white/95 p-5 shadow-board">
+      <section className="rounded-xl border-2 border-accent/30 bg-[linear-gradient(180deg,rgba(255,255,255,0.99),rgba(246,242,238,0.98))] p-6 shadow-board ring-1 ring-white/70">
+        <SectionBanner
+          step="01"
+          title="Build The Audience Brief"
+          description="Define the input idea, target goal, countries, and platforms before generating localized plans."
+        />
         <div className="grid gap-5 lg:grid-cols-[1fr_380px]">
           <label className="block">
             <span className="text-sm font-semibold text-ink">Idea or post text</span>
             <textarea
-              className="mt-2 min-h-44 w-full resize-y rounded-md border border-line bg-white px-4 py-3 text-base leading-7 text-ink outline-none transition duration-200 focus:border-accent focus:shadow-[0_0_0_4px_rgba(14,124,102,0.12)] disabled:bg-slate-50"
+              className="mt-2 min-h-44 w-full resize-y rounded-md border border-line/90 bg-[linear-gradient(180deg,#ffffff,rgba(245,243,243,0.65))] px-4 py-3 text-base leading-7 text-ink outline-none transition duration-200 focus:border-accent focus:shadow-[0_0_0_4px_rgba(14,124,102,0.12)] disabled:bg-slate-50"
               value={ideaText}
               disabled={status === "loading"}
               onChange={(event) => setIdeaText(event.target.value)}
@@ -108,8 +113,8 @@ export default function PersonalizePage() {
               {ideaText.length} characters
             </span>
           </label>
-          <div className="space-y-5">
-            <div>
+          <div className="space-y-4">
+            <div className="rounded-xl border border-line/90 bg-white/88 p-4 shadow-sm">
               <span className="text-sm font-semibold text-ink">Goal</span>
               <div className="mt-2">
                 <GoalSelector value={goal} disabled={status === "loading"} onChange={setGoal} />
@@ -118,31 +123,35 @@ export default function PersonalizePage() {
                 Target an audience with delivery plans grounded in matched Stars of Science content plus local country timing and platform context.
               </p>
             </div>
-            <SelectionGroup
-              label="Countries"
-              helper="Choose up to 3 countries."
-              options={supportedCountries.map((country) => ({
-                label: country.name,
-                value: country.code
-              }))}
-              values={countries}
-              limit={3}
-              disabled={status === "loading"}
-              onChange={setCountries}
-            />
-            <SelectionGroup
-              label="Platforms"
-              helper="Choose up to 2 platforms."
-              options={supportedPlatforms.map((platform) => ({ label: platform, value: platform }))}
-              values={platforms}
-              limit={2}
-              disabled={status === "loading"}
-              onChange={setPlatforms}
-            />
+            <div className="rounded-xl border border-line/90 bg-[linear-gradient(180deg,rgba(255,255,255,0.96),rgba(247,243,239,0.92))] p-4 shadow-sm">
+              <SelectionGroup
+                label="Countries"
+                helper="Choose up to 3 countries."
+                options={supportedCountries.map((country) => ({
+                  label: country.name,
+                  value: country.code
+                }))}
+                values={countries}
+                limit={3}
+                disabled={status === "loading"}
+                onChange={setCountries}
+              />
+            </div>
+            <div className="rounded-xl border border-line/90 bg-[linear-gradient(180deg,rgba(245,248,249,0.95),rgba(255,255,255,0.96))] p-4 shadow-sm">
+              <SelectionGroup
+                label="Platforms"
+                helper="Choose up to 2 platforms."
+                options={supportedPlatforms.map((platform) => ({ label: platform, value: platform }))}
+                values={platforms}
+                limit={2}
+                disabled={status === "loading"}
+                onChange={setPlatforms}
+              />
+            </div>
             <button
               type="button"
               disabled={!canSubmit}
-              className="w-full rounded-md bg-accent px-6 py-3 text-sm font-bold text-white shadow-sm transition duration-200 hover:-translate-y-0.5 hover:bg-accent/90 disabled:translate-y-0 disabled:cursor-not-allowed disabled:bg-slate-300 disabled:text-slate-600"
+              className="w-full rounded-md border border-accent bg-accent px-6 py-3 text-sm font-bold text-white shadow-[0_16px_30px_rgba(241,90,33,0.2)] transition duration-200 hover:-translate-y-0.5 hover:bg-accent/90 disabled:translate-y-0 disabled:cursor-not-allowed disabled:border-slate-300 disabled:bg-slate-300 disabled:text-slate-600 disabled:shadow-none"
               onClick={handleSubmit}
             >
               {status === "loading" ? "Generating..." : "Generate audience plan"}
@@ -151,16 +160,31 @@ export default function PersonalizePage() {
         </div>
       </section>
 
+      <div className="h-3" aria-hidden="true" />
       {status === "loading" ? <LoadingBlock label={loadingSteps[loadingStep]} /> : null}
       {status === "error" && error ? <ErrorBlock message={error} /> : null}
 
       {result ? (
         <>
-          <IdeaSummaryCard summary={result.idea_summary} />
-          <ReportGrid reports={result.reports} />
+          <section className="mt-5 rounded-xl border-2 border-ink/12 bg-[linear-gradient(180deg,rgba(255,255,255,0.98),rgba(249,247,244,0.97))] p-6 shadow-board">
+            <SectionBanner
+              step="02"
+              title="Review The Extracted Summary"
+              description="Inspect the normalized topic, audience, content type, and key themes before using the generated delivery routes."
+            />
+            <IdeaSummaryCard summary={result.idea_summary} />
+          </section>
+          <section className="mt-7 rounded-xl border-2 border-ink/12 bg-[linear-gradient(180deg,rgba(244,240,235,0.96),rgba(255,255,255,0.98))] p-6 shadow-board">
+            <SectionBanner
+              step="03"
+              title="Compare Country Delivery Routes"
+              description="Each country is isolated into its own planning block so the generated routes are easy to distinguish and review."
+            />
+            <ReportGrid reports={result.reports} />
+          </section>
         </>
       ) : (
-        <section className="rounded-md border border-line bg-white/95 p-6 text-muted shadow-board">
+        <section className="mt-5 rounded-xl border-2 border-dashed border-line/90 bg-white/95 p-8 text-muted shadow-board ring-1 ring-white/70">
           Audience delivery reports will appear here after you choose countries and platforms.
         </section>
       )}
@@ -205,7 +229,7 @@ function SelectionGroup<T extends string>({
         </span>
       </div>
       <p className="mt-1 text-xs text-muted">{helper}</p>
-      <div className="mt-2 flex flex-wrap gap-2">
+      <div className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-3">
         {options.map((option) => {
           const active = values.includes(option.value);
           const limitReached = values.length >= limit && !active;
@@ -214,10 +238,10 @@ function SelectionGroup<T extends string>({
               key={option.value}
               type="button"
               disabled={disabled || limitReached}
-              className={`rounded-md border px-3 py-2 text-sm font-semibold transition ${
+              className={`min-h-12 rounded-md border px-3 py-2 text-sm font-semibold transition ${
                 active
                   ? "border-accent bg-accent text-white shadow-sm"
-                  : "border-line bg-white text-ink hover:-translate-y-0.5 hover:border-accent/60"
+                  : "border-line/90 bg-white text-ink hover:-translate-y-0.5 hover:border-accent/60"
               } disabled:cursor-not-allowed disabled:opacity-50`}
               onClick={() => toggle(option.value)}
             >
@@ -225,6 +249,29 @@ function SelectionGroup<T extends string>({
             </button>
           );
         })}
+      </div>
+    </div>
+  );
+}
+
+function SectionBanner({
+  step,
+  title,
+  description
+}: {
+  step: string;
+  title: string;
+  description: string;
+}) {
+  return (
+    <div className="mb-6 flex items-start gap-4 border-b border-line/80 pb-5">
+      <div className="rounded-lg border border-accent/35 bg-accent px-3 py-2 text-sm font-black tracking-[0.18em] text-white">
+        {step}
+      </div>
+      <div>
+        <div className="text-xs font-black uppercase tracking-[0.18em] text-accent">Section</div>
+        <h2 className="mt-1 text-2xl font-black text-ink">{title}</h2>
+        <p className="mt-1 max-w-3xl text-sm leading-6 text-muted">{description}</p>
       </div>
     </div>
   );
@@ -241,10 +288,26 @@ function ReportGrid({ reports }: { reports: PersonalizedReport[] }) {
   }, [reports]);
 
   return (
-    <section className="space-y-5" aria-label="Delivery reports">
+    <section className="space-y-8" aria-label="Delivery reports">
       {grouped.map(([countryName, countryReports]) => (
-        <div key={countryName}>
-          <h2 className="mb-3 text-xl font-black text-ink">{countryName}</h2>
+        <section
+          key={countryName}
+          className="rounded-xl border-2 border-line/90 bg-[linear-gradient(180deg,rgba(255,255,255,0.98),rgba(247,243,239,0.95))] p-5 shadow-board ring-1 ring-white/70"
+        >
+          <div className="mb-5 flex items-center justify-between gap-3 border-b-2 border-line/80 pb-5">
+            <div className="flex items-center gap-3">
+              <span className="rounded-xl border border-accent/25 bg-accent/10 p-2.5 text-accent">
+                <Layers3 size={16} aria-hidden="true" />
+              </span>
+              <div>
+                <div className="text-xs font-black uppercase tracking-[0.16em] text-accent">Country plan</div>
+                <h2 className="mt-1 text-2xl font-black text-ink">{countryName}</h2>
+              </div>
+            </div>
+            <div className="rounded-md border border-line/80 bg-white/85 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-muted">
+              {countryReports.length} route{countryReports.length === 1 ? "" : "s"}
+            </div>
+          </div>
           <div className="grid gap-4 lg:grid-cols-2">
             {countryReports.map((report) => (
               <ReportCard
@@ -253,7 +316,7 @@ function ReportGrid({ reports }: { reports: PersonalizedReport[] }) {
               />
             ))}
           </div>
-        </div>
+        </section>
       ))}
     </section>
   );
@@ -274,16 +337,16 @@ function ReportCard({ report }: { report: PersonalizedReport }) {
   }
 
   return (
-    <article className="rounded-md border border-line bg-white/95 p-5 shadow-board transition duration-200 hover:-translate-y-0.5 hover:border-accent/35">
+    <article className="rounded-xl border border-line/90 bg-white/98 p-5 shadow-[0_16px_38px_rgba(15,23,42,0.08)] transition duration-200 hover:-translate-y-0.5 hover:border-accent/35">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <div className="text-xs font-bold uppercase tracking-wide text-muted">{report.platform}</div>
+          <div className="text-xs font-black uppercase tracking-[0.16em] text-accent">{report.platform}</div>
           <h3 className="mt-1 text-xl font-bold text-ink">{report.language}</h3>
         </div>
         <ConfidenceBadge confidence={report.confidence} />
       </div>
 
-      <p className="mt-4 rounded-md border border-line bg-paper p-3 text-sm leading-6 text-ink">
+      <p className="mt-4 rounded-md border border-line/90 bg-paper/75 p-3 text-sm leading-6 text-ink">
         <span className="font-semibold">Format:</span> {report.recommended_format}
       </p>
 
@@ -292,7 +355,7 @@ function ReportCard({ report }: { report: PersonalizedReport }) {
         <p className="mt-2 text-sm font-semibold leading-6 text-ink">{report.hook}</p>
       </div>
 
-      <div className="mt-4 rounded-md border border-line bg-paper p-4">
+      <div className="mt-4 rounded-md border border-line/90 bg-paper/75 p-4">
         <div className="flex items-center justify-between gap-3">
           <div className="text-xs font-bold uppercase tracking-wide text-muted">Caption</div>
           <button
@@ -317,7 +380,7 @@ function ReportCard({ report }: { report: PersonalizedReport }) {
           {report.hashtags.map((tag) => (
             <span
               key={tag}
-              className="rounded-md border border-line bg-white px-2.5 py-1 text-xs font-semibold text-ink"
+              className="rounded-md border border-line/90 bg-white px-2.5 py-1 text-xs font-semibold text-ink"
             >
               {tag}
             </span>
@@ -336,7 +399,7 @@ function ReportCard({ report }: { report: PersonalizedReport }) {
         </span>
       </div>
 
-      <div className="mt-4 rounded-md border border-line bg-paper p-4">
+      <div className="mt-4 rounded-md border border-line/90 bg-paper/75 p-4">
         <div className="text-xs font-bold uppercase tracking-wide text-muted">Timing</div>
         <p className="mt-2 text-sm font-semibold leading-6 text-ink">{report.recommended_day_window}</p>
         <p className="mt-2 text-sm leading-6 text-muted">{report.timing_rationale}</p>
@@ -355,7 +418,7 @@ function ReportCard({ report }: { report: PersonalizedReport }) {
 
 function GuidanceList({ title, items, icon }: { title: string; items: string[]; icon: "check" | "x" }) {
   return (
-    <div className="rounded-md border border-line bg-white p-3">
+    <div className="rounded-md border border-line/90 bg-white p-3">
       <div className="text-xs font-bold uppercase tracking-wide text-muted">{title}</div>
       <ul className="mt-3 space-y-2">
         {items.map((item) => (
