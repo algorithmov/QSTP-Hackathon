@@ -14,7 +14,7 @@ The system is evidence-based. It does not score all social platforms on the inte
 
 The project answers a simple operational question:
 
-How should a Stars of Science idea be distributed so it has the best chance to reach the right audience?
+How should a Stars of Science idea be distributed so it has the best chance to reach the right audience at the right time?
 
 Masar is built to help judges, operators, and campaign teams move from a rough idea to a grounded posting decision.
 
@@ -29,13 +29,7 @@ It is constrained to:
 - audience fit across supported Arab-market countries
 - transparent reasoning with evidence shown in the interface
 
-The five scored platforms are:
-
-- TikTok
-- Instagram
-- YouTube
-- LinkedIn
-- X
+The five scored platforms are: TikTok, Instagram, YouTube LinkedIn & X
 
 ## System Outputs
 
@@ -43,12 +37,7 @@ The five scored platforms are:
 
 The `/review` page ranks the five official platforms and explains the ranking with:
 
-- fit score
-- confidence level
-- score breakdown
-- supporting patterns
-- deep report
-- evidence disclosure
+- fit score, confidence level, score breakdown, supporting patterns, deep report & evidence disclosure
 
 ### 2. Country targeting
 
@@ -58,15 +47,7 @@ The same review flow estimates where the idea is strongest by country. Country s
 
 The `/personalize` page generates localized delivery reports for selected countries and platforms. Each report includes:
 
-- recommended format
-- hook
-- caption
-- hashtags
-- posting time
-- recommended day window
-- do guidance
-- do not guidance
-- supporting evidence
+- recommended format, hook, caption, hashtags, posting time, recommended day window, do guidance, do not guidance &supporting evidence
 
 ## Method
 
@@ -84,12 +65,7 @@ The system looks for related Stars of Science records and platform patterns in t
 
 Each platform score blends:
 
-- semantic match
-- format fit
-- performance strength
-- goal alignment
-- language fit
-- duration fit
+- semantic match, format fit, performance strength, goal alignment, language fit & duration fit
 
 ### Step 4. Blend country fit
 
@@ -118,16 +94,6 @@ contracts/  Example response contracts
 scripts/    Local startup and utility scripts
 ```
 
-Important files:
-
-- `frontend/app/review/page.tsx` - main review workflow
-- `frontend/app/personalize/page.tsx` - localized delivery workflow
-- `frontend/lib/api.ts` - frontend API layer and mock/live switching
-- `backend/app/main.py` - FastAPI entry point
-- `backend/app/review.py` - ranking, country fit, and platform report logic
-- `backend/app/personalize.py` - localized report generation
-- `backend/app/schemas.py` - request and response contracts
-
 ## Run Locally
 
 ### One-command startup
@@ -141,29 +107,12 @@ This starts:
 - backend at `http://localhost:8000`
 - frontend at `http://localhost:3000`
 
-### Frontend only
-
-```bash
-cd frontend
-npm install
-npm run dev
-```
-
-### Backend only
-
-```bash
-cd backend
-python3.11 -m venv .venv
-source .venv/bin/activate
-pip install -r requirements.txt
-uvicorn app.main:app --reload --port 8000
-```
 
 ## Runtime Modes
 
 Masar supports two operating modes.
 
-### Mock mode
+### 1. Mock mode
 
 Mock mode is the default demo path.
 
@@ -171,11 +120,9 @@ Mock mode is the default demo path.
 - the backend can run without model keys
 - the system remains stable for presentations and judge demos
 
-### Live mode
+### 2. Live mode
 
-Live mode uses configured model providers and live backend execution.
-
-To enable live behavior:
+Live mode uses configured model providers and live backend execution. To enable live behavior:
 
 1. add backend keys in `backend/.env`
 2. set `NEXT_PUBLIC_USE_MOCKS=false` in `frontend/.env.local`
