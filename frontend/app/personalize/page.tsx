@@ -99,7 +99,7 @@ export default function PersonalizePage() {
           title="Build The Audience Brief"
           description="Define the input idea, target goal, countries, and platforms before generating localized plans."
         />
-        <div className="grid gap-5 lg:grid-cols-[1fr_380px]">
+        <div className="flex flex-col gap-5">
           <label className="block">
             <span className="text-sm font-semibold text-ink">Idea or post text</span>
             <textarea
@@ -160,13 +160,12 @@ export default function PersonalizePage() {
         </div>
       </section>
 
-      <div className="h-3" aria-hidden="true" />
       {status === "loading" ? <LoadingBlock label={loadingSteps[loadingStep]} /> : null}
       {status === "error" && error ? <ErrorBlock message={error} /> : null}
 
       {result ? (
         <>
-          <section className="mt-5 rounded-xl border-2 border-ink/12 bg-[linear-gradient(180deg,rgba(255,255,255,0.98),rgba(249,247,244,0.97))] p-6 shadow-board">
+          <section className="rounded-xl border-2 border-ink/12 bg-[linear-gradient(180deg,rgba(255,255,255,0.98),rgba(249,247,244,0.97))] p-6 shadow-board">
             <SectionBanner
               step="02"
               title="Review The Extracted Summary"
@@ -174,7 +173,7 @@ export default function PersonalizePage() {
             />
             <IdeaSummaryCard summary={result.idea_summary} />
           </section>
-          <section className="mt-7 rounded-xl border-2 border-ink/12 bg-[linear-gradient(180deg,rgba(244,240,235,0.96),rgba(255,255,255,0.98))] p-6 shadow-board">
+          <section className="rounded-xl border-2 border-ink/12 bg-[linear-gradient(180deg,rgba(244,240,235,0.96),rgba(255,255,255,0.98))] p-6 shadow-board">
             <SectionBanner
               step="03"
               title="Compare Country Delivery Routes"
@@ -184,7 +183,7 @@ export default function PersonalizePage() {
           </section>
         </>
       ) : (
-        <section className="mt-5 rounded-xl border-2 border-dashed border-line/90 bg-white/95 p-8 text-muted shadow-board ring-1 ring-white/70">
+        <section className="rounded-xl border-2 border-dashed border-line/90 bg-white/95 p-8 text-muted shadow-board ring-1 ring-white/70">
           Audience delivery reports will appear here after you choose countries and platforms.
         </section>
       )}
