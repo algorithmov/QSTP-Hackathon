@@ -1,31 +1,35 @@
 # Masar
 
-Masar is an evidence-backed decision layer for Stars of Science social distribution. It helps judges and operators move from a raw content idea to three concrete outputs: the best official platform, the strongest countries for that idea, and a localized posting plan for the chosen route.
+## Abstract
 
-## What judges should look at
+Masar is a decision support system for Stars of Science social distribution. It takes one content idea and returns three practical outputs:
 
-Masar is built around three pages:
+- the best official platform for that idea
+- the strongest target countries for that idea
+- a localized posting plan for the chosen countries and platforms
 
-| Page | Purpose |
-| --- | --- |
-| `/review` | Scores and ranks the five official Stars of Science platforms, then shows a country choropleth of where the idea is strongest by audience fit. |
-| `/personalize` | Generates localized delivery plans by country and platform: hook, caption, hashtags, timing, and do/don’t guidance. |
-| `/about` | Explains the product, methodology, evidence model, and recommended judge demo path. |
+The system is evidence-based. It does not score all social platforms on the internet. It only works inside the Stars of Science operating scope and uses matched records, country usage references, and clear scoring rules.
 
-## What is new in this version
+## Objective
 
-- Stronger product shell and cleaner navigation across three pages
-- Guided review dashboard instead of one long stacked report
-- Platform ranking overview that keeps all five scores visible at once
-- Evidence-backed country heatmap on the reviewer page
-- More prominent media upload flow for Gemini-assisted context extraction
-- Judge-facing About page and repo documentation
+The project answers a simple operational question:
 
-## How Masar makes decisions
+How should a Stars of Science idea be distributed so it has the best chance to reach the right audience?
 
-### 1. Platform ranking
+Masar is built to help judges, operators, and campaign teams move from a rough idea to a grounded posting decision.
 
-The reviewer scores only the five official Stars of Science platforms:
+## Scope
+
+Masar is intentionally narrow. This is a feature, not a limitation.
+
+It is constrained to:
+
+- the five official Stars of Science platforms
+- the local knowledge base included in this repository
+- audience fit across supported Arab-market countries
+- transparent reasoning with evidence shown in the interface
+
+The five scored platforms are:
 
 - TikTok
 - Instagram
@@ -33,59 +37,98 @@ The reviewer scores only the five official Stars of Science platforms:
 - LinkedIn
 - X
 
-The fit score blends:
+## System Outputs
 
-- semantic match with similar Stars of Science posts
-- content-type to platform fit
-- performance strength from matched posts
-- language fit
-- goal alignment
-- duration fit
+### 1. Platform review
 
-### 2. Country audience fit
+The `/review` page ranks the five official platforms and explains the ranking with:
 
-The country choropleth does not use a separate disconnected heuristic. It takes the current platform review result and uses those platform scores as weights, then blends them with country-specific platform usage scores from the local knowledge base. The output is an `audience_fit_score` per supported country plus:
+- fit score
+- confidence level
+- score breakdown
+- supporting patterns
+- deep report
+- evidence disclosure
 
-- strongest contributing platform
-- breakdown by platform contribution
-- supporting evidence
+### 2. Country targeting
 
-### 3. Localized delivery plans
+The same review flow estimates where the idea is strongest by country. Country scores are not guessed in isolation. They are derived from the current platform result and blended with country-level platform usage signals from the knowledge base.
 
-After the user chooses countries and platforms, Masar generates:
+### 3. Delivery plan
+
+The `/personalize` page generates localized delivery reports for selected countries and platforms. Each report includes:
 
 - recommended format
-- localized hook
+- hook
 - caption
 - hashtags
-- best posting time
+- posting time
 - recommended day window
-- country-specific do/don’t guidance
+- do guidance
+- do not guidance
+- supporting evidence
 
-## Why this matters for Stars of Science
+## Method
 
-Masar is not a generic social media recommender. It is intentionally constrained to the Stars of Science operating context:
+Masar uses a simple and inspectable method.
 
-- the five official channels
-- Stars of Science post evidence
-- country-level audience usage references
-- judge-friendly transparency through evidence disclosures
+### Step 1. Summarize the idea
 
-That gives the product a clearer evaluation story: it ranks, explains, localizes, and exposes the evidence behind each recommendation.
+The system extracts the core topic, content type, audience, and language direction from the input idea.
 
-## Judge demo script
+### Step 2. Match related records
 
-1. Start on `/review`.
-2. Paste the seeded idea already shown in the UI.
-3. Run the review and inspect the top-ranked platform.
-4. Compare the five platform scores in the ranking overview.
-5. Hover the country map and inspect the audience fit breakdown and evidence.
-6. Open one platform’s score breakdown and deep report.
-7. Move to `/personalize`.
-8. Generate a delivery plan for selected countries and platforms.
-9. Open `/about` for the methodology and product summary.
+The system looks for related Stars of Science records and platform patterns in the local data layer.
 
-## Local run
+### Step 3. Score platform fit
+
+Each platform score blends:
+
+- semantic match
+- format fit
+- performance strength
+- goal alignment
+- language fit
+- duration fit
+
+### Step 4. Blend country fit
+
+Country audience fit uses the current platform result as an input. Stronger platforms contribute more weight. This keeps the country result tied to the actual review outcome.
+
+### Step 5. Generate localized guidance
+
+For selected country and platform pairs, Masar creates delivery guidance that stays aligned with the review result and attached evidence.
+
+## Product Structure
+
+The current product surface has two main pages:
+
+| Route | Purpose |
+| --- | --- |
+| `/review` | Review one idea, rank the platforms, inspect evidence, and open deep reports. |
+| `/personalize` | Generate localized posting plans for selected countries and platforms. |
+
+## Repository Structure
+
+```text
+frontend/   Next.js 14, TypeScript, Tailwind CSS
+backend/    FastAPI, Pydantic, scoring and report logic
+backend/kb/ Local knowledge base, evidence helpers, platform and country data
+contracts/  Example response contracts
+scripts/    Local startup and utility scripts
+```
+
+Important files:
+
+- `frontend/app/review/page.tsx` - main review workflow
+- `frontend/app/personalize/page.tsx` - localized delivery workflow
+- `frontend/lib/api.ts` - frontend API layer and mock/live switching
+- `backend/app/main.py` - FastAPI entry point
+- `backend/app/review.py` - ranking, country fit, and platform report logic
+- `backend/app/personalize.py` - localized report generation
+- `backend/app/schemas.py` - request and response contracts
+
+## Run Locally
 
 ### One-command startup
 
@@ -93,12 +136,12 @@ That gives the product a clearer evaluation story: it ranks, explains, localizes
 ./setup.sh
 ```
 
-This installs dependencies if needed, starts:
+This starts:
 
-- backend on `http://localhost:8000`
-- frontend on `http://localhost:3000`
+- backend at `http://localhost:8000`
+- frontend at `http://localhost:3000`
 
-### Frontend-only
+### Frontend only
 
 ```bash
 cd frontend
@@ -106,7 +149,7 @@ npm install
 npm run dev
 ```
 
-### Backend-only
+### Backend only
 
 ```bash
 cd backend
@@ -116,36 +159,66 @@ pip install -r requirements.txt
 uvicorn app.main:app --reload --port 8000
 ```
 
-## Mock mode vs live mode
+## Runtime Modes
 
-By default, the project can run in mock mode for a stable demo:
+Masar supports two operating modes.
 
-- frontend reads seeded mock responses
-- backend can run without live provider keys
+### Mock mode
 
-To use live model-backed behavior, configure backend keys and disable frontend mocks as needed.
+Mock mode is the default demo path.
 
-## Architecture summary
+- the frontend reads seeded mock review and personalize responses
+- the backend can run without model keys
+- the system remains stable for presentations and judge demos
 
-```text
-frontend/   Next.js 14 App Router, TypeScript, Tailwind CSS
-backend/    FastAPI, Pydantic, scoring logic, Gemini/Groq integration hooks
-backend/kb/ SQLite-backed country/platform usage and Stars of Science evidence layer
-```
+### Live mode
 
-Key implementation pieces:
+Live mode uses configured model providers and live backend execution.
 
-- `frontend/app/review/page.tsx` — platform ranking dashboard + country choropleth
-- `frontend/app/personalize/page.tsx` — localized delivery planner
-- `frontend/app/about/page.tsx` — judge-facing explanation page
-- `backend/app/review.py` — review scoring and country-fit generation
-- `backend/app/personalize.py` — country/platform delivery-plan generation
+To enable live behavior:
 
-## Verification expectation
+1. add backend keys in `backend/.env`
+2. set `NEXT_PUBLIC_USE_MOCKS=false` in `frontend/.env.local`
 
-This version should be checked by:
+## Demo Protocol
 
-- running `next build` in the frontend
-- compiling backend Python modules
-- exercising `/review`, `/personalize`, and `/about`
-- verifying ranking, map, modal, and upload flows in the browser
+For a clean demo:
+
+1. Open `http://localhost:3000/review`.
+2. Use the seeded idea or paste a new one.
+3. Run the review.
+4. Inspect the top-ranked platform.
+5. Open score breakdown and deep report.
+6. Move to `/personalize`.
+7. Choose countries and platforms.
+8. Generate the localized delivery plan.
+
+## Design Principles
+
+The system follows four design principles:
+
+- narrow scope over broad but vague recommendations
+- evidence before opinion
+- simple outputs for operational use
+- clear reasoning that a judge can inspect quickly
+
+## Current Limitations
+
+- the product is limited to the five official Stars of Science platforms
+- output quality depends on the local evidence layer and configured providers
+- mock mode is best for stable demos, not for testing live provider quality
+- country targeting is only available for the supported country set in the repository
+
+## Verification
+
+Recommended checks:
+
+- run `npm run build` inside `frontend`
+- compile backend Python modules
+- test `/review` and `/personalize`
+- verify ranking, deep report, and localization flows
+- confirm mock mode and live mode behavior when switching environments
+
+## Conclusion
+
+Masar is not a general social media assistant. It is a focused decision layer for one real operating context. That focus makes the system easier to test, easier to explain, and more useful for Stars of Science campaign decisions.
